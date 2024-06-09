@@ -22,12 +22,16 @@
 
     "baseUrl": ".",
     "paths": {
+      "@/apis/*": ["src/apis/*"],
+      "@/assets/*": ["src/assets/*"],
+      "@/components/*": ["src/components/*"],
+      "@/hooks/*": ["src/hooks/*"],
       "@/layouts/*": ["src/layouts/*"],
       "@/pages/*": ["src/pages/*"],
       "@/routers/*": ["src/routers/*"],
-      "@/components/*": ["src/components/*"],
-      "@/hooks/*": ["src/hooks/*"],
-      "@/utils/*": ["src/utils/*"]
+      "@/styles/*": ["src/styles/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/validations/*": ["src/validations/*"]
     }
   },
   "include": ["src"],

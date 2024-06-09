@@ -1,0 +1,7 @@
+.test {
+  display: flex;
+
+  & p {
+    color: red;
+  }
+}
