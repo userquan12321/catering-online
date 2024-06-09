@@ -6,7 +6,7 @@ type Props = {
 }
 
 const ProtectedRoute = ({ children }: Props) => {
-  const isAuthenticated = (): boolean => {
+  const isAuthenticated = () => {
     return false
   }
 
