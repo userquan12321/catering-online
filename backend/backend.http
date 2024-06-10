@@ -1,6 +1,29 @@
-@backend_HostAddress = http://localhost:5116
+@backend_HostAddress = https://localhost:7236
 
 GET {{backend_HostAddress}}/weatherforecast/
-Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwianRpIjoiMTBiNDMzMzYtYmQyMC00MzIzLWI5M2YtMGZhZWEyNGE0MmQwIiwiaWF0IjoiMTcxODAwNjc1MSIsImV4cCI6MTcxODAwNzM1MSwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQ2F0ZXJlciIsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcyMzYiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MjM2In0.nVVmh3WJtM9TQ3cw7KYwZeLMHFtfjJZ7ljqu3SNPPUk
 
+###
+GET {{backend_HostAddress}}/api/Auth
+Content-Type: application/json
+
+###
+POST {{backend_HostAddress}}/api/Auth/register
+Content-Type: application/json
+
+{
+  "id": 0,
+  "type": 1,
+  "email": "user2@example.com",
+  "password": "Password123!"
+}
+###
+POST {{backend_HostAddress}}/api/Auth/login
+Content-Type: application/json
+
+{
+  "email": "user2@example.com",
+  "password": "Password123!"
+}
 ###
