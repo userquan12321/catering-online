@@ -9,9 +9,10 @@ var connectionString = builder.Configuration.GetConnectionString("SQLServerConne
 
 //Add services to the container.
 builder.Services.AddDbContext<UserDbContext>(options =>
-    options.UseInMemoryDatabase("Test"));
-    //options.UseSqlServer(connectionString));
+    //options.UseInMemoryDatabase("Test"));
+    options.UseSqlServer(connectionString));
 
+// Cross-origin resource sharing
 builder.Services.AddCors(options => {
     options.AddPolicy("CorsPolicy",
         policy => {
@@ -20,8 +21,11 @@ builder.Services.AddCors(options => {
                    .AllowAnyMethod();
         });
 });
+
+// In memory cache
 builder.Services.AddDistributedMemoryCache();
 
+// Session
 builder.Services.AddSession(options => {
     options.Cookie.Name = "session";
     options.Cookie.Path = "/";
@@ -31,6 +35,8 @@ builder.Services.AddSession(options => {
     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
     options.IdleTimeout = TimeSpan.FromMinutes(20);
 });
+
+// Cookie authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => {
         options.Cookie.Name = "auth";
@@ -43,6 +49,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
         options.SlidingExpiration = true;
     });
+// Authorization
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();

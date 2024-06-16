@@ -13,6 +13,7 @@ namespace backend.Controllers {
         private readonly User user = new();
         private readonly UserProfile userProfile = new();
 
+        // POST api/auth/register
         [HttpPost("register")]
         public async Task<ActionResult<UserRegister>> Register(UserRegister request) {
             // Validate
@@ -39,6 +40,8 @@ namespace backend.Controllers {
 
             return Ok("User registered successfully");
         }
+
+        // POST api/auth/login
         [HttpPost("login")]
         public async Task<ActionResult<UserLogin>> Login(UserLogin request) {
             var getUser = await _context.Users.Where(x => x.Email == request.Email).FirstOrDefaultAsync();
@@ -52,12 +55,14 @@ namespace backend.Controllers {
             if (ModelState.IsValid == false) {
                 return BadRequest("Invalid login detail");
             }
+            // Session
             HttpContext.Session.SetString("sid", HttpContext.Session.Id);
             HttpContext.Session.SetInt32("UID", getUser.ID);
             HttpContext.Session.SetString("Role", getUser.Type.ToString());
             HttpContext.Session.SetString("IsLoggedIn", "true");
             await HttpContext.Session.CommitAsync();
 
+            // Auth Cookie
             var claims = new List<Claim> {
                     new Claim("UID", getUser.ID.ToString()),
                     new Claim(ClaimTypes.Role, getUser.Type.ToString()),
@@ -70,7 +75,7 @@ namespace backend.Controllers {
                 IsPersistent = true,
                 ExpiresUtc = DateTime.UtcNow.AddMinutes(20)
             };
-            
+
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
@@ -78,11 +83,14 @@ namespace backend.Controllers {
 
             return Ok("Logged in successfully");
         }
+
+        // POST api/auth/logout
         [HttpPost("logout")]
         public async Task<ActionResult> Logout() {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.SetString("IsLoggedIn", "false");
             await HttpContext.Session.CommitAsync();
+
             return Ok("Logged out successfully");
         }
     }

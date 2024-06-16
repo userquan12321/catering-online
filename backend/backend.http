@@ -14,7 +14,7 @@ Content-Type: application/json
   "confirmPassword": "Password123!",
   "firstName": "First",
   "lastName": "Last",
-  "phoneNumber": "6697174150823666",
+  "phoneNumber": "123456789",
   "address": "Address abc"
 }
 ###
