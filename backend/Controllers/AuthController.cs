@@ -57,12 +57,11 @@ namespace backend.Controllers {
             }
             // Session
             HttpContext.Session.SetString("sid", HttpContext.Session.Id);
-            HttpContext.Session.SetInt32("UID", getUser.ID);
-            HttpContext.Session.SetString("Role", getUser.Type.ToString());
-            HttpContext.Session.SetString("IsLoggedIn", "true");
+            HttpContext.Session.SetInt32("uid", getUser.ID);
+            HttpContext.Session.SetString("role", getUser.Type.ToString());
             await HttpContext.Session.CommitAsync();
 
-            // Auth Cookie
+            // Auth cookie
             var claims = new List<Claim> {
                     new Claim("UID", getUser.ID.ToString()),
                     new Claim(ClaimTypes.Role, getUser.Type.ToString()),
@@ -88,7 +87,9 @@ namespace backend.Controllers {
         [HttpPost("logout")]
         public async Task<ActionResult> Logout() {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Session.SetString("IsLoggedIn", "false");
+            HttpContext.Session.Remove("sid");
+            HttpContext.Session.Remove("uid");
+            HttpContext.Session.Remove("role");
             await HttpContext.Session.CommitAsync();
 
             return Ok("Logged out successfully");
