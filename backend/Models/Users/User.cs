@@ -20,7 +20,6 @@ namespace backend.Models {
         [Required]
         [StringLength(255, MinimumLength = 8)]
         [RegularExpression(@"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,}$")] // 1 digit, 1 uppercase, 1 lowercase, 1 special character
-        [PasswordPropertyText]
         public string Password { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
