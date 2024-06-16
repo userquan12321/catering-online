@@ -52,10 +52,17 @@ namespace backend.Controllers {
             if (ModelState.IsValid == false) {
                 return BadRequest("Invalid login detail");
             }
+            HttpContext.Session.SetString("sid", HttpContext.Session.Id);
+            HttpContext.Session.SetInt32("UID", getUser.ID);
+            HttpContext.Session.SetString("Role", getUser.Type.ToString());
+            HttpContext.Session.SetString("IsLoggedIn", "true");
+            await HttpContext.Session.CommitAsync();
+
             var claims = new List<Claim> {
-                    new ("UID", getUser.ID.ToString()),
-                    new (ClaimTypes.Role, getUser.Type.ToString()),
+                    new Claim("UID", getUser.ID.ToString()),
+                    new Claim(ClaimTypes.Role, getUser.Type.ToString()),
                 };
+
             var claimsIdentity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -63,7 +70,7 @@ namespace backend.Controllers {
                 IsPersistent = true,
                 ExpiresUtc = DateTime.UtcNow.AddMinutes(20)
             };
-
+            
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
@@ -72,8 +79,10 @@ namespace backend.Controllers {
             return Ok("Logged in successfully");
         }
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout() {
+        public async Task<ActionResult> Logout() {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.SetString("IsLoggedIn", "false");
+            await HttpContext.Session.CommitAsync();
             return Ok("Logged out successfully");
         }
     }

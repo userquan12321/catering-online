@@ -12,7 +12,6 @@ builder.Services.AddDbContext<UserDbContext>(options =>
     options.UseInMemoryDatabase("Test"));
     //options.UseSqlServer(connectionString));
 
-
 builder.Services.AddCors(options => {
     options.AddPolicy("CorsPolicy",
         policy => {
