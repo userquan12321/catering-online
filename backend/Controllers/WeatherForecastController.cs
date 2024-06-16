@@ -17,8 +17,8 @@ public class WeatherForecastController : ControllerBase {
     public WeatherForecastController(ILogger<WeatherForecastController> logger) {
         _logger = logger;
     }
-    [Authorize(Roles = "Caterer")]
-    [HttpGet(Name = "GetWeatherForecast")]
+    [Authorize]
+    [HttpGet]
     public IEnumerable<WeatherForecast> Get() {
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast {
             Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
