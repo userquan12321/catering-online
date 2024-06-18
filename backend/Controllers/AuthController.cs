@@ -15,7 +15,7 @@ namespace backend.Controllers {
 
         // POST api/Auth/register
         [HttpPost("register")]
-        public async Task<ActionResult<UserRegister>> Register(UserRegister request) {
+        public async Task<ActionResult> Register(UserRegister request) {
             // Validate
             if (_context.Users.Any(x => x.Email == request.Email)) {
                 return BadRequest("Email already exist");
@@ -38,13 +38,12 @@ namespace backend.Controllers {
             userProfile.PhoneNumber = request.PhoneNumber;
             _context.UserProfiles.Add(userProfile);
             await _context.SaveChangesAsync();
-
             return Ok("User registered successfully");
         }
 
         // POST api/Auth/login
         [HttpPost("login")]
-        public async Task<ActionResult<UserLogin>> Login(UserLogin request) {
+        public async Task<ActionResult> Login(UserLogin request) {
             var getUser = await _context.Users.Where(x => x.Email == request.Email).FirstOrDefaultAsync();
             // Validate
             if (getUser == null) {
@@ -61,37 +60,36 @@ namespace backend.Controllers {
             HttpContext.Session.SetInt32("uid", getUser.ID);
             HttpContext.Session.SetString("role", getUser.Type.ToString());
             await HttpContext.Session.CommitAsync();
-
-            // Auth cookie
             var claims = new List<Claim> {
                     new Claim("UID", getUser.ID.ToString()),
                     new Claim(ClaimTypes.Role, getUser.Type.ToString()),
                 };
-
             var claimsIdentity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
             var authProperties = new AuthenticationProperties {
                 IsPersistent = false
+                // Whether the authentication session is persisted across 
+                // multiple requests. When used with cookies, controls
+                // whether the cookie's lifetime is absolute (matching the
+                // lifetime of the authentication ticket) or session-based.
             };
-
+            //Creates an encrypted cookie and adds it to the current response.
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
-
             return Ok("Logged in successfully");
         }
 
         // POST api/Auth/logout
         [HttpPost("logout")]
         public async Task<ActionResult> Logout() {
+            // Clear the existing external cookie
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Remove("sid");
             HttpContext.Session.Remove("uid");
             HttpContext.Session.Remove("role");
             await HttpContext.Session.CommitAsync();
-
             return Ok("Logged out successfully");
         }
     }

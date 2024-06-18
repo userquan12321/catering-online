@@ -1,13 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace backend.Models {
-    public class UserProfile {
-        [Key]
-        public int ID { get; set; }
-        [ForeignKey("UserID")]
-        public User? User { get; set; }
-        public int UserID { get; set; }
+namespace backend.Models.Users {
+    public class UserUpdateProfile {
         [Required]
         [StringLength(255, MinimumLength = 2)]
         [RegularExpression(@"^[a-zA-Z\s,.'\-\p{L}\p{M}]+$")]
