@@ -44,8 +44,9 @@ namespace backend.Controllers {
                 return Unauthorized("You must log in");
             }
             var userProfile = await _context.UserProfiles.FindAsync(userID);
+            var user = await _context.Users.FindAsync(userID);
             // Validate
-            if (userProfile == null) {
+            if (userProfile == null || user == null) {
                 return NotFound("User not found.");
             }
             if (ModelState.IsValid == false) {
@@ -56,6 +57,7 @@ namespace backend.Controllers {
             userProfile.LastName = request.LastName;
             userProfile.PhoneNumber = request.PhoneNumber;
             userProfile.Address = request.Address;
+            user.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return Ok("Profile updated successfully.");
         }
@@ -101,6 +103,7 @@ namespace backend.Controllers {
             // Update detail
             user.Email = request.Email;
             user.Password = request.NewPassword;
+            user.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return Ok("Login detail updated successfully.");
         }
