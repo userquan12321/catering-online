@@ -65,7 +65,7 @@ namespace backend.Controllers {
         }
 
         // DELETE: api/Admin/user
-        [HttpDelete("user/{id}")]
+        [HttpDelete("userProfile/{id}")]
         public async Task<ActionResult> DeleteUserProfile(int id) {
             var userProfile = await _context.UserProfiles.FindAsync(id);
             if (userProfile == null) {
