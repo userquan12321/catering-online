@@ -5,7 +5,7 @@ using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("SQLServerConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 //Add services to the container.
 builder.Services.AddDbContext<UserDbContext>(options =>
@@ -16,7 +16,7 @@ builder.Services.AddDbContext<UserDbContext>(options =>
 builder.Services.AddCors(options => {
     options.AddPolicy("CorsPolicy",
         policy => {
-            policy.WithOrigins("https://localhost:3000")
+            policy.WithOrigins("https://localhost:5173")
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });
