@@ -1,17 +1,24 @@
+import LoadingFallback from '@/components/LoadingFallback'
 import { createBrowserRouter } from 'react-router-dom'
 import AuthLayout from '../layouts/AuthLayout'
 import MainLayout from '../layouts/MainLayout'
-import HomePage from '../pages/HomePage'
-import LoginPage from '../pages/LoginPage'
-import ProfilePage from '../pages/ProfilePage'
-import RegisterPage from '../pages/RegisterPage'
 import ProtectedRoute from './ProtectedRoute'
+import { HomePage, LoginPage, ProfilePage, RegisterPage } from './lazy-routes'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <MainLayout />,
-    children: [{ path: '/', element: <HomePage /> }],
+    children: [
+      {
+        path: '/',
+        element: (
+          <LoadingFallback>
+            <HomePage />
+          </LoadingFallback>
+        ),
+      },
+    ],
   },
   {
     path: '/profile',
@@ -20,17 +27,44 @@ const router = createBrowserRouter([
         <MainLayout />
       </ProtectedRoute>
     ),
-    children: [{ path: '', element: <ProfilePage /> }],
+    children: [
+      {
+        path: '',
+        element: (
+          <LoadingFallback>
+            <ProfilePage />
+          </LoadingFallback>
+        ),
+      },
+    ],
   },
   {
     path: '/login',
     element: <AuthLayout />,
-    children: [{ path: '', element: <LoginPage /> }],
+    children: [
+      {
+        path: '',
+        element: (
+          <LoadingFallback>
+            <LoginPage />
+          </LoadingFallback>
+        ),
+      },
+    ],
   },
   {
     path: '/register',
     element: <AuthLayout />,
-    children: [{ path: '', element: <RegisterPage /> }],
+    children: [
+      {
+        path: '',
+        element: (
+          <LoadingFallback>
+            <RegisterPage />
+          </LoadingFallback>
+        ),
+      },
+    ],
   },
 ])
 
