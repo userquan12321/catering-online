@@ -16,11 +16,10 @@ namespace backend.Models {
         [Required]
         [StringLength(255, MinimumLength = 4)]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
         [Required]
         [StringLength(255, MinimumLength = 8)]
-        [RegularExpression(@"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,}$")] // 1 digit, 1 uppercase, 1 lowercase, 1 special character
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
