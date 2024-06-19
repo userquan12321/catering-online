@@ -1,8 +1,5 @@
 @backend_HostAddress = https://localhost:7236
 
-GET {{backend_HostAddress}}/weatherforecast/
-Content-Type: application/json
-
 ###
 POST {{backend_HostAddress}}/api/auth/register
 Content-Type: application/json
