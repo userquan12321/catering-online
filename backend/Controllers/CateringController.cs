@@ -14,7 +14,13 @@ namespace backend.Controllers
     [ApiController]
     public class CateringController(CateringDbContext context) : ControllerBase
     {
+<<<<<<< Updated upstream
         private readonly CateringDbContext _context = context;
+=======
+        private readonly ApplicationDbContext _context = context;
+        private Item item = new();
+        private CuisineType cuisine = new();
+>>>>>>> Stashed changes
 
         // GET: api/Caterer/items
         [HttpGet("items")]
@@ -140,10 +146,11 @@ namespace backend.Controllers
         }
 
         // POST: api/Caterer/cuisines
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("cuisines")]
-        public async Task<ActionResult> AddCuisine(CuisineType cuisine)
+        public async Task<ActionResult> AddCuisine(CuisineDTO req)
         {
+            cuisine.CuisineName = req.CuisineName;
             cuisine.CreatedAt = DateTime.UtcNow;
             cuisine.UpdatedAt = DateTime.UtcNow;
 
@@ -156,7 +163,7 @@ namespace backend.Controllers
         // PUT: api/Caterer/cuisines/{id}
         [Authorize(Roles = "Admin")]
         [HttpPut("cuisines/{id}")]
-        public async Task<ActionResult> UpdateCuisine(int id, CuisineType cuisine)
+        public async Task<ActionResult> UpdateCuisine(int id, CuisineDTO req)
         {
             var existingCuisine = await _context.CuisineTypes.FindAsync(id);
             if (existingCuisine == null)
@@ -164,7 +171,7 @@ namespace backend.Controllers
                 return NotFound("Cuisine type not found.");
             }
 
-            existingCuisine.CuisineName = cuisine.CuisineName;
+            existingCuisine.CuisineName = req.CuisineName;
             existingCuisine.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
