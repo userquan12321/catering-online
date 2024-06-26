@@ -9,7 +9,7 @@ namespace backend.Models
         public int ID { get; set; }
         [Required]
         public int ProfileID { get; set; }
-        [ForeignKey("ProfileID")]
+        [ForeignKey(nameof(ProfileID))]
         public UserProfile? Profile { get; set; }
         public ICollection<Item> Items { get; set; }
         public Caterer()

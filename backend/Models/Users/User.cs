@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
 {
-    [Index(nameof(User.Email), IsUnique = true)]
+    [Index(nameof(Email), IsUnique = true)]
     public class User
     {
         [Key]

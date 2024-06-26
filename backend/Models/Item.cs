@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
 {
+    [Index(nameof(Name), IsUnique = true)]
     public class Item
     {
         [Key]
@@ -17,11 +19,11 @@ namespace backend.Models
         public decimal Price { get; set; }
         [Required]
         public int CatererID { get; set; }
-        [ForeignKey("CatererID")]
+        [ForeignKey(nameof(CatererID))]
         public Caterer? Caterer { get; set; }
         [Required]
         public int CuisineID { get; set; }
-        [ForeignKey("CuisineID")]
+        [ForeignKey(nameof(CuisineID))]
         public CuisineType? CuisineType { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

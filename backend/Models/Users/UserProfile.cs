@@ -9,7 +9,7 @@ namespace backend.Models
         public int ID { get; set; }
         [Required]
         public int UserID { get; set; }
-        [ForeignKey("UserID")]
+        [ForeignKey(nameof(UserID))]
         public User? User { get; set; }
         [Required]
         [StringLength(255, MinimumLength = 2)]
