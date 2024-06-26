@@ -12,6 +12,9 @@ builder.Services.AddDbContext<UserDbContext>(options =>
     //options.UseInMemoryDatabase("Test"));
     options.UseSqlServer(connectionString));
 
+builder.Services.AddDbContext<CateringDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
 // Cross-origin resource sharing
 builder.Services.AddCors(options => {
     options.AddPolicy("CorsPolicy",
