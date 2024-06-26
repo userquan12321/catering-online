@@ -5,16 +5,16 @@ using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
-using backend.Data;
 
 namespace backend.Controllers
 {
-    [Authorize(Roles = "Admin,Caterer")]
+    //[Authorize(Roles = "Admin,Caterer")]
     [Route("api/[controller]")]
     [ApiController]
-    public class CateringController(CateringDbContext context) : ControllerBase
+    public class CateringController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly CateringDbContext _context = context;
+        private readonly ApplicationDbContext _context = context;
+        private Item item = new();
 
         // GET: api/Caterer/items
         [HttpGet("items")]
@@ -27,12 +27,12 @@ namespace backend.Controllers
             }
 
             var items = await _context.Items
-                .Where(i => i.Caterer.Id == userId)
+                .Where(i => i.Caterer.ID == userId)
                 .Select(i => new {
-                    i.Id,
+                    i.ID,
                     i.Name,
                     i.Image,
-                    i.Serves_count,
+                    i.ServesCount,
                     i.Price,
                     i.CuisineType.CuisineName,
                     i.CreatedAt,
@@ -45,33 +45,37 @@ namespace backend.Controllers
 
         // POST: api/Caterer/items
         [HttpPost("items")]
-        public async Task<ActionResult> AddItem(Item item)
+        public async Task<ActionResult> AddItem(ItemDTO req)
         {
             var userId = HttpContext.Session.GetInt32("uid");
             if (userId == null)
             {
-                return Unauthorized("You must log in");
+                //return Unauthorized("You must log in");
             }
 
-            var caterer = await _context.Caterers.FirstOrDefaultAsync(c => c.Id == userId);
+            var caterer = await _context.Caterers.FirstOrDefaultAsync(c => c.ID == userId);
             if (caterer == null)
             {
-                return NotFound("Caterer not found.");
+                //return NotFound("Caterer not found.");
             }
 
-            item.CatererId = caterer.Id;
+            //item.CatererID = caterer.ID;
+            item.Name =  req.Name;
+            item.Price = req.Price;
+            item.ServesCount = req.ServesCount;
+            item.Image = req.Image;
             item.CreatedAt = DateTime.UtcNow;
             item.UpdatedAt = DateTime.UtcNow;
 
             _context.Items.Add(item);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetItems), new { id = item.Id }, item);
+            return CreatedAtAction(nameof(GetItems), new { id = item.ID }, item);
         }
 
         // PUT: api/Caterer/items/{id}
         [HttpPut("items/{id}")]
-        public async Task<ActionResult> UpdateItem(int id, Item item)
+        public async Task<ActionResult> UpdateItem(int id, ItemDTO item)
         {
             var userId = HttpContext.Session.GetInt32("uid");
             if (userId == null)
@@ -81,7 +85,7 @@ namespace backend.Controllers
 
             var existingItem = await _context.Items
                 .Include(i => i.Caterer)
-                .FirstOrDefaultAsync(i => i.Id == id && i.Caterer.Id == userId);
+                .FirstOrDefaultAsync(i => i.ID == id && i.Caterer.ID == userId);
 
             if (existingItem == null)
             {
@@ -90,9 +94,8 @@ namespace backend.Controllers
 
             existingItem.Name = item.Name;
             existingItem.Image = item.Image;
-            existingItem.Serves_count = item.Serves_count;
+            existingItem.ServesCount = item.ServesCount;
             existingItem.Price = item.Price;
-            existingItem.CuisineId = item.CuisineId;
             existingItem.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
@@ -112,7 +115,7 @@ namespace backend.Controllers
 
             var item = await _context.Items
                 .Include(i => i.Caterer)
-                .FirstOrDefaultAsync(i => i.Id == id && i.Caterer.Id == userId);
+                .FirstOrDefaultAsync(i => i.ID == id && i.Caterer.ID == userId);
 
             if (item == null)
             {
@@ -131,7 +134,7 @@ namespace backend.Controllers
         {
             var cuisines = await _context.CuisineTypes
                 .Select(ct => new {
-                    ct.Id,
+                    ct.ID,
                     ct.CuisineName
                 })
                 .ToListAsync();
@@ -150,7 +153,7 @@ namespace backend.Controllers
             _context.CuisineTypes.Add(cuisine);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetCuisines), new { id = cuisine.Id }, cuisine);
+            return CreatedAtAction(nameof(GetCuisines), new { id = cuisine.ID }, cuisine);
         }
 
         // PUT: api/Caterer/cuisines/{id}

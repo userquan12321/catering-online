@@ -8,12 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 //Add services to the container.
-builder.Services.AddDbContext<UserDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
     //options.UseInMemoryDatabase("Test"));
     options.UseSqlServer(connectionString));
 
-builder.Services.AddDbContext<CateringDbContext>(options =>
-    options.UseSqlServer(connectionString));
 
 // Cross-origin resource sharing
 builder.Services.AddCors(options => {
