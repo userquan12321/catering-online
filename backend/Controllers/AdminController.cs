@@ -14,9 +14,9 @@ namespace backend.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase {
-        private readonly UserDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public AdminController(UserDbContext context) {
+        public AdminController(ApplicationDbContext context) {
             _context = context;
         }
 
