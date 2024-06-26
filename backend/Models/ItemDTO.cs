@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models
 {
-    public class Item
+    public class ItemDTO
     {
-        [Key]
-        public int ID { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
@@ -17,25 +15,18 @@ namespace backend.Models
         public decimal Price { get; set; }
         [Required]
         public int CatererID { get; set; }
-        [ForeignKey("CatererID")]
-        public Caterer? Caterer { get; set; }
         [Required]
         public int CuisineID { get; set; }
-        [ForeignKey("CuisineID")]
-        public CuisineType? CuisineType { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public Item()
+        public ItemDTO()
         {
-            ID = 0;
             Name = "";
             Image = "";
             ServesCount = 0;
             Price = 0M;
             CatererID = 0;
-            Caterer = null;
             CuisineID = 0;
-            CuisineType = null;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
         }
