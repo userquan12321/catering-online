@@ -8,8 +8,8 @@ using System.Security.Claims;
 namespace backend.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(UserDbContext context) : ControllerBase {
-        private readonly UserDbContext _context = context;
+    public class AuthController(ApplicationDbContext context) : ControllerBase {
+        private readonly ApplicationDbContext _context = context;
         private readonly User user = new();
         private readonly UserProfile userProfile = new();
 

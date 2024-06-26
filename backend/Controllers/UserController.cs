@@ -8,8 +8,8 @@ namespace backend.Controllers {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(UserDbContext context) : ControllerBase {
-        private readonly UserDbContext _context = context;
+    public class UserController(ApplicationDbContext context) : ControllerBase {
+        private readonly ApplicationDbContext _context = context;
 
         // GET: api/User/profile
         [HttpGet("profile")]
