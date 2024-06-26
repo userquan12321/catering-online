@@ -13,15 +13,9 @@ namespace backend.Controllers
     [ApiController]
     public class CateringController(ApplicationDbContext context) : ControllerBase
     {
-
-        private readonly ApplicationDbContext _context = context;
         private readonly ApplicationDbContext _context = context;
         private Item item = new();
         private CuisineType cuisine = new();
-        private readonly ApplicationDbContext _context = context;
-        private Item item = new();
-
-
         // GET: api/Caterer/items
         [HttpGet("items")]
         public async Task<ActionResult> GetItems()
