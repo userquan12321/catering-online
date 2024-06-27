@@ -8,7 +8,6 @@ using System;
 
 namespace backend.Controllers
 {
-    //[Authorize(Roles = "Admin,Caterer")]
     [Route("api/[controller]")]
     [ApiController]
     public class CateringController(ApplicationDbContext context) : ControllerBase
@@ -16,7 +15,9 @@ namespace backend.Controllers
         private readonly ApplicationDbContext _context = context;
         private Item item = new();
         private CuisineType cuisine = new();
+
         // GET: api/Caterer/items
+        [Authorize(Roles = "Admin,Caterer")]
         [HttpGet("items")]
         public async Task<ActionResult> GetItems()
         {
@@ -44,22 +45,23 @@ namespace backend.Controllers
         }
 
         // POST: api/Caterer/items
+        [Authorize(Roles = "Admin,Caterer")]
         [HttpPost("items")]
         public async Task<ActionResult> AddItem(ItemDTO req)
         {
             var userId = HttpContext.Session.GetInt32("uid");
             if (userId == null)
             {
-                //return Unauthorized("You must log in");
+                return Unauthorized("You must log in");
             }
 
             var caterer = await _context.Caterers.FirstOrDefaultAsync(c => c.ID == userId);
             if (caterer == null)
             {
-                //return NotFound("Caterer not found.");
+                return NotFound("Caterer not found.");
             }
 
-            //item.CatererID = caterer.ID;
+            item.CatererID = caterer.ID;
             item.Name =  req.Name;
             item.Price = req.Price;
             item.ServesCount = req.ServesCount;
@@ -74,6 +76,7 @@ namespace backend.Controllers
         }
 
         // PUT: api/Caterer/items/{id}
+        [Authorize(Roles = "Admin,Caterer")]
         [HttpPut("items/{id}")]
         public async Task<ActionResult> UpdateItem(int id, ItemDTO item)
         {
@@ -104,6 +107,7 @@ namespace backend.Controllers
         }
 
         // DELETE: api/Caterer/items/{id}
+        [Authorize(Roles = "Admin,Caterer")]
         [HttpDelete("items/{id}")]
         public async Task<ActionResult> DeleteItem(int id)
         {
@@ -129,6 +133,7 @@ namespace backend.Controllers
         }
 
         // GET: api/Caterer/cuisines
+        [Authorize(Roles = "Admin,Caterer")]
         [HttpGet("cuisines")]
         public async Task<ActionResult> GetCuisines()
         {
@@ -143,7 +148,7 @@ namespace backend.Controllers
         }
 
         // POST: api/Caterer/cuisines
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("cuisines")]
         public async Task<ActionResult> AddCuisine(CuisineDTO req)
         {

@@ -2,12 +2,15 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Models {
-    [Index(nameof(User.Email), IsUnique = true)]
-    public class User {
+namespace backend.Models
+{
+    [Index(nameof(Email), IsUnique = true)]
+    public class User
+    {
         [Key]
         public int ID { get; set; }
-        public enum UserType {
+        public enum UserType
+        {
             Customer = 0, Caterer = 1, Admin = 2
         }
         [Required]
@@ -16,11 +19,20 @@ namespace backend.Models {
         [Required]
         [StringLength(255, MinimumLength = 4)]
         [EmailAddress]
-        public string Email { get; set; } = string.Empty;
+        public string Email { get; set; }
         [Required]
         [StringLength(255, MinimumLength = 8)]
-        public string Password { get; set; } = string.Empty;
+        public string Password { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public User()
+        {
+            ID = 0;
+            Type = 0;
+            Email = "";
+            Password = "";
+            CreatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }
