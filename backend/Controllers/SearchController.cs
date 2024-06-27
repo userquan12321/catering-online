@@ -1,5 +1,7 @@
 ﻿using backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace backend.Controllers
 {
@@ -8,39 +10,52 @@ namespace backend.Controllers
     public class SearchController(ApplicationDbContext context) : ControllerBase
     {
         private readonly ApplicationDbContext _context = context;
-        private readonly int pageSize = 20;
 
-        // GET: api/Search
-        [HttpGet]
-        public ActionResult SearchCaterers([FromQuery] QueryObject request)
+        // GET: api/Search/caterer
+        [HttpGet("caterer")]
+        public async Task<ActionResult> SearchCaterers(string? cuisine)
         {
-            // Create query
-            var query = _context.Caterers
-                .Join(_context.Items, caterer => caterer.ID, item => item.CatererID, (caterer, item) => new
-                {
-                   caterer.ID,
-                   item.CuisineID
-                })
-                .Join(_context.CuisineTypes, a => a.CuisineID, cuisine => cuisine.ID, (a, cuisine) => new
-                {
-                    a.ID,
-                    cuisine.CuisineName
-                })
-                .Join(_context.UserProfiles, a => a.ID, profile => profile.ID, (a, profile) => new
-                {
-                    a.ID,
-                    a.CuisineName,
-                    profile.FirstName,
-                    profile.LastName
-                })
-                .AsQueryable();
-            // Filtering
-            query = query.Where(a => a.CuisineName == (request.Cuisine));
-            // Sorting
+            // Get caterer with cuisine
+            var query = from c in _context.Caterers
+                        join p in _context.UserProfiles on c.ProfileID equals p.ID
+                        join i in _context.Items on c.ID equals i.CatererID
+                        join ct in _context.CuisineTypes on i.CuisineID equals ct.ID
+                        select (new 
+                        { 
+                            c.ID, p.FirstName, p.LastName, ct.CuisineName
+                        });
+            if (!string.IsNullOrEmpty(cuisine))
+            {
+                query = query.Where(a => a.CuisineName == cuisine);
+            }
             query = query.OrderBy(a => a.ID);
-            // Paging
-            query = query.Skip((request.Page - 1) * pageSize).Take(pageSize);
-            var result = query.Select(a => new { });
+            var result = await query.ToListAsync();
+            return Ok(result);
+        }
+
+        // GET: api/Search/caterer/id
+        [HttpGet("caterer/{id}")]
+        public async Task<ActionResult> GetCatererItems(int id)
+        {
+            if (_context.Caterers.Any(x => x.ID == id) == false)
+            {
+                return NotFound("Caterer not found");
+            }
+            // Get caterer item list
+            var query = from c in _context.Caterers
+                        where c.ID == id
+                        join p in _context.UserProfiles on c.ProfileID equals p.ID
+                        join i in _context.Items on c.ID equals i.CatererID into itemGroup
+                        select (new
+                        {
+                            c.ID, p.FirstName, p.LastName,
+                            itemList = itemGroup.Select(i => new 
+                            {
+                                i.ID, i.Name, i.Image, i.CatererID, i.CuisineID, i.ServesCount, i.Price
+                            })
+                        });
+            query = query.OrderBy(a => a.ID);
+            var result = await query.ToListAsync();
             return Ok(result);
         }
     }
