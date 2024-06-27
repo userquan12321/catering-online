@@ -11,11 +11,16 @@ namespace backend.Controllers
     public class AdminController(ApplicationDbContext context) : ControllerBase
     {
         private readonly ApplicationDbContext _context = context;
+        private readonly int pageSize = 20;
 
         // GET: api/Admin/user
         [HttpGet("user")]
-        public async Task<ActionResult> GetUsers()
+        public async Task<ActionResult> GetUsers(int page)
         {
+            if (page < 1)
+            {
+                return BadRequest("Page number must equal or greater than 1");
+            }
             var uid = HttpContext.Session.GetInt32("uid");
             if (uid == null)
             {
@@ -36,7 +41,8 @@ namespace backend.Controllers
                     profile.PhoneNumber
                 })
                 .OrderBy(user => user.ID)
-                .Take(100)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
             if (user == null)
             {
