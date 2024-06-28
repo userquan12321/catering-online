@@ -6,15 +6,15 @@ namespace backend.Models
     public class ItemDTO
     {
         [Required]
+        [StringLength(255, MinimumLength = 2)]
         public string Name { get; set; }
         [Required]
+        [StringLength(1000)]
         public string Image { get; set; }
         [Required]
         public int ServesCount { get; set; }
         [Required]
         public decimal Price { get; set; }
-        [Required]
-        public int CatererID { get; set; }
         [Required]
         public int CuisineID { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -25,7 +25,6 @@ namespace backend.Models
             Image = "";
             ServesCount = 0;
             Price = 0M;
-            CatererID = 0;
             CuisineID = 0;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;

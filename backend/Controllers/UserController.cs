@@ -18,11 +18,11 @@ namespace backend.Controllers
         public async Task<ActionResult> GetUserProfile()
         {
             var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
+            if (uid == null) 
             {
-                return Unauthorized("You must log in");
+                return NotFound("User id not found");
             }
-            // Get current user detail
+            // Get current session user detail
             var userProfile = await _context.UserProfiles
                 .Where(x => x.UserID == uid)
                 .Join(_context.Users, profile => profile.UserID, user => user.ID, (profile, user) => new
@@ -35,10 +35,11 @@ namespace backend.Controllers
                     user.Email
                 })
                 .FirstOrDefaultAsync();
-            if (userProfile == null)
-            {
-                return NotFound("User not found");
+            if (userProfile == null) 
+            { 
+                return NotFound("User not found"); 
             }
+
             return Ok(userProfile);
         }
 
@@ -47,19 +48,19 @@ namespace backend.Controllers
         public async Task<ActionResult> UserUpdateProfile(UserUpdateProfile request)
         {
             var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
+            if (uid == null) 
             {
-                return Unauthorized("You must log in");
+                return NotFound("User id not found");
             }
-            var userProfile = await _context.UserProfiles.FindAsync(uid);
+            var userProfile = await _context.UserProfiles.Where(x => x.UserID == uid).FirstOrDefaultAsync();
             var user = await _context.Users.FindAsync(uid);
-            if (userProfile == null || user == null)
-            {
-                return NotFound("User not found.");
+            if (userProfile == null || user == null) 
+            { 
+                return NotFound("User not found."); 
             }
-            if (ModelState.IsValid == false)
-            {
-                return BadRequest("Invalid input");
+            if (ModelState.IsValid == false) 
+            { 
+                return BadRequest("Invalid input"); 
             }
             // Update profile
             userProfile.FirstName = request.FirstName;
@@ -69,6 +70,7 @@ namespace backend.Controllers
             userProfile.Image = request.Image;
             user.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
+
             return Ok("Profile updated successfully.");
         }
 
@@ -77,27 +79,28 @@ namespace backend.Controllers
         public async Task<ActionResult> UserChangePassword(UserChangePassword request)
         {
             var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
+            if (uid == null) 
             {
-                return Unauthorized("You must log in");
+                return NotFound("User id not found");
             }
             var user = await _context.Users.FindAsync(uid);
-            if (user == null)
-            {
-                return NotFound("User not found.");
+            if (user == null) 
+            { 
+                return NotFound("User not found."); 
             }
-            if (BCrypt.Net.BCrypt.Verify(request.OldPassword, user.Password) == false)
-            {
-                return BadRequest("Wrong password");
+            if (BCrypt.Net.BCrypt.Verify(request.OldPassword, user.Password) == false) 
+            { 
+                return BadRequest("Wrong password"); 
             }
-            if (ModelState.IsValid == false)
-            {
-                return BadRequest("Invalid input");
+            if (ModelState.IsValid == false) 
+            { 
+                return BadRequest("Invalid input"); 
             }
             // Change password
             user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
             user.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
+
             return Ok("Password changed successfully.");
         }
     }

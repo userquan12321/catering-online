@@ -21,12 +21,12 @@ namespace backend.Controllers
         public async Task<ActionResult> Register(UserRegister request)
         {
             if (_context.Users.Any(x => x.Email == request.Email))
-            {
-                return BadRequest("Email already exist");
+            { 
+                return BadRequest("Email already exist"); 
             }
-            if (ModelState.IsValid == false)
-            {
-                return BadRequest("Invalid input");
+            if (ModelState.IsValid == false) 
+            { 
+                return BadRequest("Invalid input"); 
             }
             // Add user to Users table
             user.Type = request.Type;
@@ -36,6 +36,7 @@ namespace backend.Controllers
             user.UpdatedAt = DateTime.UtcNow;
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+
             // Add user profile to UserProfiles table
             userProfile.UserID = user.ID;
             userProfile.FirstName = request.FirstName;
@@ -44,6 +45,7 @@ namespace backend.Controllers
             userProfile.PhoneNumber = request.PhoneNumber;
             _context.UserProfiles.Add(userProfile);
             await _context.SaveChangesAsync();
+
             // Add caterer to Caterers table
             if (request.Type == Models.User.UserType.Caterer)
             {
@@ -51,6 +53,7 @@ namespace backend.Controllers
                 _context.Caterers.Add(caterer);
                 await _context.SaveChangesAsync();
             }
+
             return Ok("User registered successfully");
         }
 
@@ -60,21 +63,37 @@ namespace backend.Controllers
         {
             var getUser = await _context.Users.Where(x => x.Email == request.Email).FirstOrDefaultAsync();
             if (getUser == null)
-            {
-                return NotFound("Email not found");
+            { 
+                return NotFound("Email not found"); 
             }
-            if (BCrypt.Net.BCrypt.Verify(request.Password, getUser.Password) == false)
+            var getProfile = await _context.UserProfiles.Where(x => x.UserID == getUser.ID).FirstOrDefaultAsync();
+            if (getProfile == null)
             {
-                return BadRequest("Wrong password");
+                return NotFound("Profile not found");
+            }
+            if (BCrypt.Net.BCrypt.Verify(request.Password, getUser.Password) == false) 
+            { 
+                return BadRequest("Wrong password"); 
             }
             if (ModelState.IsValid == false)
-            {
-                return BadRequest("Invalid input");
+            { 
+                return BadRequest("Invalid input"); 
             }
             // Create session
             HttpContext.Session.SetString("sid", HttpContext.Session.Id);
             HttpContext.Session.SetInt32("uid", getUser.ID);
+            HttpContext.Session.SetInt32("pid", getProfile.ID);
+            if (getUser.Type == Models.User.UserType.Caterer)
+            {
+                var getCaterer = await _context.Caterers.Where(x => x.ProfileID == getProfile.ID).FirstOrDefaultAsync();
+                if (getCaterer == null)
+                {
+                    return NotFound("Caterer not found");
+                }
+                HttpContext.Session.SetInt32("cid", getCaterer.ID);
+            }
             await HttpContext.Session.CommitAsync();
+
             // Create authentication cookie
             var claims = new List<Claim> {
                     new("UID", getUser.ID.ToString()),
@@ -91,6 +110,7 @@ namespace backend.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
+
             return Ok(getUser.Type);
         }
 
@@ -103,7 +123,10 @@ namespace backend.Controllers
             // Clear session
             HttpContext.Session.Remove("sid");
             HttpContext.Session.Remove("uid");
+            HttpContext.Session.Remove("pid");
+            HttpContext.Session.Remove("cid");
             await HttpContext.Session.CommitAsync();
+
             return Ok("Logged out successfully");
         }
     }
