@@ -23,6 +23,7 @@ namespace backend.Models
         [Required]
         [StringLength(255, MinimumLength = 8)]
         public string Address { get; set; }
+        [StringLength(1000)]
         public string Image { get; set; }
         public UserProfile()
         {

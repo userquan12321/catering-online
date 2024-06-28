@@ -10,8 +10,10 @@ namespace backend.Models
         [Key]
         public int ID { get; set; }
         [Required]
+        [StringLength(255, MinimumLength = 2)]
         public string Name { get; set; }
         [Required]
+        [StringLength(1000)]
         public string Image { get; set; }
         [Required]
         public int ServesCount { get; set; }
