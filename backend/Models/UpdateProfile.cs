@@ -1,16 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace backend.Models
+namespace backend.Models.Users
 {
-    public class UserProfile
+    public class UpdateProfile
     {
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        public int UserID { get; set; }
-        [ForeignKey(nameof(UserID))]
-        public User? User { get; set; }
         [Required]
         [StringLength(255, MinimumLength = 2)]
         public string FirstName { get; set; }
@@ -23,13 +16,9 @@ namespace backend.Models
         [Required]
         [StringLength(255, MinimumLength = 8)]
         public string Address { get; set; }
-        [StringLength(1000)]
         public string Image { get; set; }
-        public UserProfile()
+        public UpdateProfile()
         {
-            ID = 0;
-            User = null;
-            UserID = 0;
             FirstName = "";
             LastName = "";
             PhoneNumber = "";

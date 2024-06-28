@@ -8,7 +8,7 @@ namespace backend.Models
     public class User
     {
         [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
         public enum UserType
         {
             Customer = 0, Caterer = 1, Admin = 2
@@ -27,7 +27,7 @@ namespace backend.Models
         public DateTime UpdatedAt { get; set; }
         public User()
         {
-            ID = 0;
+            Id = 0;
             Type = 0;
             Email = "";
             Password = "";

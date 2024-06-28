@@ -2,7 +2,7 @@
 
 namespace backend.Models
 {
-    public class UserLogin
+    public class Login
     {
         [Required]
         [StringLength(255, MinimumLength = 4)]
@@ -11,7 +11,7 @@ namespace backend.Models
         [Required]
         [StringLength(255, MinimumLength = 8)]
         public string Password { get; set; }
-        public UserLogin()
+        public Login()
         {
             Email = "";
             Password = "";

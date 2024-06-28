@@ -27,14 +27,14 @@ namespace backend.Controllers
             }
             // Get item for current caterer
             var items = await _context.Items
-                .Where(i => i.CatererID == cid)
+                .Where(i => i.CatererId == cid)
                 .Select(i => new {
-                    i.ID,
+                    i.Id,
                     i.Name,
                     i.Image,
                     i.ServesCount,
                     i.Price,
-                    i.CuisineID,
+                    i.CuisineId,
                     i.CreatedAt,
                     i.UpdatedAt
                 })
@@ -53,8 +53,8 @@ namespace backend.Controllers
                 return NotFound("Caterer id not found");
             }
             // Add item
-            item.CatererID = cid.Value;
-            item.CuisineID = request.CuisineID;
+            item.CatererId = cid.Value;
+            item.CuisineId = request.CuisineId;
             item.Name =  request.Name;
             item.Price = request.Price;
             item.ServesCount = request.ServesCount;
@@ -77,7 +77,7 @@ namespace backend.Controllers
                 return NotFound("Caterer id not found");
             }
             // Get item from caterer id and item id
-            var existingItem = await _context.Items.Where(x => x.CatererID == cid && x.ID == id).FirstOrDefaultAsync();
+            var existingItem = await _context.Items.Where(x => x.CatererId == cid && x.Id == id).FirstOrDefaultAsync();
             if (existingItem == null)
             {
                 return NotFound("Item not found.");
@@ -85,7 +85,7 @@ namespace backend.Controllers
             // Update item
             existingItem.Name = request.Name;
             existingItem.Image = request.Image;
-            existingItem.CuisineID = request.CuisineID;
+            existingItem.CuisineId = request.CuisineId;
             existingItem.ServesCount = request.ServesCount;
             existingItem.Price = request.Price;
             existingItem.UpdatedAt = DateTime.UtcNow;
@@ -103,7 +103,8 @@ namespace backend.Controllers
             {
                 return NotFound("Caterer id not found");
             }
-            var item = await _context.Items.Where(x => x.CatererID == cid && x.ID == id).FirstOrDefaultAsync();
+            // Get item from caterer id and item id
+            var item = await _context.Items.Where(x => x.CatererId == cid && x.Id == id).FirstOrDefaultAsync();
             if (item == null)
             {
                 return NotFound("Item not found.");
@@ -121,7 +122,7 @@ namespace backend.Controllers
         {
             var cuisines = await _context.CuisineTypes
                 .Select(ct => new {
-                    ct.ID,
+                    ct.Id,
                     ct.CuisineName
                 })
                 .ToListAsync();

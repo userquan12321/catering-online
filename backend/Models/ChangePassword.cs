@@ -2,7 +2,7 @@
 
 namespace backend.Models.Users
 {
-    public class UserChangePassword
+    public class ChangePassword
     {
         [Required]
         [StringLength(255, MinimumLength = 8)]
@@ -10,7 +10,7 @@ namespace backend.Models.Users
         [Required]
         [StringLength(255, MinimumLength = 8)]
         public string NewPassword { get; set; }
-        public UserChangePassword()
+        public ChangePassword()
         {       
             OldPassword = "";
             NewPassword = "";

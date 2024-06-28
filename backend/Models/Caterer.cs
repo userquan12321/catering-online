@@ -6,16 +6,16 @@ namespace backend.Models
     public class Caterer
     {
         [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
         [Required]
-        public int ProfileID { get; set; }
-        [ForeignKey(nameof(ProfileID))]
-        public UserProfile? Profile { get; set; }
+        public int ProfileId { get; set; }
+        [ForeignKey(nameof(ProfileId))]
+        public Profile? Profile { get; set; }
         public ICollection<Item> Items { get; set; }
         public Caterer()
         {
-            ID = 0;
-            ProfileID = 0;
+            Id = 0;
+            ProfileId = 0;
             Profile = null;
             Items = [];
         }

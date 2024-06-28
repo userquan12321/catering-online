@@ -8,7 +8,7 @@ namespace backend.Models
     public class Item
     {
         [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
         [Required]
         [StringLength(255, MinimumLength = 2)]
         public string Name { get; set; }
@@ -20,25 +20,25 @@ namespace backend.Models
         [Required]
         public decimal Price { get; set; }
         [Required]
-        public int CatererID { get; set; }
-        [ForeignKey(nameof(CatererID))]
+        public int CatererId { get; set; }
+        [ForeignKey(nameof(CatererId))]
         public Caterer? Caterer { get; set; }
         [Required]
-        public int CuisineID { get; set; }
-        [ForeignKey(nameof(CuisineID))]
+        public int CuisineId { get; set; }
+        [ForeignKey(nameof(CuisineId))]
         public CuisineType? CuisineType { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public Item()
         {
-            ID = 0;
+            Id = 0;
             Name = "";
             Image = "";
             ServesCount = 0;
             Price = 0M;
-            CatererID = 0;
+            CatererId = 0;
             Caterer = null;
-            CuisineID = 0;
+            CuisineId = 0;
             CuisineType = null;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;

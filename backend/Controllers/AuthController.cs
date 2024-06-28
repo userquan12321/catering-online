@@ -13,12 +13,12 @@ namespace backend.Controllers
     {
         private readonly ApplicationDbContext _context = context;
         private User user = new();
-        private UserProfile userProfile = new();
+        private Profile profile = new();
         private Caterer caterer = new();
 
         // POST: api/Auth/register
         [HttpPost("register")]
-        public async Task<ActionResult> Register(UserRegister request)
+        public async Task<ActionResult> Register(Register request)
         {
             if (_context.Users.Any(x => x.Email == request.Email))
             { 
@@ -37,19 +37,19 @@ namespace backend.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // Add user profile to UserProfiles table
-            userProfile.UserID = user.ID;
-            userProfile.FirstName = request.FirstName;
-            userProfile.LastName = request.LastName;
-            userProfile.Address = request.Address;
-            userProfile.PhoneNumber = request.PhoneNumber;
-            _context.UserProfiles.Add(userProfile);
+            // Add user profile to Profiles table
+            profile.UserId = user.Id;
+            profile.FirstName = request.FirstName;
+            profile.LastName = request.LastName;
+            profile.Address = request.Address;
+            profile.PhoneNumber = request.PhoneNumber;
+            _context.Profiles.Add(profile);
             await _context.SaveChangesAsync();
 
             // Add caterer to Caterers table
             if (request.Type == Models.User.UserType.Caterer)
             {
-                caterer.ProfileID = userProfile.ID;
+                caterer.ProfileId = profile.Id;
                 _context.Caterers.Add(caterer);
                 await _context.SaveChangesAsync();
             }
@@ -59,14 +59,14 @@ namespace backend.Controllers
 
         // POST: api/Auth/login
         [HttpPost("login")]
-        public async Task<ActionResult> Login(UserLogin request)
+        public async Task<ActionResult> Login(Login request)
         {
             var getUser = await _context.Users.Where(x => x.Email == request.Email).FirstOrDefaultAsync();
             if (getUser == null)
             { 
                 return NotFound("Email not found"); 
             }
-            var getProfile = await _context.UserProfiles.Where(x => x.UserID == getUser.ID).FirstOrDefaultAsync();
+            var getProfile = await _context.Profiles.Where(x => x.UserId == getUser.Id).FirstOrDefaultAsync();
             if (getProfile == null)
             {
                 return NotFound("Profile not found");
@@ -81,22 +81,22 @@ namespace backend.Controllers
             }
             // Create session
             HttpContext.Session.SetString("sid", HttpContext.Session.Id);
-            HttpContext.Session.SetInt32("uid", getUser.ID);
-            HttpContext.Session.SetInt32("pid", getProfile.ID);
+            HttpContext.Session.SetInt32("uid", getUser.Id);
+            HttpContext.Session.SetInt32("pid", getProfile.Id);
             if (getUser.Type == Models.User.UserType.Caterer)
             {
-                var getCaterer = await _context.Caterers.Where(x => x.ProfileID == getProfile.ID).FirstOrDefaultAsync();
+                var getCaterer = await _context.Caterers.Where(x => x.ProfileId == getProfile.Id).FirstOrDefaultAsync();
                 if (getCaterer == null)
                 {
                     return NotFound("Caterer not found");
                 }
-                HttpContext.Session.SetInt32("cid", getCaterer.ID);
+                HttpContext.Session.SetInt32("cid", getCaterer.Id);
             }
             await HttpContext.Session.CommitAsync();
 
             // Create authentication cookie
             var claims = new List<Claim> {
-                    new("UID", getUser.ID.ToString()),
+                    new("userId", getUser.Id.ToString()),
                     new(ClaimTypes.Role, getUser.Type.ToString()),
                 };
             var claimsIdentity = new ClaimsIdentity(
