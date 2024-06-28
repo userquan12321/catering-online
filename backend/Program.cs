@@ -3,13 +3,15 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 // Add services to the container.
 
 // Add DbContext
+// builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//     options.UseSqlServer(connectionString));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add cross-origin resource sharing
 builder.Services.AddCors(options =>
@@ -22,6 +24,8 @@ builder.Services.AddCors(options =>
                    .AllowAnyMethod();
         });
 });
+
+
 
 // Add memory cache
 builder.Services.AddDistributedMemoryCache();
@@ -63,6 +67,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 app.UseHttpsRedirection();
 
@@ -73,7 +78,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSession();
+app.UseRouting();
 
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 app.MapControllers();
 
 app.Run();
