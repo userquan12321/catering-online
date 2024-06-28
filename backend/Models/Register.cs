@@ -3,7 +3,7 @@ using static backend.Models.User;
 
 namespace backend.Models
 {
-    public class UserRegister
+    public class Register
     {
         [Required]
         [Range(0, 2)]
@@ -27,7 +27,7 @@ namespace backend.Models
         [Required]
         [StringLength(255, MinimumLength = 8)]
         public string Address { get; set; }
-        public UserRegister()
+        public Register()
         {
             Type = 0;
             Email = "";

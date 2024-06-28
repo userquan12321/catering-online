@@ -23,9 +23,9 @@ namespace backend.Controllers
                 return NotFound("User id not found");
             }
             // Get current session user detail
-            var userProfile = await _context.UserProfiles
-                .Where(x => x.UserID == uid)
-                .Join(_context.Users, profile => profile.UserID, user => user.ID, (profile, user) => new
+            var userProfile = await _context.Profiles
+                .Where(x => x.UserId == uid)
+                .Join(_context.Users, profile => profile.UserId, user => user.Id, (profile, user) => new
                 {
                     profile.FirstName,
                     profile.LastName,
@@ -45,14 +45,14 @@ namespace backend.Controllers
 
         // PUT: api/User/update-profile
         [HttpPut("update-profile")]
-        public async Task<ActionResult> UserUpdateProfile(UserUpdateProfile request)
+        public async Task<ActionResult> UserUpdateProfile(UpdateProfile request)
         {
             var uid = HttpContext.Session.GetInt32("uid");
             if (uid == null) 
             {
                 return NotFound("User id not found");
             }
-            var userProfile = await _context.UserProfiles.Where(x => x.UserID == uid).FirstOrDefaultAsync();
+            var userProfile = await _context.Profiles.Where(x => x.UserId == uid).FirstOrDefaultAsync();
             var user = await _context.Users.FindAsync(uid);
             if (userProfile == null || user == null) 
             { 
@@ -76,7 +76,7 @@ namespace backend.Controllers
 
         // PUT: api/User/change-password
         [HttpPut("change-password")]
-        public async Task<ActionResult> UserChangePassword(UserChangePassword request)
+        public async Task<ActionResult> UserChangePassword(ChangePassword request)
         {
             var uid = HttpContext.Session.GetInt32("uid");
             if (uid == null) 

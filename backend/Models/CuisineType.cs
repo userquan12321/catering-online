@@ -7,7 +7,7 @@ namespace backend.Models
     public class CuisineType
     {
         [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
         [Required]
         [StringLength(255, MinimumLength = 2)]
         public string CuisineName { get; set; }
@@ -16,7 +16,7 @@ namespace backend.Models
         public ICollection<Item> Items { get; set; }
         public CuisineType()
         {
-            ID = 0;
+            Id = 0;
             CuisineName = "";
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;

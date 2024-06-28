@@ -18,10 +18,10 @@ namespace backend.Controllers
         public async Task<ActionResult> GetUsers()
         {
             // Get all user
-            var user = await _context.UserProfiles
-                .Join(_context.Users, profile => profile.UserID, user => user.ID, (profile, user) => new
+            var user = await _context.Profiles
+                .Join(_context.Users, profile => profile.UserId, user => user.Id, (profile, user) => new
                 {
-                    user.ID,
+                    user.Id,
                     user.Type,
                     user.Email,
                     user.CreatedAt,
@@ -31,7 +31,7 @@ namespace backend.Controllers
                     profile.Address,
                     profile.PhoneNumber
                 })
-                .OrderBy(user => user.ID)
+                .OrderBy(user => user.Id)
                 .Take(100)
                 .ToListAsync();
             if (user == null)
@@ -47,19 +47,19 @@ namespace backend.Controllers
         public async Task<ActionResult> GetUser(int id)
         {
             // Get a user
-            var user = await _context.UserProfiles
-                .Where(x => x.UserID == id)
-                .Join(_context.Users, profile => profile.UserID, user => user.ID, (profile, user) => new
+            var user = await _context.Profiles
+                .Where(x => x.UserId == id)
+                .Join(_context.Users, profile => profile.UserId, user => user.Id, (profile, user) => new
                 {
-                    profile.ID,
+                    user.Id,
+                    user.Type,
+                    user.Email,
+                    user.CreatedAt,
+                    user.UpdatedAt,
                     profile.FirstName,
                     profile.LastName,
                     profile.Address,
                     profile.PhoneNumber,
-                    user.Email,
-                    user.Type,
-                    user.CreatedAt,
-                    user.UpdatedAt
                 })
                 .FirstOrDefaultAsync();
             if (user == null)
@@ -101,7 +101,7 @@ namespace backend.Controllers
         {
             var cuisines = await _context.CuisineTypes
                 .Select(ct => new {
-                    ct.ID,
+                    ct.Id,
                     ct.CuisineName,
                     ct.CreatedAt,
                     ct.UpdatedAt
@@ -112,7 +112,6 @@ namespace backend.Controllers
         }
 
         // POST: api/Admin/cuisines
-        [Authorize(Roles = "Admin")]
         [HttpPost("cuisines")]
         public async Task<ActionResult> AddCuisine(CuisineDTO req)
         {
@@ -126,7 +125,6 @@ namespace backend.Controllers
         }
 
         // PUT: api/Admin/cuisines/{id}
-        [Authorize(Roles = "Admin")]
         [HttpPut("cuisines/{id}")]
         public async Task<ActionResult> UpdateCuisine(int id, CuisineDTO req)
         {
@@ -144,7 +142,6 @@ namespace backend.Controllers
         }
 
         // DELETE: api/Admin/cuisines/{id}
-        [Authorize(Roles = "Admin")]
         [HttpDelete("cuisines/{id}")]
         public async Task<ActionResult> DeleteCuisine(int id)
         {
@@ -153,6 +150,7 @@ namespace backend.Controllers
             {
                 return NotFound("Cuisine type not found.");
             }
+            // Delete cuisine
             _context.CuisineTypes.Remove(cuisine);
             await _context.SaveChangesAsync();
 
@@ -160,26 +158,25 @@ namespace backend.Controllers
         }
 
         // GET: api/Admin/items
-        [Authorize(Roles = "Admin")]
         [HttpGet("items")]
-        public async Task<ActionResult> GetItems(int catererid)
+        public async Task<ActionResult> GetItems(int catererId)
         {
-            var caterer = await _context.Caterers.FindAsync(catererid);
+            var caterer = await _context.Caterers.FindAsync(catererId);
             if (caterer == null)
             {
                 return NotFound("Caterer not found");
             }
             // Get item from caterer id
             var items = await _context.Items
-                .Where(i => i.CatererID == catererid)
+                .Where(i => i.CatererId == catererId)
                 .Select(i => new {
-                    i.ID,
+                    i.Id,
                     i.Name,
                     i.Image,
                     i.ServesCount,
                     i.Price,
-                    i.CatererID,
-                    i.CuisineID,
+                    i.CatererId,
+                    i.CuisineId,
                     i.CreatedAt,
                     i.UpdatedAt
                 })
