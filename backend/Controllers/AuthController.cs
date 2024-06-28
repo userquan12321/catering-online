@@ -37,7 +37,7 @@ namespace backend.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             // Add user profile to UserProfiles table
-            userProfile.UserID = user.ID;
+            userProfile.UserId = user.Id;
             userProfile.FirstName = request.FirstName;
             userProfile.LastName = request.LastName;
             userProfile.Address = request.Address;
@@ -47,7 +47,7 @@ namespace backend.Controllers
             // Add caterer to Caterers table
             if (request.Type == Models.User.UserType.Caterer)
             {
-                caterer.ProfileID = userProfile.ID;
+                caterer.ProfileId = userProfile.Id;
                 _context.Caterers.Add(caterer);
                 await _context.SaveChangesAsync();
             }
@@ -73,11 +73,11 @@ namespace backend.Controllers
             }
             // Create session
             HttpContext.Session.SetString("sid", HttpContext.Session.Id);
-            HttpContext.Session.SetInt32("uid", getUser.ID);
+            HttpContext.Session.SetInt32("uid", getUser.Id);
             await HttpContext.Session.CommitAsync();
             // Create authentication cookie
             var claims = new List<Claim> {
-                    new("UID", getUser.ID.ToString()),
+                    new("UID", getUser.Id.ToString()),
                     new(ClaimTypes.Role, getUser.Type.ToString()),
                 };
             var claimsIdentity = new ClaimsIdentity(

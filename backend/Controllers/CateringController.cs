@@ -28,9 +28,9 @@ namespace backend.Controllers
             }
 
             var items = await _context.Items
-                .Where(i => i.Caterer.ID == userId)
+                .Where(i => i.Caterer.Id == userId)
                 .Select(i => new {
-                    i.ID,
+                    i.Id,
                     i.Name,
                     i.Image,
                     i.ServesCount,
@@ -55,13 +55,13 @@ namespace backend.Controllers
                 return Unauthorized("You must log in");
             }
 
-            var caterer = await _context.Caterers.FirstOrDefaultAsync(c => c.ID == userId);
+            var caterer = await _context.Caterers.FirstOrDefaultAsync(c => c.Id == userId);
             if (caterer == null)
             {
                 return NotFound("Caterer not found.");
             }
 
-            item.CatererID = caterer.ID;
+            item.CatererId = caterer.Id;
             item.Name =  req.Name;
             item.Price = req.Price;
             item.ServesCount = req.ServesCount;
@@ -72,7 +72,7 @@ namespace backend.Controllers
             _context.Items.Add(item);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetItems), new { id = item.ID }, item);
+            return CreatedAtAction(nameof(GetItems), new { id = item.Id }, item);
         }
 
         // PUT: api/Caterer/items/{id}
@@ -88,7 +88,7 @@ namespace backend.Controllers
 
             var existingItem = await _context.Items
                 .Include(i => i.Caterer)
-                .FirstOrDefaultAsync(i => i.ID == id && i.Caterer.ID == userId);
+                .FirstOrDefaultAsync(i => i.Id == id && i.Caterer.Id == userId);
 
             if (existingItem == null)
             {
@@ -119,7 +119,7 @@ namespace backend.Controllers
 
             var item = await _context.Items
                 .Include(i => i.Caterer)
-                .FirstOrDefaultAsync(i => i.ID == id && i.Caterer.ID == userId);
+                .FirstOrDefaultAsync(i => i.Id == id && i.Caterer.Id == userId);
 
             if (item == null)
             {
@@ -139,7 +139,7 @@ namespace backend.Controllers
         {
             var cuisines = await _context.CuisineTypes
                 .Select(ct => new {
-                    ct.ID,
+                    ct.Id,
                     ct.CuisineName
                 })
                 .ToListAsync();
@@ -159,7 +159,7 @@ namespace backend.Controllers
             _context.CuisineTypes.Add(cuisine);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetCuisines), new { id = cuisine.ID }, cuisine);
+            return CreatedAtAction(nameof(GetCuisines), new { id = cuisine.Id }, cuisine);
         }
 
         // PUT: api/Caterer/cuisines/{id}

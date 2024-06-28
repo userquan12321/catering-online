@@ -5,30 +5,28 @@ namespace backend.Models
 {
     public class UserProfile
     {
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        public int UserID { get; set; }
-        [ForeignKey(nameof(UserID))]
-        public User? User { get; set; }
-        [Required]
-        [StringLength(255, MinimumLength = 2)]
-        public string FirstName { get; set; }
-        [StringLength(255, MinimumLength = 2)]
-        public string LastName { get; set; }
-        [Required]
-        [StringLength(16, MinimumLength = 8)]
-        [Phone]
-        public string PhoneNumber { get; set; }
-        [Required]
-        [StringLength(255, MinimumLength = 8)]
-        public string Address { get; set; }
-        public string Image { get; set; }
+        public int Id { get; set; }
+
+        public int UserId { get; set; }
+
+        public string FirstName { get; set; } = null!;
+
+        public string LastName { get; set; } = null!;
+
+        public string PhoneNumber { get; set; } = null!;
+
+        public string Address { get; set; } = null!;
+
+        public string Image { get; set; } = null!;
+
+        public virtual ICollection<Caterer> Caterers { get; set; } = new List<Caterer>();
+
+        public virtual User? User { get; set; } = null!;
         public UserProfile()
         {
-            ID = 0;
+            Id = 0;
             User = null;
-            UserID = 0;
+            UserId = 0;
             FirstName = "";
             LastName = "";
             PhoneNumber = "";

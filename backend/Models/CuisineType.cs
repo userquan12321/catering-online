@@ -3,20 +3,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
 {
-    [Index(nameof(CuisineName), IsUnique = true)]
+    // [Index(nameof(CuisineName), IsUnique = true)]
     public class CuisineType
     {
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        [StringLength(255, MinimumLength = 2)]
-        public string CuisineName { get; set; }
+        public int Id { get; set; }
+
+        public string CuisineName { get; set; } = null!;
+        
+
         public DateTime CreatedAt { get; set; }
+
         public DateTime UpdatedAt { get; set; }
-        public ICollection<Item> Items { get; set; }
+
+        public virtual ICollection<Item> Items { get; set; } = new List<Item>();
         public CuisineType()
         {
-            ID = 0;
+            Id = 0;
             CuisineName = "";
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;

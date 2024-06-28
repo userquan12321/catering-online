@@ -7,36 +7,37 @@ namespace backend.Models
     [Index(nameof(Name), IsUnique = true)]
     public class Item
     {
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        public string Name { get; set; }
-        [Required]
-        public string Image { get; set; }
-        [Required]
-        public int ServesCount { get; set; }
-        [Required]
-        public decimal Price { get; set; }
-        [Required]
-        public int CatererID { get; set; }
-        [ForeignKey(nameof(CatererID))]
-        public Caterer? Caterer { get; set; }
-        [Required]
-        public int CuisineID { get; set; }
-        [ForeignKey(nameof(CuisineID))]
-        public CuisineType? CuisineType { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public int Id { get; set; }
+
+    public string Name { get; set; } = null!;
+
+    public string Image { get; set; } = null!;
+
+    public int ServesCount { get; set; }
+
+    public decimal Price { get; set; }
+
+    public int CatererId { get; set; }
+
+    public int CuisineId { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual Caterer Caterer { get; set; } = null!;
+
+    public virtual CuisineType CuisineType { get; set; } = null!;
         public Item()
         {
-            ID = 0;
+            Id = 0;
             Name = "";
             Image = "";
             ServesCount = 0;
             Price = 0M;
-            CatererID = 0;
+            CatererId = 0;
             Caterer = null;
-            CuisineID = 0;
+            CuisineId = 0;
             CuisineType = null;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;

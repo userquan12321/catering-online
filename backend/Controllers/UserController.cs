@@ -24,8 +24,8 @@ namespace backend.Controllers
             }
             // Get current user detail
             var userProfile = await _context.UserProfiles
-                .Where(x => x.UserID == uid)
-                .Join(_context.Users, profile => profile.UserID, user => user.ID, (profile, user) => new
+                .Where(x => x.UserId == uid)
+                .Join(_context.Users, profile => profile.UserId, user => user.Id, (profile, user) => new
                 {
                     profile.FirstName,
                     profile.LastName,

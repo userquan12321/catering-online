@@ -25,7 +25,7 @@ namespace backend.Controllers
         {
             return await _context.FavoriteLists
                 .Where(f => f.UserId == customerId)
-                .Include(f => f.Caterers)
+                .Include(f => f.Caterer)
                 .ToListAsync();
         }
 

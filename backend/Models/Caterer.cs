@@ -5,17 +5,21 @@ namespace backend.Models
 {
     public class Caterer
     {
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        public int ProfileID { get; set; }
-        [ForeignKey(nameof(ProfileID))]
-        public UserProfile? Profile { get; set; }
-        public ICollection<Item> Items { get; set; }
+        public int Id { get; set; }
+
+        public int ProfileId { get; set; }
+
+        public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+
+        public virtual ICollection<FavoriteList> FavoriteLists { get; set; } = new List<FavoriteList>();
+
+        public virtual ICollection<Item> Items { get; set; } = new List<Item>();
+
+        public virtual UserProfile? Profile { get; set; } = null!;
         public Caterer()
         {
-            ID = 0;
-            ProfileID = 0;
+            Id = 0;
+            ProfileId = 0;
             Profile = null;
             Items = [];
         }

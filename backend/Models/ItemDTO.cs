@@ -14,9 +14,9 @@ namespace backend.Models
         [Required]
         public decimal Price { get; set; }
         [Required]
-        public int CatererID { get; set; }
+        public int CatererId { get; set; }
         [Required]
-        public int CuisineID { get; set; }
+        public int CuisineId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public ItemDTO()
@@ -25,8 +25,8 @@ namespace backend.Models
             Image = "";
             ServesCount = 0;
             Price = 0M;
-            CatererID = 0;
-            CuisineID = 0;
+            CatererId = 0;
+            CuisineId = 0;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
         }

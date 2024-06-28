@@ -36,7 +36,7 @@ namespace backend.Controllers
             var message = await _context.Messages
                 .Include(m => m.Sender)
                 .Include(m => m.Receiver)
-                .FirstOrDefaultAsync(m => m.MessageId == messageId && m.ReceiverId == catererId);
+                .FirstOrDefaultAsync(m => m.Id == messageId && m.ReceiverId == catererId);
 
             if (message == null)
             {
@@ -59,7 +59,7 @@ namespace backend.Controllers
             _context.Messages.Add(message);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetMessageForCaterer), new { catererId = receiverId, messageId = message.MessageId }, message);
+            return CreatedAtAction(nameof(GetMessageForCaterer), new { catererId = receiverId, messageId = message.Id }, message);
         }
 
         // c. Caterer should be able to delete the messages
@@ -95,7 +95,7 @@ namespace backend.Controllers
             var message = await _context.Messages
                 .Include(m => m.Sender)
                 .Include(m => m.Receiver)
-                .FirstOrDefaultAsync(m => m.MessageId == messageId && m.ReceiverId == customerId);
+                .FirstOrDefaultAsync(m => m.Id == messageId && m.ReceiverId == customerId);
 
             if (message == null)
             {
@@ -118,7 +118,7 @@ namespace backend.Controllers
             _context.Messages.Add(message);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetMessageForCustomer), new { customerId = receiverId, messageId = message.MessageId }, message);
+            return CreatedAtAction(nameof(GetMessageForCustomer), new { customerId = receiverId, messageId = message.Id }, message);
         }
 
         // c. Customer should be able to delete the messages

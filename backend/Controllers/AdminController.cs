@@ -23,9 +23,9 @@ namespace backend.Controllers
             }
             // Get all user
             var user = await _context.UserProfiles
-                .Join(_context.Users, profile => profile.UserID, user => user.ID, (profile, user) => new
+                .Join(_context.Users, profile => profile.Id, user => user.Id, (profile, user) => new
                 {
-                    user.ID,
+                    user.Id,
                     user.Type,
                     user.Email,
                     user.CreatedAt,
@@ -35,7 +35,7 @@ namespace backend.Controllers
                     profile.Address,
                     profile.PhoneNumber
                 })
-                .OrderBy(user => user.ID)
+                .OrderBy(user => user.Id)
                 .Take(100)
                 .ToListAsync();
             if (user == null)
@@ -56,10 +56,10 @@ namespace backend.Controllers
             }
             // Get a user
             var user = await _context.UserProfiles
-                .Where(x => x.UserID == id)
-                .Join(_context.Users, profile => profile.UserID, user => user.ID, (profile, user) => new
+                .Where(x => x.Id == id)
+                .Join(_context.Users, profile => profile.Id, user => user.Id, (profile, user) => new
                 {
-                    profile.ID,
+                    profile.Id,
                     profile.FirstName,
                     profile.LastName,
                     profile.Address,

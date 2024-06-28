@@ -36,7 +36,7 @@ namespace backend.Controllers
             var booking = await _context.Bookings
                 .Include(b => b.Customer)
                 .Include(b => b.Caterer)
-                .FirstOrDefaultAsync(b => b.BookingId == id);
+                .FirstOrDefaultAsync(b => b.Id == id);
 
             if (booking == null)
             {
@@ -56,7 +56,7 @@ namespace backend.Controllers
                 return NotFound();
             }
 
-            booking.Status = "Cancelled";
+            booking.BookingStatus = "Cancelled";
             _context.Entry(booking).State = EntityState.Modified;
 
             try
@@ -80,7 +80,7 @@ namespace backend.Controllers
 
         private bool BookingExists(int id)
         {
-            return _context.Bookings.Any(e => e.BookingId == id);
+            return _context.Bookings.Any(e => e.Id == id);
         }
     }
 }

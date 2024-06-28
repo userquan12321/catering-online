@@ -9,26 +9,18 @@ namespace backend.Models
 {
     public class FavoriteList
     {
-        [Key]
-        public int FavoriteId { get; set; }
+        public int Id { get; set; }
 
-        [Required]
-        public int UserId { get; set; }
+    public int UserId { get; set; }
 
-        [Required]
-        public int ItemId { get; set; }
+    public int CatererId { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; }
 
-        [ForeignKey(nameof(UserId))]
-        public virtual User User { get; set; } = null!;
+    public virtual Caterer Caterer { get; set; } = null!;
 
-        [ForeignKey(nameof(ItemId))]
-        public virtual Item Item { get; set; } = null!;
-        public object Caterers { get; internal set; }
+    public virtual User User { get; set; } = null!;
     }
 }

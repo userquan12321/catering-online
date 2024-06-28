@@ -2,97 +2,141 @@
 
 namespace backend.Models
 {
-public partial class ApplicationDbContext : DbContext
-{
-    public ApplicationDbContext()
+    public partial class ApplicationDbContext : DbContext
     {
-    }
-
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
-    }
-
-    public virtual DbSet<Booking> Bookings { get; set; }
-
-    public virtual DbSet<Caterer> Caterers { get; set; }
-
-    public virtual DbSet<FavoriteList> FavoriteLists { get; set; }
-
-    public virtual DbSet<Item> Items { get; set; }
-
-    public virtual DbSet<Message> Messages { get; set; }
-
-    public virtual DbSet<UserProfile> UserProfiles { get; set; }
-    public DbSet<CuisineType> CuisineTypes { get; set; }
-
-    public virtual DbSet<User> Users { get; set; }
-
-    
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Booking>(entity =>
+        public ApplicationDbContext()
         {
-            entity.HasKey(e => e.BookingId).HasName("PK__Bookings__5DE3A5B191D2667E");
+        }
 
-            entity.Property(e => e.BookingId).HasColumnName("booking_id");
-            entity.Property(e => e.BookingDate).HasColumnName("booking_date");
-            entity.Property(e => e.CatererId).HasColumnName("caterer_id");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.CustomerId).HasColumnName("customer_id");
-            entity.Property(e => e.EventDate).HasColumnName("event_date");
-            entity.Property(e => e.MenuDetails).HasColumnName("menu_details");
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .HasDefaultValue("Pending")
-                .HasColumnName("status");
-            entity.Property(e => e.TotalAmount)
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName("total_amount");
-            entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
-            entity.Property(e => e.Venue)
-                .HasMaxLength(255)
-                .HasColumnName("venue");
-
-          
-        });
-
-
-
-        
-
-        modelBuilder.Entity<Message>(entity =>
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
         {
-            entity.HasKey(e => e.MessageId).HasName("PK__Messages__0BBF6EE6E11D6A45");
+        }
 
-            entity.Property(e => e.MessageId).HasColumnName("message_id");
-            entity.Property(e => e.Content).HasColumnName("content");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.ReceiverId).HasColumnName("receiver_id");
-            entity.Property(e => e.SenderId).HasColumnName("sender_id");
-            entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
+        public virtual DbSet<Booking> Bookings { get; set; }
 
-           
-        });
+        public virtual DbSet<Caterer> Caterers { get; set; }
 
-        
+        public virtual DbSet<CuisineType> CuisineTypes { get; set; }
 
-        OnModelCreatingPartial(modelBuilder);
+        public virtual DbSet<FavoriteList> FavoriteLists { get; set; }
+
+        public virtual DbSet<Item> Items { get; set; }
+
+        public virtual DbSet<Message> Messages { get; set; }
+
+        public virtual DbSet<User> Users { get; set; }
+
+        public virtual DbSet<UserProfile> UserProfiles { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Booking>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.BookingStatus)
+                    .HasMaxLength(20)
+                    .HasDefaultValue("Pending");
+                entity.Property(e => e.CatererId).HasColumnName("CatererID");
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+                entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.Venue).HasMaxLength(255);
+
+                entity.HasOne(d => d.Caterer).WithMany(p => p.Bookings)
+                    .HasForeignKey(d => d.CatererId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity.HasOne(d => d.Customer).WithMany(p => p.Bookings).HasForeignKey(d => d.CustomerId);
+            });
+
+            modelBuilder.Entity<Caterer>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.ProfileId).HasColumnName("ProfileID");
+
+                entity.HasOne(d => d.Profile).WithMany(p => p.Caterers).HasForeignKey(d => d.ProfileId);
+            });
+
+            modelBuilder.Entity<CuisineType>(entity =>
+            {
+                entity.HasIndex(e => e.CuisineName, "UQ__CuisineT__2C77DCC834D2F401").IsUnique();
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.CuisineName).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<FavoriteList>(entity =>
+            {
+                entity.ToTable("FavoriteList");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.CatererId).HasColumnName("CatererID");
+                entity.Property(e => e.UserId).HasColumnName("UserID");
+
+                entity.HasOne(d => d.Caterer).WithMany(p => p.FavoriteLists)
+                    .HasForeignKey(d => d.CatererId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity.HasOne(d => d.User).WithMany(p => p.FavoriteLists).HasForeignKey(d => d.UserId);
+            });
+
+            modelBuilder.Entity<Item>(entity =>
+            {
+                entity.HasIndex(e => e.Name, "UQ__Items__737584F6D7CE17D9").IsUnique();
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.CatererId).HasColumnName("CatererID");
+                entity.Property(e => e.CuisineId).HasColumnName("CuisineID");
+                entity.Property(e => e.Image).HasMaxLength(1000);
+                entity.Property(e => e.Name).HasMaxLength(255);
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.Caterer).WithMany(p => p.Items).HasForeignKey(d => d.CatererId);
+
+                entity.HasOne(d => d.CuisineType).WithMany(p => p.Items).HasForeignKey(d => d.CuisineId);
+            });
+
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.Content).HasColumnType("text");
+                entity.Property(e => e.ReceiverId).HasColumnName("ReceiverID");
+                entity.Property(e => e.SenderId).HasColumnName("SenderID");
+
+                entity.HasOne(d => d.Receiver).WithMany(p => p.MessageReceivers)
+                    .HasForeignKey(d => d.ReceiverId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity.HasOne(d => d.Sender).WithMany(p => p.MessageSenders).HasForeignKey(d => d.SenderId);
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasIndex(e => e.Email, "UQ__Users__A9D10534E6104E05").IsUnique();
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.Email).HasMaxLength(255);
+                entity.Property(e => e.Password).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<UserProfile>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.Address).HasMaxLength(255);
+                entity.Property(e => e.FirstName).HasMaxLength(255);
+                entity.Property(e => e.Image).HasMaxLength(1000);
+                entity.Property(e => e.LastName).HasMaxLength(255);
+                entity.Property(e => e.PhoneNumber).HasMaxLength(16);
+                entity.Property(e => e.UserId).HasColumnName("UserID");
+
+                entity.HasOne(d => d.User).WithMany(p => p.UserProfiles).HasForeignKey(d => d.UserId);
+            });
+
+            OnModelCreatingPartial(modelBuilder);
+        }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
 
-}

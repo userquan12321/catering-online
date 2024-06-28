@@ -9,27 +9,20 @@ namespace backend.Models
 {
     public class Message
     {
-        [Key]
-        public int MessageId { get; set; }
+        public int Id { get; set; }
 
-        [Required]
         public int SenderId { get; set; }
 
-        [Required]
         public int ReceiverId { get; set; }
 
-        public string? Content { get; set; }
+        public string Content { get; set; } = null!;
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; }
 
-        [ForeignKey(nameof(SenderId))]
-        public virtual User Sender { get; set; } = null!;
-
-        [ForeignKey(nameof(ReceiverId))]
         public virtual User Receiver { get; set; } = null!;
+
+        public virtual User Sender { get; set; } = null!;
     }
 }

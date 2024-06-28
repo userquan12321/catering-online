@@ -9,43 +9,30 @@ namespace backend.Models
 {
     public class Booking
     {
-        [Key]
-        public int BookingId { get; set; }
+        public int Id { get; set; }
 
-        [Required]
-        public int CustomerId { get; set; }
+    public int CustomerId { get; set; }
 
-        [Required]
-        public int CatererId { get; set; }
+    public int CatererId { get; set; }
 
-        [Required]
-        public DateTime BookingDate { get; set; }
+    public DateOnly BookingDate { get; set; }
 
-        [Required]
-        public DateTime EventDate { get; set; }
+    public DateOnly EventDate { get; set; }
 
-        [MaxLength(255)]
-        public string? Venue { get; set; }
+    public string Venue { get; set; } = null!;
 
-        public string? MenuDetails { get; set; }
+    public decimal TotalAmount { get; set; }
 
-        [Required]
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal TotalAmount { get; set; }
+    public string BookingStatus { get; set; } = null!;
 
-        [Required]
-        public string Status { get; set; } = "Pending";
+    public int PaymentMethod { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; }
 
-        [ForeignKey(nameof(CustomerId))]
-        public User? Customer { get; set; }
+    public virtual Caterer Caterer { get; set; } = null!;
 
-        [ForeignKey(nameof(CatererId))]
-        public Caterer? Caterer { get; set; }
+    public virtual User Customer { get; set; } = null!;
     }
 }
