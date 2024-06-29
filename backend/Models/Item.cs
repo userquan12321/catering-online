@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
@@ -8,6 +9,7 @@ namespace backend.Models
     [Index(nameof(Name), IsUnique = true)]
     public class Item
     {
+        [Key]
         public int Id { get; set; }
 
         public string Name { get; set; } = null!;
@@ -22,6 +24,7 @@ namespace backend.Models
 
         public int CuisineId { get; set; }
 
+        public DateTime CreatedAt { get; set; }
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }

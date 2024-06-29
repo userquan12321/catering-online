@@ -11,8 +11,8 @@ namespace backend.Controllers
     {
         private readonly ApplicationDbContext _context = context;
 
-        // GET: api/Search/caterer
-        [HttpGet("caterer")]
+        // GET: api/Search/caterers
+        [HttpGet("caterers")]
         public async Task<ActionResult> SearchCaterers(string? cuisine)
         {
             // Get caterer cuisine
@@ -34,16 +34,17 @@ namespace backend.Controllers
             }
             query = query.OrderBy(a => a.Id).Take(100);
             var result = await query.ToListAsync();
+
             return Ok(result);
         }
 
-        // GET: api/Search/caterer/id
-        [HttpGet("caterer/{id}")]
+        // GET: api/Search/caterers/id
+        [HttpGet("caterers/{id}")]
         public async Task<ActionResult> GetCatererItems(int id)
         {
-            if (_context.Caterers.Any(x => x.Id == id) == false)
-            {
-                return NotFound("Caterer not found");
+            if (_context.Caterers.Any(x => x.Id == id) == false) 
+            { 
+                return NotFound("Caterer not found"); 
             }
             // Get caterer item list
             var query = from c in _context.Caterers
@@ -69,6 +70,7 @@ namespace backend.Controllers
                         });
             query = query.OrderBy(a => a.Id).Take(100);
             var result = await query.ToListAsync();
+
             return Ok(result);
         }
     }
