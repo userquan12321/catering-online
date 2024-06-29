@@ -22,6 +22,7 @@ namespace backend.Models
         public int ServesCount { get; set; }
 
         [Required]
+        [Precision(18, 2)]
         public decimal Price { get; set; }
 
         [Required]

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
 {
@@ -29,6 +30,7 @@ namespace backend.Models
         public string Venue { get; set; }
 
         [Required]
+        [Precision(18, 2)]
         public decimal TotalAmount { get; set; }
 
         [Required]
