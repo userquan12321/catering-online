@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import '../styles/homepage.style.css'
-import axios from 'axios'
+import type { RootState } from '@/redux/store'
 
 const HomePage = () => {
-  // useEffect(() => {
-  //   axios.get('http://localhost:5000/api/v1/users')
-  // }, [])
+  const userType = useSelector((state: RootState) => state.auth.userType)
+
+  console.log(userType, 'userType')
 
   return (
     <div className="test">
