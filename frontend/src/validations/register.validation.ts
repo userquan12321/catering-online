@@ -16,6 +16,6 @@ export const registerValidation = yup.object().shape({
     .string()
     .oneOf([yup.ref('password'), ''], 'Passwords must match')
     .required('Confirm password is required'),
-  type: yup.string().oneOf(['caterer', 'customer']).default('customer'),
+  type: yup.number().oneOf([0, 1]).default(0),
   address: yup.string(),
 })

@@ -1,0 +1,28 @@
+#navbar {
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & .primary-btn {
+    color: #fff;
+    background: #9ad983;
+    box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1);
+    font-size: 14px;
+    line-height: 1.6;
+    height: 32px;
+    padding: 4px 15px;
+    border-radius: 6px;
+  }
+
+  & .secondary-btn {
+    color: #9ad983;
+    box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1);
+    font-size: 14px;
+  }
+
+  & .icon {
+    background: #9ad983;
+    user-select: none;
+  }
+}
