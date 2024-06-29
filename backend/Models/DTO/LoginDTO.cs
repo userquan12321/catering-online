@@ -2,7 +2,7 @@
 
 namespace backend.Models.DTO
 {
-    public class Login
+    public class LoginDTO
     {
         [Required]
         [StringLength(255, MinimumLength = 4)]
@@ -13,7 +13,7 @@ namespace backend.Models.DTO
         [StringLength(255, MinimumLength = 8)]
         public string Password { get; set; }
 
-        public Login()
+        public LoginDTO()
         {
             Email = "";
             Password = "";

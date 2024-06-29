@@ -1,9 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static backend.Models.User;
 
 namespace backend.Models.DTO
 {
-    public class UpdateProfile
+    public class RegisterDTO
     {
+        [Required]
+        [Range(0, 2)]
+        public UserType Type { get; set; }
+
+        [Required]
+        [StringLength(255, MinimumLength = 4)]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [StringLength(255, MinimumLength = 8)]
+        public string Password { get; set; }
+
         [Required]
         [StringLength(255, MinimumLength = 2)]
         public string FirstName { get; set; }
@@ -20,15 +34,15 @@ namespace backend.Models.DTO
         [StringLength(255, MinimumLength = 8)]
         public string Address { get; set; }
 
-        public string Image { get; set; }
-
-        public UpdateProfile()
+        public RegisterDTO()
         {
+            Type = 0;
+            Email = "";
+            Password = "";
             FirstName = "";
             LastName = "";
             PhoneNumber = "";
             Address = "";
-            Image = "";
         }
     }
 }

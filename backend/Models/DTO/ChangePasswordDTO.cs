@@ -2,7 +2,7 @@
 
 namespace backend.Models.DTO
 {
-    public class ChangePassword
+    public class ChangePasswordDTO
     {
         [Required]
         [StringLength(255, MinimumLength = 8)]
@@ -12,7 +12,7 @@ namespace backend.Models.DTO
         [StringLength(255, MinimumLength = 8)]
         public string NewPassword { get; set; }
 
-        public ChangePassword()
+        public ChangePasswordDTO()
         {
             OldPassword = "";
             NewPassword = "";
