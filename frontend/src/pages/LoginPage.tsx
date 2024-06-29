@@ -31,10 +31,10 @@ const LoginPage = () => {
         password: data.password,
       })
 
-      if (loginRes.error) {
+      if (loginRes.error && 'data' in loginRes.error) {
         messageApi.open({
           type: 'error',
-          content: loginRes.error.data,
+          content: loginRes.error.data as string,
         })
       }
 

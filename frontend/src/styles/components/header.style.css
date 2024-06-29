@@ -1,8 +1,13 @@
 #navbar {
-  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  & .logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+  }
 
   & .primary-btn {
     color: #fff;
@@ -24,5 +29,10 @@
   & .icon {
     background: #9ad983;
     user-select: none;
+    cursor: pointer;
+  }
+
+  & .welcome-text {
+    color: white;
   }
 }

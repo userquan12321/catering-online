@@ -23,6 +23,9 @@ const authSlice = createSlice({
         state.firstName = action.payload.firstName
       },
     )
+    builder.addMatcher(authApi.endpoints.logout.matchFulfilled, (state) => {
+      Object.assign(state, initialState)
+    })
   },
 })
 

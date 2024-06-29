@@ -20,7 +20,7 @@ const { Title } = Typography
 
 type FormInput = {
   firstName: string
-  lastName: string
+  lastName?: string
   email: string
   phoneNumber: string
   password: string
@@ -51,9 +51,9 @@ const RegisterPage = () => {
         email: data.email,
         password: data.password,
         firstName: data.firstName,
-        lastName: data.lastName,
+        lastName: data.lastName ?? '',
         phoneNumber: data.phoneNumber,
-        address: data?.address ?? '',
+        address: data.address ?? '',
       })
       if (res.error) {
         messageApi.open({
@@ -108,7 +108,6 @@ const RegisterPage = () => {
 
         <Col span={12}>
           <Form.Item
-            required
             label="Last name"
             help={errors.lastName?.message}
             validateStatus={errors.lastName ? 'error' : ''}
