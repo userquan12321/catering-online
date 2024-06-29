@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
@@ -11,19 +12,21 @@ namespace backend.Models
 
         [Required]
         public int CustomerId { get; set; }
+        [JsonIgnore]
         [ForeignKey(nameof(CustomerId))]
         public User? Customer { get; set; }
 
         [Required]
         public int CatererId { get; set; }
+        [JsonIgnore]
         [ForeignKey(nameof(CatererId))]
         public Caterer? Caterer { get; set; }
 
         [Required]
-        public DateOnly BookingDate { get; set; }
+        public DateTime BookingDate { get; set; }
 
         [Required]
-        public DateOnly EventDate { get; set; }
+        public DateTime EventDate { get; set; }
 
         [Required]
         [StringLength(255)]
@@ -53,11 +56,9 @@ namespace backend.Models
         {
             Id = 0;
             CustomerId = 0;
-            Customer = null;
             CatererId = 0;
-            Caterer = null;
-            BookingDate = new DateOnly();
-            EventDate = new DateOnly();
+            BookingDate = new DateTime();
+            EventDate = new DateTime();
             Venue = "";
             TotalAmount = 0;
             Note = "";

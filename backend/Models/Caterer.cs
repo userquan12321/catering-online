@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace backend.Models
 {
@@ -10,6 +11,7 @@ namespace backend.Models
 
         [Required]
         public int ProfileId { get; set; }
+        [JsonIgnore]
         [ForeignKey(nameof(ProfileId))]
         public Profile? Profile { get; set; }
 
@@ -17,7 +19,6 @@ namespace backend.Models
         {
             Id = 0;
             ProfileId = 0;
-            Profile = null;
         }
     }
 }

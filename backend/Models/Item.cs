@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
@@ -27,11 +28,13 @@ namespace backend.Models
 
         [Required]
         public int CatererId { get; set; }
+        [JsonIgnore]
         [ForeignKey(nameof(CatererId))]
         public Caterer? Caterer { get; set; }
 
         [Required]
         public int CuisineId { get; set; }
+        [JsonIgnore]
         [ForeignKey(nameof(CuisineId))]
         public CuisineType? CuisineType { get; set; }
 
@@ -47,9 +50,7 @@ namespace backend.Models
             ServesCount = 0;
             Price = 0M;
             CatererId = 0;
-            Caterer = null;
             CuisineId = 0;
-            CuisineType = null;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
         }

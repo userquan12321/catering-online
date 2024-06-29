@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace backend.Models
 {
@@ -10,11 +11,13 @@ namespace backend.Models
 
         [Required]
         public int SenderId { get; set; }
+        [JsonIgnore]
         [ForeignKey(nameof(SenderId))]
         public User? Sender { get; set; }
 
         [Required]
         public int ReceiverId { get; set; }
+        [JsonIgnore]
         [ForeignKey(nameof(ReceiverId))]
         public User? Receiver { get; set; }
 
@@ -29,9 +32,7 @@ namespace backend.Models
         {
             Id = 0;
             SenderId = 0;
-            Sender = null;
             ReceiverId = 0;
-            Receiver = null;
             Content = "";
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;

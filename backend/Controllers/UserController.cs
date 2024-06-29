@@ -6,7 +6,7 @@ using backend.Models.DTO;
 
 namespace backend.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController(ApplicationDbContext context) : ControllerBase
