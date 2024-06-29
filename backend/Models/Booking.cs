@@ -42,6 +42,7 @@ namespace backend.Models
         public string Status { get; set; }
 
         [Required]
+        [StringLength(20)]
         public string PaymentMethod { get; set; }
 
         public DateTime CreatedAt { get; set; }
