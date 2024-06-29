@@ -1,34 +1,29 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace backend.Models
+namespace backend.Models.DTO
 {
     public class ItemDTO
     {
         [Required]
-        public string Name { get; set; }
+        [StringLength(255, MinimumLength = 2)]
+        public string Name { get; set; } = string.Empty;
+
         [Required]
-        public string Image { get; set; }
+        [StringLength(1000)]
+        public string Image { get; set; } = string.Empty;
+
         [Required]
         public int ServesCount { get; set; }
+
         [Required]
         public decimal Price { get; set; }
-        [Required]
-        public int CatererId { get; set; }
+
         [Required]
         public int CuisineId { get; set; }
+
         public DateTime CreatedAt { get; set; }
+
         public DateTime UpdatedAt { get; set; }
-        public ItemDTO()
-        {
-            Name = "";
-            Image = "";
-            ServesCount = 0;
-            Price = 0M;
-            CatererId = 0;
-            CuisineId = 0;
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
-        }
     }
 }

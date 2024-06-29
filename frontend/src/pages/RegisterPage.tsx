@@ -1,3 +1,5 @@
+import { useLoginMutation, useRegisterMutation } from '@/apis/auth/users.api'
+import { USER_TYPE } from '@/constants/global.constant'
 import classes from '@/styles/pages/register.module.css'
 import { registerValidation } from '@/validations/register.validation'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -12,7 +14,7 @@ import {
   message,
 } from 'antd'
 import { Controller, useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const { Title } = Typography
 
@@ -23,12 +25,15 @@ type FormInput = {
   phoneNumber: string
   password: string
   confirmPassword: string
-  type: 'caterer' | 'customer'
+  type: number
   address?: string
 }
 
 const RegisterPage = () => {
+  const navigate = useNavigate()
   const [messageApi, contextHolder] = message.useMessage()
+  const [register, { isLoading }] = useRegisterMutation()
+  const [login] = useLoginMutation()
 
   const {
     handleSubmit,
@@ -39,12 +44,44 @@ const RegisterPage = () => {
     resolver: yupResolver(registerValidation),
   })
 
-  const onSubmit = (data: FormInput) => {
-    messageApi.open({
-      type: 'success',
-      content: 'Register success!',
-    })
-    console.log(data)
+  const onSubmit = async (data: FormInput) => {
+    try {
+      const res = await register({
+        type: data.type,
+        email: data.email,
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phoneNumber: data.phoneNumber,
+        address: data?.address ?? '',
+      })
+      if (res.error) {
+        messageApi.open({
+          type: 'error',
+          content: res.error as string,
+        })
+        return
+      }
+
+      messageApi.open({
+        type: 'success',
+        content: res.data,
+      })
+
+      const loginRes = await login({
+        email: data.email,
+        password: data.password,
+      })
+
+      if (loginRes.data) {
+        if (loginRes.data.userType === USER_TYPE.CUSTOMER) {
+          navigate('/')
+          return
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -106,13 +143,13 @@ const RegisterPage = () => {
             <Controller
               name="type"
               control={control}
-              defaultValue="customer"
+              defaultValue={0}
               render={({ field }) => (
                 <Select
                   {...field}
                   options={[
-                    { value: 'customer', label: 'Customer' },
-                    { value: 'caterer', label: 'Caterer' },
+                    { value: 0, label: 'Customer' },
+                    { value: 1, label: 'Caterer' },
                   ]}
                 />
               )}
@@ -190,7 +227,7 @@ const RegisterPage = () => {
               </Button>
             </Col>
             <Col>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" disabled={isLoading}>
                 Register
               </Button>
             </Col>

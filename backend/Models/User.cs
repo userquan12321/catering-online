@@ -4,45 +4,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
 {
-   
+    [Index(nameof(Email), IsUnique = true)]
     public class User
     {
-        
-        
+        [Key]
         public int Id { get; set; }
+
         public enum UserType
         {
             Customer = 0, Caterer = 1, Admin = 2
         }
+
+        [Required]
+        [Range(0, 2)]
         public UserType Type { get; set; }
 
-        public string Email { get; set; } = null!;
+        [Required]
+        [StringLength(255, MinimumLength = 4)]
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
 
-        public string Password { get; set; } = null!;
+        [Required]
+        [StringLength(255, MinimumLength = 8)]
+        public string Password { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
-
-        public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
-
-        public virtual ICollection<FavoriteList> FavoriteLists { get; set; } = new List<FavoriteList>();
-
-        public virtual ICollection<Message> MessageReceivers { get; set; } = new List<Message>();
-
-        public virtual ICollection<Message> MessageSenders { get; set; } = new List<Message>();
-
-        public virtual ICollection<UserProfile> UserProfiles { get; set; } = new List<UserProfile>();
-    
-
-    public User()
-    {
-        Id = 0;
-        Type = 0;
-        Email = "";
-        Password = "";
-        CreatedAt = DateTime.UtcNow;
-        UpdatedAt = DateTime.UtcNow;
     }
-}
 }
