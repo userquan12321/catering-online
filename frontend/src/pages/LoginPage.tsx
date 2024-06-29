@@ -1,35 +1,52 @@
+import { useLoginMutation } from '@/apis/auth/users.api'
+import { USER_TYPE } from '@/constants/global.constant'
 import classes from '@/styles/pages/register.module.css'
+import { LoginBody } from '@/types/auth.type'
 import { loginValidation } from '@/validations/login.validation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Col, Form, Input, Row, Typography, message } from 'antd'
 import { Controller, useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const { Title } = Typography
 
-type FormInput = {
-  email: string
-  password: string
-}
-
 const LoginPage = () => {
   const [messageApi, contextHolder] = message.useMessage()
+  const navigate = useNavigate()
+  const [login, { isLoading }] = useLoginMutation()
 
   const {
     handleSubmit,
     control,
     formState: { errors },
     reset,
-  } = useForm<FormInput>({
+  } = useForm<LoginBody>({
     resolver: yupResolver(loginValidation),
   })
 
-  const onSubmit = (data: FormInput) => {
-    messageApi.open({
-      type: 'success',
-      content: 'Login success!',
-    })
-    console.log(data)
+  const onSubmit = async (data: LoginBody) => {
+    try {
+      const loginRes = await login({
+        email: data.email,
+        password: data.password,
+      })
+
+      if (loginRes.error) {
+        messageApi.open({
+          type: 'error',
+          content: loginRes.error.data,
+        })
+      }
+
+      if (loginRes.data) {
+        if (loginRes.data.userType === USER_TYPE.CUSTOMER) {
+          navigate('/')
+          return
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -78,7 +95,7 @@ const LoginPage = () => {
               </Button>
             </Col>
             <Col>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" disabled={isLoading}>
                 Login
               </Button>
             </Col>

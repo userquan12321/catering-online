@@ -112,7 +112,7 @@ namespace backend.Controllers
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
 
-            return Ok(getUser.Type);
+            return Ok(new { UserType = getUser.Type, Name = getProfile.FirstName });
         }
 
         // POST: api/Auth/logout
