@@ -70,7 +70,12 @@ namespace backend.Controllers
             userProfile.Image = request.Image;
             user.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
+<<<<<<< HEAD
             return Ok("UserProfile updated successfully.");
+=======
+
+            return Ok("Profile updated successfully.");
+>>>>>>> 0d3a11e7efffb2bec340f057f117c13e70a2a64e
         }
 
         // PUT: api/User/change-password

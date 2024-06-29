@@ -9,6 +9,7 @@ namespace backend.Models
         [Key]
         public int Id { get; set; }
 
+<<<<<<< HEAD
         public int UserProfileId { get; set; }
 
         public DateTime? CreatedAt { get; set; }
@@ -30,5 +31,12 @@ namespace backend.Models
             UserProfile = null;
             Items = [];
         }
+=======
+        [Required]
+        public int ProfileId { get; set; }
+        [JsonIgnore]
+        [ForeignKey(nameof(ProfileId))]
+        public Profile? Profile { get; set; }
+>>>>>>> 0d3a11e7efffb2bec340f057f117c13e70a2a64e
     }
 }

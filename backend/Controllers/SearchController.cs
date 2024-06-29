@@ -17,7 +17,11 @@ namespace backend.Controllers
         {
             // Get caterer cuisine
             var query = from c in _context.Caterers
+<<<<<<< HEAD
                         join p in _context.UserProfiles on c.UserProfileId equals p.Id
+=======
+                        join p in _context.Profiles on c.ProfileId equals p.Id
+>>>>>>> 0d3a11e7efffb2bec340f057f117c13e70a2a64e
                         join i in _context.Items on c.Id equals i.CatererId
                         join ct in _context.CuisineTypes on i.CuisineId equals ct.Id
                         select (new
@@ -49,7 +53,11 @@ namespace backend.Controllers
             // Get caterer item list
             var query = from c in _context.Caterers
                         where c.Id == id
+<<<<<<< HEAD
                         join p in _context.UserProfiles on c.UserProfileId equals p.Id
+=======
+                        join p in _context.Profiles on c.ProfileId equals p.Id
+>>>>>>> 0d3a11e7efffb2bec340f057f117c13e70a2a64e
                         join i in _context.Items on c.Id equals i.CatererId into itemGroup
                         select (new
                         {

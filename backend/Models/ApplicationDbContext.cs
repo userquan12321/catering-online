@@ -3,8 +3,9 @@ using static backend.Models.User;
 
 namespace backend.Models
 {
-    public partial class ApplicationDbContext : DbContext
+    public class ApplicationDbContext(DbContextOptions options) : DbContext(options)
     {
+<<<<<<< HEAD
         public ApplicationDbContext()
         {
         }
@@ -303,6 +304,15 @@ namespace backend.Models
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+=======
+        public DbSet<User> Users { get; set; }
+        public DbSet<Profile> Profiles { get; set; }
+        public DbSet<Caterer> Caterers { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<FavoriteList> FavoriteList { get; set; }
+        public DbSet<Item> Items { get; set; }
+        public DbSet<CuisineType> CuisineTypes { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+>>>>>>> 0d3a11e7efffb2bec340f057f117c13e70a2a64e
     }
 }
-
