@@ -54,7 +54,8 @@ namespace backend.Controllers
                 return NotFound("Caterer id not found");
             }
             // Add item
-            item.CatererId = cid.Value;
+            request.CatererId = cid.Value;
+            item.CatererId = request.CatererId;
             item.CuisineId = request.CuisineId;
             item.Name =  request.Name;
             item.Price = request.Price;

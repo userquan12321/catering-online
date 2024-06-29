@@ -20,6 +20,9 @@ namespace backend.Models.DTO
         public decimal Price { get; set; }
 
         [Required]
+        public int CatererId { get; set; }
+        
+        [Required]
         public int CuisineId { get; set; }
 
         public DateTime CreatedAt { get; set; }
