@@ -22,7 +22,7 @@ namespace backend.Models.DTO
         [StringLength(255, MinimumLength = 2)]
         public string FirstName { get; set; } = string.Empty;
 
-        [StringLength(255, MinimumLength = 2)]
+        [StringLength(255)]
         public string LastName { get; set; } = string.Empty;
 
         [Required]
@@ -30,8 +30,7 @@ namespace backend.Models.DTO
         [Phone]
         public string PhoneNumber { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(255, MinimumLength = 8)]
+        [StringLength(255)]
         public string Address { get; set; } = string.Empty;
     }
 }

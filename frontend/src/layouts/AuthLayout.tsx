@@ -1,13 +1,15 @@
+import { RootState } from '@/redux/store'
 import classes from '@/styles/layouts/auth-layout.module.css'
 import { Card } from 'antd'
+import { useSelector } from 'react-redux'
 import { Navigate, Outlet } from 'react-router-dom'
 
 const AuthLayout = () => {
-  const isAuthenticated = () => {
-    return false
-  }
+  const userType = useSelector((state: RootState) => state.auth.userType)
 
-  if (isAuthenticated()) {
+  const isAuthenticated = userType !== null
+
+  if (isAuthenticated) {
     return <Navigate to="/" replace />
   }
 
