@@ -17,12 +17,16 @@ namespace backend.Controllers
         {
             // Get caterer cuisine
             var query = from c in _context.Caterers
-                        join p in _context.UserProfiles on c.ProfileId equals p.Id
+                        join p in _context.UserProfiles on c.UserProfileId equals p.Id
                         join i in _context.Items on c.Id equals i.CatererId
                         join ct in _context.CuisineTypes on i.CuisineId equals ct.Id
-                        select (new 
-                        { 
-                            c.Id, p.FirstName, p.LastName, p.Image, ct.CuisineName
+                        select (new
+                        {
+                            c.Id,
+                            p.FirstName,
+                            p.LastName,
+                            p.Image,
+                            ct.CuisineName
                         });
             if (!string.IsNullOrEmpty(cuisine))
             {
@@ -44,14 +48,23 @@ namespace backend.Controllers
             // Get caterer item list
             var query = from c in _context.Caterers
                         where c.Id == id
-                        join p in _context.UserProfiles on c.ProfileId equals p.Id
+                        join p in _context.UserProfiles on c.UserProfileId equals p.Id
                         join i in _context.Items on c.Id equals i.CatererId into itemGroup
                         select (new
                         {
-                            c.Id, p.FirstName, p.LastName, p.Image,
-                            itemList = itemGroup.Select(i => new 
+                            c.Id,
+                            p.FirstName,
+                            p.LastName,
+                            p.Image,
+                            itemList = itemGroup.Select(i => new
                             {
-                                i.Id, i.Name, i.Image, i.CatererId, i.CuisineId, i.ServesCount, i.Price
+                                i.Id,
+                                i.Name,
+                                i.Image,
+                                i.CatererId,
+                                i.CuisineId,
+                                i.ServesCount,
+                                i.Price
                             })
                         });
             query = query.OrderBy(a => a.Id).Take(100);

@@ -47,7 +47,7 @@ namespace backend.Controllers
             // Add caterer to Caterers table
             if (request.Type == Models.User.UserType.Caterer)
             {
-                caterer.ProfileId = userProfile.Id;
+                caterer.UserProfileId = userProfile.Id;
                 _context.Caterers.Add(caterer);
                 await _context.SaveChangesAsync();
             }

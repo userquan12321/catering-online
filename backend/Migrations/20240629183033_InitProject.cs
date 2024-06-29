@@ -17,7 +17,7 @@ namespace backend.Migrations
                 {
                     user_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    user_type = table.Column<int>(type: "int", maxLength: 50, nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
@@ -59,7 +59,7 @@ namespace backend.Migrations
                 name: "UserProfiles",
                 columns: table => new
                 {
-                    profile_id = table.Column<int>(type: "int", nullable: false)
+                    userProfile_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     user_id = table.Column<int>(type: "int", nullable: false),
                     first_name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
@@ -70,7 +70,7 @@ namespace backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Profiles__AEBB701FD3D6338F", x => x.profile_id);
+                    table.PrimaryKey("PK__Profiles__AEBB701FD3D6338F", x => x.userProfile_id);
                     table.ForeignKey(
                         name: "FK__Profiles__user_i__3F466844",
                         column: x => x.user_id,
@@ -84,7 +84,7 @@ namespace backend.Migrations
                 {
                     caterer_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    profile_id = table.Column<int>(type: "int", nullable: false),
+                    userProfile_id = table.Column<int>(type: "int", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
                     updated_at = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
                 },
@@ -93,9 +93,9 @@ namespace backend.Migrations
                     table.PrimaryKey("PK__Caterers__BFFD0FA745D96B07", x => x.caterer_id);
                     table.ForeignKey(
                         name: "FK__Profiles__ca_i__3F46685645454644",
-                        column: x => x.profile_id,
+                        column: x => x.userProfile_id,
                         principalTable: "UserProfiles",
-                        principalColumn: "profile_id");
+                        principalColumn: "userProfile_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -208,6 +208,40 @@ namespace backend.Migrations
                         principalColumn: "caterer_id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "BookingItems",
+                columns: table => new
+                {
+                    bookingItem_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    booking_id = table.Column<int>(type: "int", nullable: false),
+                    item_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__BookingItems__5DE3A5B556fdfdf55467E", x => x.bookingItem_id);
+                    table.ForeignKey(
+                        name: "FK__BookingItems__Item__4BAC3Ffe29",
+                        column: x => x.item_id,
+                        principalTable: "Items",
+                        principalColumn: "item_id");
+                    table.ForeignKey(
+                        name: "FK__BookingItems__booking__4AB81ArF0",
+                        column: x => x.booking_id,
+                        principalTable: "Bookings",
+                        principalColumn: "booking_id");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookingItems_booking_id",
+                table: "BookingItems",
+                column: "booking_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookingItems_item_id",
+                table: "BookingItems",
+                column: "item_id");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_caterer_id",
                 table: "Bookings",
@@ -219,9 +253,9 @@ namespace backend.Migrations
                 column: "customer_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Caterers_profile_id",
+                name: "IX_Caterers_userProfile_id",
                 table: "Caterers",
-                column: "profile_id");
+                column: "userProfile_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CuisineTypes_CatererID",
@@ -281,16 +315,19 @@ namespace backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Bookings");
+                name: "BookingItems");
 
             migrationBuilder.DropTable(
                 name: "FavoriteList");
 
             migrationBuilder.DropTable(
+                name: "Messages");
+
+            migrationBuilder.DropTable(
                 name: "Items");
 
             migrationBuilder.DropTable(
-                name: "Messages");
+                name: "Bookings");
 
             migrationBuilder.DropTable(
                 name: "CuisineTypes");

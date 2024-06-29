@@ -11,7 +11,7 @@ namespace backend.Models
         public int ItemId { get; set; }
 
         public string CuisineName { get; set; } = null!;
-        
+
 
         public DateTime CreatedAt { get; set; }
 

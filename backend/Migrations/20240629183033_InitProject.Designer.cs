@@ -12,7 +12,7 @@ using backend.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240629040210_InitProject")]
+    [Migration("20240629183033_InitProject")]
     partial class InitProject
     {
         /// <inheritdoc />
@@ -94,6 +94,33 @@ namespace backend.Migrations
                     b.ToTable("Bookings");
                 });
 
+            modelBuilder.Entity("backend.Models.BookingItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("bookingItem_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int")
+                        .HasColumnName("booking_id");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int")
+                        .HasColumnName("item_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK__BookingItems__5DE3A5B556fdfdf55467E");
+
+                    b.HasIndex("BookingId");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("BookingItems");
+                });
+
             modelBuilder.Entity("backend.Models.Caterer", b =>
                 {
                     b.Property<int>("Id")
@@ -109,20 +136,20 @@ namespace backend.Migrations
                         .HasColumnName("created_at")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<int>("ProfileId")
-                        .HasColumnType("int")
-                        .HasColumnName("profile_id");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
                         .HasColumnName("updated_at")
                         .HasDefaultValueSql("(getdate())");
 
+                    b.Property<int>("UserProfileId")
+                        .HasColumnType("int")
+                        .HasColumnName("userProfile_id");
+
                     b.HasKey("Id")
                         .HasName("PK__Caterers__BFFD0FA745D96B07");
 
-                    b.HasIndex("ProfileId");
+                    b.HasIndex("UserProfileId");
 
                     b.ToTable("Caterers");
                 });
@@ -340,10 +367,9 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("password");
 
-                    b.Property<int>("Type")
-                        .HasMaxLength(50)
-                        .HasColumnType("int")
-                        .HasColumnName("user_type");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
@@ -365,7 +391,7 @@ namespace backend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("profile_id");
+                        .HasColumnName("userProfile_id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
@@ -429,15 +455,34 @@ namespace backend.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("backend.Models.BookingItem", b =>
+                {
+                    b.HasOne("backend.Models.Booking", "Booking")
+                        .WithMany("BookingItems")
+                        .HasForeignKey("BookingId")
+                        .IsRequired()
+                        .HasConstraintName("FK__BookingItems__booking__4AB81ArF0");
+
+                    b.HasOne("backend.Models.Item", "Item")
+                        .WithMany("BookingItems")
+                        .HasForeignKey("ItemId")
+                        .IsRequired()
+                        .HasConstraintName("FK__BookingItems__Item__4BAC3Ffe29");
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Item");
+                });
+
             modelBuilder.Entity("backend.Models.Caterer", b =>
                 {
-                    b.HasOne("backend.Models.UserProfile", "Profile")
+                    b.HasOne("backend.Models.UserProfile", "UserProfile")
                         .WithMany("Caterers")
-                        .HasForeignKey("ProfileId")
+                        .HasForeignKey("UserProfileId")
                         .IsRequired()
                         .HasConstraintName("FK__Profiles__ca_i__3F46685645454644");
 
-                    b.Navigation("Profile");
+                    b.Navigation("UserProfile");
                 });
 
             modelBuilder.Entity("backend.Models.CuisineType", b =>
@@ -519,6 +564,11 @@ namespace backend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("backend.Models.Booking", b =>
+                {
+                    b.Navigation("BookingItems");
+                });
+
             modelBuilder.Entity("backend.Models.Caterer", b =>
                 {
                     b.Navigation("Bookings");
@@ -533,6 +583,11 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.CuisineType", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("backend.Models.Item", b =>
+                {
+                    b.Navigation("BookingItems");
                 });
 
             modelBuilder.Entity("backend.Models.User", b =>

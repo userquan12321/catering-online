@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using static backend.Models.User;
 
 namespace backend.Models
 {
@@ -14,6 +15,7 @@ namespace backend.Models
         }
 
         public virtual DbSet<Booking> Bookings { get; set; }
+        public virtual DbSet<BookingItem> BookingItems { get; set; }
 
         public virtual DbSet<Caterer> Caterers { get; set; }
 
@@ -71,14 +73,37 @@ namespace backend.Models
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Bookings__custom__4AB81AF0");
+
             });
+            modelBuilder.Entity<BookingItem>(entity =>
+           {
+
+               entity.HasKey(e => e.Id).HasName("PK__BookingItems__5DE3A5B556fdfdf55467E");
+
+               entity.Property(e => e.Id).HasColumnName("bookingItem_id");
+
+               entity.Property(e => e.BookingId).HasColumnName("booking_id");
+               entity.Property(e => e.ItemId).HasColumnName("item_id");
+
+
+               entity.HasOne(d => d.Item).WithMany(p => p.BookingItems)
+                   .HasForeignKey(d => d.ItemId)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("FK__BookingItems__Item__4BAC3Ffe29");
+
+               entity.HasOne(d => d.Booking).WithMany(p => p.BookingItems)
+                   .HasForeignKey(d => d.BookingId)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("FK__BookingItems__booking__4AB81ArF0");
+
+           });
 
             modelBuilder.Entity<Caterer>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Caterers__BFFD0FA745D96B07");
 
                 entity.Property(e => e.Id).HasColumnName("caterer_id");
-                entity.Property(e => e.ProfileId).HasColumnName("profile_id");
+                entity.Property(e => e.UserProfileId).HasColumnName("userProfile_id");
                 // entity.Property(e => e.CuisineId).HasColumnName("cuisine_id");
                 entity.Property(e => e.CreatedAt)
                     .HasDefaultValueSql("(getdate())")
@@ -90,14 +115,14 @@ namespace backend.Models
                     .HasColumnName("updated_at");
 
                 entity.HasMany(d => d.CuisineTypes)
-             .WithOne(p => p.Caterer)
-             .HasForeignKey(p => p.CatererId)
-             .OnDelete(DeleteBehavior.ClientSetNull)
-             .HasConstraintName("FK_CuisineType_Caterer");
+                    .WithOne(p => p.Caterer)
+                    .HasForeignKey(p => p.CatererId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CuisineType_Caterer");
 
 
-                entity.HasOne(d => d.Profile).WithMany(p => p.Caterers)
-                   .HasForeignKey(d => d.ProfileId)
+                entity.HasOne(d => d.UserProfile).WithMany(p => p.Caterers)
+                   .HasForeignKey(d => d.UserProfileId)
                    .OnDelete(DeleteBehavior.ClientSetNull)
                    .HasConstraintName("FK__Profiles__ca_i__3F46685645454644");
 
@@ -243,9 +268,8 @@ namespace backend.Models
                     .HasDefaultValueSql("(getdate())")
                     .HasColumnType("datetime")
                     .HasColumnName("updated_at");
-                entity.Property(e => e.Type)
-                    .HasMaxLength(50)
-                    .HasColumnName("user_type");
+                entity.Property(u => u.Type)
+                    .HasConversion(new UserTypeConverter());
             });
 
 
@@ -253,7 +277,7 @@ namespace backend.Models
             {
                 entity.HasKey(e => e.Id).HasName("PK__Profiles__AEBB701FD3D6338F");
                 entity.Property(e => e.UserId).HasColumnName("user_id");
-                entity.Property(e => e.Id).HasColumnName("profile_id");
+                entity.Property(e => e.Id).HasColumnName("userProfile_id");
                 entity.Property(e => e.Address).HasColumnName("address");
                 entity.Property(e => e.FirstName)
                     .HasMaxLength(255)

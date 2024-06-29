@@ -1,18 +1,30 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace backend.Models
 {
-   
+
     public class User
     {
-        
-        
+
+
         public int Id { get; set; }
+        public class UserTypeConverter : ValueConverter<UserType, string>
+        {
+            public UserTypeConverter()
+                : base(
+                    v => v.ToString(),
+                    v => (UserType)Enum.Parse(typeof(UserType), v))
+            {
+            }
+        }
         public enum UserType
         {
-            Customer = 0, Caterer = 1, Admin = 2
+            Customer = 0,
+            Caterer = 1,
+            Admin = 2
         }
         public UserType Type { get; set; }
 
@@ -33,16 +45,16 @@ namespace backend.Models
         public virtual ICollection<Message> MessageSenders { get; set; } = new List<Message>();
 
         public virtual ICollection<UserProfile> UserProfiles { get; set; } = new List<UserProfile>();
-    
 
-    public User()
-    {
-        Id = 0;
-        Type = 0;
-        Email = "";
-        Password = "";
-        CreatedAt = DateTime.UtcNow;
-        UpdatedAt = DateTime.UtcNow;
+
+        public User()
+        {
+            Id = 0;
+            Type = 0;
+            Email = "";
+            Password = "";
+            CreatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
-}
 }

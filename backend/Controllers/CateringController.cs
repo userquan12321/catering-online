@@ -29,7 +29,8 @@ namespace backend.Controllers
 
             var items = await _context.Items
                 .Where(i => i.Caterer.Id == userId)
-                .Select(i => new {
+                .Select(i => new
+                {
                     i.Id,
                     i.Name,
                     i.Image,
@@ -62,7 +63,7 @@ namespace backend.Controllers
             }
 
             item.CatererId = caterer.Id;
-            item.Name =  req.Name;
+            item.Name = req.Name;
             item.Price = req.Price;
             item.ServesCount = req.ServesCount;
             item.Image = req.Image;
@@ -138,7 +139,8 @@ namespace backend.Controllers
         public async Task<ActionResult> GetCuisines()
         {
             var cuisines = await _context.CuisineTypes
-                .Select(ct => new {
+                .Select(ct => new
+                {
                     ct.Id,
                     ct.CuisineName
                 })

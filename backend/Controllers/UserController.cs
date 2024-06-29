@@ -13,8 +13,8 @@ namespace backend.Controllers
     {
         private readonly ApplicationDbContext _context = context;
 
-        // GET: api/User/profile
-        [HttpGet("profile")]
+        // GET: api/User/userProfile
+        [HttpGet("userProfile")]
         public async Task<ActionResult> GetUserProfile()
         {
             var uid = HttpContext.Session.GetInt32("uid");
@@ -25,13 +25,13 @@ namespace backend.Controllers
             // Get current user detail
             var userProfile = await _context.UserProfiles
                 .Where(x => x.UserId == uid)
-                .Join(_context.Users, profile => profile.UserId, user => user.Id, (profile, user) => new
+                .Join(_context.Users, userProfile => userProfile.UserId, user => user.Id, (userProfile, user) => new
                 {
-                    profile.FirstName,
-                    profile.LastName,
-                    profile.Address,
-                    profile.PhoneNumber,
-                    profile.Image,
+                    userProfile.FirstName,
+                    userProfile.LastName,
+                    userProfile.Address,
+                    userProfile.PhoneNumber,
+                    userProfile.Image,
                     user.Email
                 })
                 .FirstOrDefaultAsync();
@@ -69,7 +69,7 @@ namespace backend.Controllers
             userProfile.Image = request.Image;
             user.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
-            return Ok("Profile updated successfully.");
+            return Ok("UserProfile updated successfully.");
         }
 
         // PUT: api/User/change-password
