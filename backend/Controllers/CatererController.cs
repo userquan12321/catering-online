@@ -9,7 +9,7 @@ using backend.Models.DTO;
 
 namespace backend.Controllers
 {
-    [Authorize(Roles = "Caterer")]
+    //[Authorize(Roles = "Caterer")]
     [Route("api/[controller]")]
     [ApiController]
     public class CatererController(ApplicationDbContext context) : ControllerBase

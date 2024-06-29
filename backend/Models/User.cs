@@ -22,24 +22,14 @@ namespace backend.Models
         [Required]
         [StringLength(255, MinimumLength = 4)]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [Required]
         [StringLength(255, MinimumLength = 8)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
-
-        public User()
-        {
-            Id = 0;
-            Type = 0;
-            Email = "";
-            Password = "";
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
-        }
     }
 }

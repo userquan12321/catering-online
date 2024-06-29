@@ -3,13 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Models
+namespace backend.Models.DTO
 {
-    public class Booking
+    public class BookCatererDTO
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         public int CustomerId { get; set; }
         [JsonIgnore]
@@ -23,10 +20,10 @@ namespace backend.Models
         public Caterer? Caterer { get; set; }
 
         [Required]
-        public DateOnly BookingDate { get; set; }
+        public DateTime BookingDate { get; set; }
 
         [Required]
-        public DateOnly EventDate { get; set; }
+        public DateTime EventDate { get; set; }
 
         [Required]
         [StringLength(255)]
@@ -42,14 +39,11 @@ namespace backend.Models
 
         [Required]
         [StringLength(20)]
-        public string Status { get; set; } = string.Empty;
+        public string Status { get; set; } = "Pending";
 
         [Required]
         [StringLength(20)]
         public string PaymentMethod { get; set; } = string.Empty;
-
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime UpdatedAt { get; set; }
     }
 }
+

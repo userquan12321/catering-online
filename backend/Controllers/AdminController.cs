@@ -6,7 +6,7 @@ using backend.Models.DTO;
 
 namespace backend.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController(ApplicationDbContext context) : ControllerBase

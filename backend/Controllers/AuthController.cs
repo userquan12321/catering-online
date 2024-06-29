@@ -19,7 +19,7 @@ namespace backend.Controllers
 
         // POST: api/Auth/register
         [HttpPost("register")]
-        public async Task<ActionResult> Register(Register request)
+        public async Task<ActionResult> Register(RegisterDTO request)
         {
             if (_context.Users.Any(x => x.Email == request.Email))
             { 
@@ -60,7 +60,7 @@ namespace backend.Controllers
 
         // POST: api/Auth/login
         [HttpPost("login")]
-        public async Task<ActionResult> Login(Login request)
+        public async Task<ActionResult> Login(LoginDTO request)
         {
             var getUser = await _context.Users.Where(x => x.Email == request.Email).FirstOrDefaultAsync();
             if (getUser == null)

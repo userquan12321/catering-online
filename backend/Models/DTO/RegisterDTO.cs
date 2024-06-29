@@ -3,7 +3,7 @@ using static backend.Models.User;
 
 namespace backend.Models.DTO
 {
-    public class Register
+    public class RegisterDTO
     {
         [Required]
         [Range(0, 2)]
@@ -12,37 +12,26 @@ namespace backend.Models.DTO
         [Required]
         [StringLength(255, MinimumLength = 4)]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [Required]
         [StringLength(255, MinimumLength = 8)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         [Required]
         [StringLength(255, MinimumLength = 2)]
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
 
         [StringLength(255, MinimumLength = 2)]
-        public string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
 
         [Required]
         [StringLength(16, MinimumLength = 8)]
         [Phone]
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
 
         [Required]
         [StringLength(255, MinimumLength = 8)]
-        public string Address { get; set; }
-
-        public Register()
-        {
-            Type = 0;
-            Email = "";
-            Password = "";
-            FirstName = "";
-            LastName = "";
-            PhoneNumber = "";
-            Address = "";
-        }
+        public string Address { get; set; } = string.Empty;
     }
 }

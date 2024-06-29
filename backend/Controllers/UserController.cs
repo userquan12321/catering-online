@@ -6,7 +6,7 @@ using backend.Models.DTO;
 
 namespace backend.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController(ApplicationDbContext context) : ControllerBase
@@ -45,7 +45,7 @@ namespace backend.Controllers
 
         // PUT: api/User/update-profile
         [HttpPut("update-profile")]
-        public async Task<ActionResult> UserUpdateProfile(UpdateProfile request)
+        public async Task<ActionResult> UserUpdateProfile(UpdateProfileDTO request)
         {
             var uid = HttpContext.Session.GetInt32("uid");
             if (uid == null) 
@@ -76,7 +76,7 @@ namespace backend.Controllers
 
         // PUT: api/User/change-password
         [HttpPut("change-password")]
-        public async Task<ActionResult> UserChangePassword(ChangePassword request)
+        public async Task<ActionResult> UserChangePassword(ChangePasswordDTO request)
         {
             var uid = HttpContext.Session.GetInt32("uid");
             if (uid == null) 
