@@ -12,21 +12,6 @@ namespace backend.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(255, MinimumLength = 2)]
-        public string Name { get; set; }
-
-        [Required]
-        [StringLength(1000)]
-        public string Image { get; set; }
-
-        [Required]
-        public int ServesCount { get; set; }
-
-        [Required]
-        [Precision(18, 2)]
-        public decimal Price { get; set; }
-
-        [Required]
         public int CatererId { get; set; }
         [JsonIgnore]
         [ForeignKey(nameof(CatererId))]
@@ -38,21 +23,23 @@ namespace backend.Models
         [ForeignKey(nameof(CuisineId))]
         public CuisineType? CuisineType { get; set; }
 
+        [Required]
+        [StringLength(255, MinimumLength = 2)]
+        public string Name { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(1000)]
+        public string Image { get; set; } = string.Empty;
+
+        [Required]
+        public int ServesCount { get; set; }
+
+        [Required]
+        [Precision(18, 2)]
+        public decimal Price { get; set; }
+
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
-
-        public Item()
-        {
-            Id = 0;
-            Name = "";
-            Image = "";
-            ServesCount = 0;
-            Price = 0M;
-            CatererId = 0;
-            CuisineId = 0;
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
-        }
     }
 }

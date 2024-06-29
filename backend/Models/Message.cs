@@ -22,20 +22,10 @@ namespace backend.Models
         public User? Receiver { get; set; }
 
         [Required]
-        public string Content { get; set; }
+        public string Content { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
-
-        public Message()
-        {
-            Id = 0;
-            SenderId = 0;
-            ReceiverId = 0;
-            Content = "";
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
-        }
     }
 }

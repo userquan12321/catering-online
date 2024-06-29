@@ -11,18 +11,10 @@ namespace backend.Models
 
         [Required]
         [StringLength(255, MinimumLength = 2)]
-        public string CuisineName { get; set; }
+        public string CuisineName { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
-
-        public CuisineType()
-        {
-            Id = 0;
-            CuisineName = "";
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
-        }
     }
 }

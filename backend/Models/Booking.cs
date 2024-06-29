@@ -23,14 +23,14 @@ namespace backend.Models
         public Caterer? Caterer { get; set; }
 
         [Required]
-        public DateTime BookingDate { get; set; }
+        public DateOnly BookingDate { get; set; }
 
         [Required]
-        public DateTime EventDate { get; set; }
+        public DateOnly EventDate { get; set; }
 
         [Required]
         [StringLength(255)]
-        public string Venue { get; set; }
+        public string Venue { get; set; } = string.Empty;
 
         [Required]
         [Precision(18, 2)]
@@ -38,34 +38,18 @@ namespace backend.Models
 
         [Required]
         [StringLength(255)]
-        public string Note { get; set; }
+        public string Note { get; set; } = string.Empty;
 
         [Required]
         [StringLength(20)]
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
 
         [Required]
         [StringLength(20)]
-        public string PaymentMethod { get; set; }
+        public string PaymentMethod { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
-
-        public Booking()
-        {
-            Id = 0;
-            CustomerId = 0;
-            CatererId = 0;
-            BookingDate = new DateTime();
-            EventDate = new DateTime();
-            Venue = "";
-            TotalAmount = 0;
-            Note = "";
-            Status = "Pending";
-            PaymentMethod = "";
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
-        }
     }
 }

@@ -6,29 +6,20 @@ namespace backend.Models.DTO
     {
         [Required]
         [StringLength(255, MinimumLength = 2)]
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
 
         [StringLength(255, MinimumLength = 2)]
-        public string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
 
         [Required]
         [StringLength(16, MinimumLength = 8)]
         [Phone]
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
 
         [Required]
         [StringLength(255, MinimumLength = 8)]
-        public string Address { get; set; }
+        public string Address { get; set; } = string.Empty;
 
-        public string Image { get; set; }
-
-        public UpdateProfileDTO()
-        {
-            FirstName = "";
-            LastName = "";
-            PhoneNumber = "";
-            Address = "";
-            Image = "";
-        }
+        public string Image { get; set; } = string.Empty;
     }
 }

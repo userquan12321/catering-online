@@ -24,14 +24,5 @@ namespace backend.Models
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
-
-        public FavoriteList()
-        {
-            Id = 0;
-            UserId = 0;
-            CatererId = 0;
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
-        }
     }
 }

@@ -7,11 +7,11 @@ namespace backend.Models.DTO
     {
         [Required]
         [StringLength(255, MinimumLength = 2)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Required]
         [StringLength(1000)]
-        public string Image { get; set; }
+        public string Image { get; set; } = string.Empty;
 
         [Required]
         public int ServesCount { get; set; }
@@ -25,16 +25,5 @@ namespace backend.Models.DTO
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
-
-        public ItemDTO()
-        {
-            Name = "";
-            Image = "";
-            ServesCount = 0;
-            Price = 0M;
-            CuisineId = 0;
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
-        }
     }
 }

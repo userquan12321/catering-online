@@ -6,16 +6,10 @@ namespace backend.Models.DTO
     {
         [Required]
         [StringLength(255, MinimumLength = 8)]
-        public string OldPassword { get; set; }
+        public string OldPassword { get; set; } = string.Empty;
 
         [Required]
         [StringLength(255, MinimumLength = 8)]
-        public string NewPassword { get; set; }
-
-        public ChangePasswordDTO()
-        {
-            OldPassword = "";
-            NewPassword = "";
-        }
+        public string NewPassword { get; set; } = string.Empty;
     }
 }

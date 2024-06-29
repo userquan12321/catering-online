@@ -14,11 +14,5 @@ namespace backend.Models
         [JsonIgnore]
         [ForeignKey(nameof(ProfileId))]
         public Profile? Profile { get; set; }
-
-        public Caterer()
-        {
-            Id = 0;
-            ProfileId = 0;
-        }
     }
 }
