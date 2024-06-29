@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
 {
+    
     [Index(nameof(Name), IsUnique = true)]
     public class Item
     {

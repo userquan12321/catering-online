@@ -7,6 +7,8 @@ namespace backend.Models
     public class CuisineType
     {
         public int Id { get; set; }
+        public int CatererId { get; set; }
+        public int ItemId { get; set; }
 
         public string CuisineName { get; set; } = null!;
         
@@ -16,6 +18,7 @@ namespace backend.Models
         public DateTime UpdatedAt { get; set; }
 
         public virtual ICollection<Item> Items { get; set; } = new List<Item>();
+        public virtual Caterer Caterer { get; set; } = null!; // Add this line
         public CuisineType()
         {
             Id = 0;

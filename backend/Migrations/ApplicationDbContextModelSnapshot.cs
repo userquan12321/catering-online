@@ -27,49 +27,62 @@ namespace backend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("ID");
+                        .HasColumnName("booking_id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly>("BookingDate")
-                        .HasColumnType("date");
+                        .HasColumnType("date")
+                        .HasColumnName("booking_date");
 
                     b.Property<string>("BookingStatus")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasDefaultValue("Pending");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Pending")
+                        .HasColumnName("status");
 
                     b.Property<int>("CatererId")
                         .HasColumnType("int")
-                        .HasColumnName("CatererID");
+                        .HasColumnName("caterer_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int")
-                        .HasColumnName("CustomerID");
+                        .HasColumnName("customer_id");
 
                     b.Property<DateOnly>("EventDate")
-                        .HasColumnType("date");
+                        .HasColumnType("date")
+                        .HasColumnName("event_date");
 
                     b.Property<int>("PaymentMethod")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("PaymentMethod");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(10, 2)")
+                        .HasColumnName("total_amount");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("Venue")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("venue");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__Bookings__5DE3A5B191D2667E");
 
                     b.HasIndex("CatererId");
 
@@ -83,15 +96,28 @@ namespace backend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("ID");
+                        .HasColumnName("caterer_id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("(getdate())");
+
                     b.Property<int>("ProfileId")
                         .HasColumnType("int")
-                        .HasColumnName("ProfileID");
+                        .HasColumnName("profile_id");
 
-                    b.HasKey("Id");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.HasKey("Id")
+                        .HasName("PK__Caterers__BFFD0FA745D96B07");
 
                     b.HasIndex("ProfileId");
 
@@ -107,18 +133,34 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CatererId")
+                        .HasColumnType("int")
+                        .HasColumnName("CatererID");
+
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("CuisineName")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int")
+                        .HasColumnName("ItemID");
+
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CatererId");
 
                     b.HasIndex(new[] { "CuisineName" }, "UQ__CuisineT__2C77DCC834D2F401")
                         .IsUnique();
@@ -131,25 +173,31 @@ namespace backend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("ID");
+                        .HasColumnName("customer_id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CatererId")
                         .HasColumnType("int")
-                        .HasColumnName("CatererID");
+                        .HasColumnName("caterer_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("UserID");
+                        .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__Favorite__46ACF4CBA515F89B");
 
                     b.HasIndex("CatererId");
 
@@ -163,50 +211,56 @@ namespace backend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("ID");
+                        .HasColumnName("item_id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CatererId")
                         .HasColumnType("int")
-                        .HasColumnName("CatererID");
+                        .HasColumnName("caterer_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<int>("CuisineId")
                         .HasColumnType("int")
-                        .HasColumnName("CuisineID");
+                        .HasColumnName("cuisine_id");
 
                     b.Property<string>("Image")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("image");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("name");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(10, 2)")
+                        .HasColumnName("price");
 
                     b.Property<int>("ServesCount")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("serves_count");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("(getdate())");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__Items__52020FDD67FBD1D6");
 
                     b.HasIndex("CatererId");
 
-                    b.HasIndex("CuisineId");
-
                     b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.HasIndex(new[] { "Name" }, "UQ__Items__737584F6D7CE17D9")
                         .IsUnique();
 
                     b.ToTable("Items");
@@ -217,29 +271,37 @@ namespace backend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("ID");
+                        .HasColumnName("message_id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("content");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<int>("ReceiverId")
                         .HasColumnType("int")
-                        .HasColumnName("ReceiverID");
+                        .HasColumnName("receiver_id");
 
                     b.Property<int>("SenderId")
                         .HasColumnType("int")
-                        .HasColumnName("SenderID");
+                        .HasColumnName("sender_id");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("(getdate())");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__Messages__0BBF6EE6E11D6A45");
 
                     b.HasIndex("ReceiverId");
 
@@ -253,32 +315,43 @@ namespace backend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("ID");
+                        .HasColumnName("user_id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("email");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("password");
 
                     b.Property<int>("Type")
-                        .HasColumnType("int");
+                        .HasMaxLength(50)
+                        .HasColumnType("int")
+                        .HasColumnName("user_type");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("(getdate())");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__Users__B9BE370F5DC6DC6F");
 
-                    b.HasIndex(new[] { "Email" }, "UQ__Users__A9D10534E6104E05")
+                    b.HasIndex(new[] { "Email" }, "UQ__Users__AB6E61648AE41E8C")
                         .IsUnique();
 
                     b.ToTable("Users");
@@ -289,19 +362,21 @@ namespace backend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("ID");
+                        .HasColumnName("profile_id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("address");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("first_name");
 
                     b.Property<string>("Image")
                         .IsRequired()
@@ -311,18 +386,21 @@ namespace backend.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("last_name");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("phone_number");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int")
-                        .HasColumnName("UserID");
+                        .HasColumnName("user_id");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__Profiles__AEBB701FD3D6338F");
 
                     b.HasIndex("UserId");
 
@@ -334,13 +412,14 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.Caterer", "Caterer")
                         .WithMany("Bookings")
                         .HasForeignKey("CatererId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK__Bookings__catere__4BAC3F29");
 
                     b.HasOne("backend.Models.User", "Customer")
                         .WithMany("Bookings")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK__Bookings__custom__4AB81AF0");
 
                     b.Navigation("Caterer");
 
@@ -352,10 +431,21 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.UserProfile", "Profile")
                         .WithMany("Caterers")
                         .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK__Profiles__ca_i__3F46685645454644");
 
                     b.Navigation("Profile");
+                });
+
+            modelBuilder.Entity("backend.Models.CuisineType", b =>
+                {
+                    b.HasOne("backend.Models.Caterer", "Caterer")
+                        .WithMany("CuisineTypes")
+                        .HasForeignKey("CatererId")
+                        .IsRequired()
+                        .HasConstraintName("FK_CuisineType_Caterer");
+
+                    b.Navigation("Caterer");
                 });
 
             modelBuilder.Entity("backend.Models.FavoriteList", b =>
@@ -363,13 +453,14 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.Caterer", "Caterer")
                         .WithMany("FavoriteLists")
                         .HasForeignKey("CatererId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK__FavoriteL__cater__5BE2A6F2");
 
                     b.HasOne("backend.Models.User", "User")
                         .WithMany("FavoriteLists")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK__FavoriteL__custo__5AE41545B9");
 
                     b.Navigation("Caterer");
 
@@ -381,14 +472,14 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.Caterer", "Caterer")
                         .WithMany("Items")
                         .HasForeignKey("CatererId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK__Items__caterer_i__5629CD9C");
 
                     b.HasOne("backend.Models.CuisineType", "CuisineType")
                         .WithMany("Items")
-                        .HasForeignKey("CuisineId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CatererId")
+                        .IsRequired()
+                        .HasConstraintName("FK__Items__caterer_i__562955565CD9C");
 
                     b.Navigation("Caterer");
 
@@ -400,13 +491,14 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.User", "Receiver")
                         .WithMany("MessageReceivers")
                         .HasForeignKey("ReceiverId")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK__Messages__receiv__5165187F");
 
                     b.HasOne("backend.Models.User", "Sender")
                         .WithMany("MessageSenders")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK__Messages__sender__5070F446");
 
                     b.Navigation("Receiver");
 
@@ -418,8 +510,8 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.User", "User")
                         .WithMany("UserProfiles")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK__Profiles__user_i__3F466844");
 
                     b.Navigation("User");
                 });
@@ -427,6 +519,8 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.Caterer", b =>
                 {
                     b.Navigation("Bookings");
+
+                    b.Navigation("CuisineTypes");
 
                     b.Navigation("FavoriteLists");
 
