@@ -14,8 +14,7 @@ namespace backend.Controllers
     [ApiController]
     public class CatererController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context = context;
-        private Item item = new();
+        private Item _item = new();
 
         // GET: api/Caterer/items
         [HttpGet("items")]
@@ -26,9 +25,9 @@ namespace backend.Controllers
             {
                 return NotFound("Caterer id not found");
             }
-            // Get item for current caterer
-            var items = await _context.Items
-                .Where(i => i.CatererId == cid)
+            // Get _item for current caterer
+            var items = await context.Items
+                .Where(i => i.CatererId == cid.Value)
                 .Select(i => new {
                     i.Id,
                     i.Name,
@@ -44,7 +43,7 @@ namespace backend.Controllers
             return Ok(items);
         }
 
-        // POST: api/Caterer/id/items
+        // POST: api/Caterer/items
         [HttpPost("items")]
         public async Task<ActionResult> AddItem(ItemDTO request)
         {
@@ -53,18 +52,18 @@ namespace backend.Controllers
             {
                 return NotFound("Caterer id not found");
             }
-            // Add item
+            // Add _item
             request.CatererId = cid.Value;
-            item.CatererId = request.CatererId;
-            item.CuisineId = request.CuisineId;
-            item.Name =  request.Name;
-            item.Price = request.Price;
-            item.ServesCount = request.ServesCount;
-            item.Image = request.Image;
-            item.CreatedAt = DateTime.UtcNow;
-            item.UpdatedAt = DateTime.UtcNow;
-            _context.Items.Add(item);
-            await _context.SaveChangesAsync();
+            _item.CatererId = request.CatererId;
+            _item.CuisineId = request.CuisineId;
+            _item.Name =  request.Name;
+            _item.Price = request.Price;
+            _item.ServesCount = request.ServesCount;
+            _item.Image = request.Image;
+            _item.CreatedAt = DateTime.UtcNow;
+            _item.UpdatedAt = DateTime.UtcNow;
+            context.Items.Add(_item);
+            await context.SaveChangesAsync();
 
             return Ok("Item created successfully");
         }
@@ -78,20 +77,20 @@ namespace backend.Controllers
             {
                 return NotFound("Caterer id not found");
             }
-            // Get item from caterer id and item id
-            var existingItem = await _context.Items.Where(x => x.CatererId == cid && x.Id == id).FirstOrDefaultAsync();
+            // Get _item from caterer id and _item id
+            var existingItem = await context.Items.Where(x => x.CatererId == cid.Value && x.Id == id).FirstOrDefaultAsync();
             if (existingItem == null)
             {
                 return NotFound("Item not found.");
             }
-            // Update item
+            // Update _item
             existingItem.Name = request.Name;
             existingItem.Image = request.Image;
             existingItem.CuisineId = request.CuisineId;
             existingItem.ServesCount = request.ServesCount;
             existingItem.Price = request.Price;
             existingItem.UpdatedAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             return Ok("Item updated successfully.");
         }
@@ -105,15 +104,15 @@ namespace backend.Controllers
             {
                 return NotFound("Caterer id not found");
             }
-            // Get item from caterer id and item id
-            var item = await _context.Items.Where(x => x.CatererId == cid && x.Id == id).FirstOrDefaultAsync();
-            if (item == null)
+            // Get _item from caterer id and _item id
+            var _item = await context.Items.Where(x => x.CatererId == cid.Value && x.Id == id).FirstOrDefaultAsync();
+            if (_item == null)
             {
                 return NotFound("Item not found.");
             }
-            // Delete item
-            _context.Items.Remove(item);
-            await _context.SaveChangesAsync();
+            // Delete _item
+            context.Items.Remove(_item);
+            await context.SaveChangesAsync();
 
             return Ok("Item deleted successfully.");
         }
@@ -122,7 +121,7 @@ namespace backend.Controllers
         [HttpGet("cuisines")]
         public async Task<ActionResult> GetCuisines()
         {
-            var cuisines = await _context.CuisineTypes
+            var cuisines = await context.CuisineTypes
                 .Select(ct => new {
                     ct.Id,
                     ct.CuisineName

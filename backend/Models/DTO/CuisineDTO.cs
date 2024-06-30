@@ -4,8 +4,7 @@ namespace backend.Models.DTO
 {
     public class CuisineDTO
     {
-        [Required]
-        [StringLength(255, MinimumLength = 2)]
+        [StringLength(255)]
         public string CuisineName { get; set; } = string.Empty;
     }
 }

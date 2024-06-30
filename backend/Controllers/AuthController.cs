@@ -12,16 +12,15 @@ namespace backend.Controllers
     [ApiController]
     public class AuthController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context = context;
-        private User user = new();
-        private Profile profile = new();
-        private Caterer caterer = new();
+        private User _user = new();
+        private Profile _profile = new();
+        private Caterer _caterer = new();
 
         // POST: api/Auth/register
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterDTO request)
         {
-            if (_context.Users.Any(x => x.Email == request.Email))
+            if (context.Users.Any(x => x.Email == request.Email))
             { 
                 return BadRequest("Email already exist"); 
             }
@@ -29,34 +28,30 @@ namespace backend.Controllers
             { 
                 return BadRequest("Invalid input"); 
             }
-            // Add user to Users table
-            user.Type = request.Type;
-            user.Email = request.Email;
-            user.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
-            user.CreatedAt = DateTime.UtcNow;
-            user.UpdatedAt = DateTime.UtcNow;
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            // Add _user to Users table
+            _user.Type = request.Type;
+            _user.Email = request.Email;
+            _user.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            _user.CreatedAt = DateTime.UtcNow;
+            _user.UpdatedAt = DateTime.UtcNow;
+            context.Users.Add(_user);
+            await context.SaveChangesAsync();
 
-            // Add user profile to Profiles table
-            profile.UserId = user.Id;
-            profile.FirstName = request.FirstName;
-            profile.LastName = request.LastName;
-            profile.Address = request.Address;
-            profile.PhoneNumber = request.PhoneNumber;
-            _context.Profiles.Add(profile);
-            await _context.SaveChangesAsync();
+            // Add _user _profile to Profiles table
+            _profile.UserId = _user.Id;
+            _profile.FirstName = request.FirstName;
+            _profile.LastName = request.LastName;
+            _profile.Address = request.Address;
+            _profile.PhoneNumber = request.PhoneNumber;
+            context.Profiles.Add(_profile);
+            await context.SaveChangesAsync();
 
-            // Add caterer to Caterers table
+            // Add _caterer to Caterers table
             if (request.Type == Models.User.UserType.Caterer)
             {
-<<<<<<< HEAD
-                caterer.UserProfileId = userProfile.Id;
-=======
-                caterer.ProfileId = profile.Id;
->>>>>>> 0d3a11e7efffb2bec340f057f117c13e70a2a64e
-                _context.Caterers.Add(caterer);
-                await _context.SaveChangesAsync();
+                _caterer.ProfileId = _profile.Id;
+                context.Caterers.Add(_caterer);
+                await context.SaveChangesAsync();
             }
 
             return Ok("User registered successfully");
@@ -66,12 +61,12 @@ namespace backend.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login(LoginDTO request)
         {
-            var getUser = await _context.Users.Where(x => x.Email == request.Email).FirstOrDefaultAsync();
+            var getUser = await context.Users.Where(x => x.Email == request.Email).FirstOrDefaultAsync();
             if (getUser == null)
             { 
                 return NotFound("Email not found"); 
             }
-            var getProfile = await _context.Profiles.Where(x => x.UserId == getUser.Id).FirstOrDefaultAsync();
+            var getProfile = await context.Profiles.Where(x => x.UserId == getUser.Id).FirstOrDefaultAsync();
             if (getProfile == null)
             {
                 return NotFound("Profile not found");
@@ -90,7 +85,7 @@ namespace backend.Controllers
             HttpContext.Session.SetInt32("pid", getProfile.Id);
             if (getUser.Type == Models.User.UserType.Caterer)
             {
-                var getCaterer = await _context.Caterers.Where(x => x.ProfileId == getProfile.Id).FirstOrDefaultAsync();
+                var getCaterer = await context.Caterers.Where(x => x.ProfileId == getProfile.Id).FirstOrDefaultAsync();
                 if (getCaterer == null)
                 {
                     return NotFound("Caterer not found");
@@ -130,6 +125,7 @@ namespace backend.Controllers
             HttpContext.Session.Remove("uid");
             HttpContext.Session.Remove("pid");
             HttpContext.Session.Remove("cid");
+            HttpContext.Session.Clear();
             await HttpContext.Session.CommitAsync();
 
             return Ok("Logged out successfully");

@@ -43,3 +43,9 @@ msbuild.err
 msbuild.wrn
 
 appsettings.json
+appsettings.Development.json
+bin
+obj
+Properties
+.csproj
+.csproj.user

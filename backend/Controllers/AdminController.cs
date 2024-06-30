@@ -76,10 +76,6 @@ namespace backend.Controllers
         public async Task<ActionResult> DeleteUser(int id)
         {
             var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
-            { 
-                return NotFound("User id not found"); 
-            }
             if (uid == id)
             { 
                 return BadRequest("Can't delete current admin account"); 

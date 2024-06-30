@@ -3,41 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Models;
+using backend.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
-    [Authorize(Roles = "Admin,Customer,Caterer")]
+    //[Authorize(Roles = "Admin, Customer, Caterer")]
     [ApiController]
     [Route("api/[controller]")]
     public class BookingController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context = context;
-
         // Customer books a caterer
         [HttpPost]
-        public async Task<IActionResult> BookCaterer([FromBody] BookingDto bookingDto)
+        public async Task<IActionResult> BookCaterer([FromBody] BookingDTO request)
         {
+            var uid = HttpContext.Session.GetInt32("uid");
+            if (uid == null)
+            {
+                return NotFound("User id not found");
+            }
+            request.CustomerId = uid.Value;
             var booking = new Booking
             {
-                CustomerId = bookingDto.CustomerId,
-                CatererId = bookingDto.CatererId,
-                BookingDate = bookingDto.BookingDate,
-                EventDate = bookingDto.EventDate,
-                Venue = bookingDto.Venue,
-                TotalAmount = bookingDto.TotalAmount,
-                BookingStatus = bookingDto.BookingStatus,
-                PaymentMethod = bookingDto.PaymentMethod,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
+                CustomerId = request.CustomerId,
+                CatererId = request.CatererId,
+                BookingDate = request.BookingDate,
+                EventDate = request.EventDate,
+                Venue = request.Venue,
+                TotalAmount = request.TotalAmount,
+                BookingStatus = request.BookingStatus,
+                PaymentMethod = request.PaymentMethod,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
 
-            _context.Bookings.Add(booking);
-            await _context.SaveChangesAsync();
+            context.Bookings.Add(booking);
+            await context.SaveChangesAsync();
 
-            foreach (var itemId in bookingDto.MenuItemIds)
+            foreach (var itemId in request.MenuItemIds)
             {
                 var bookingItem = new BookingItem
                 {
@@ -45,64 +50,77 @@ namespace backend.Controllers
                     ItemId = itemId
                 };
 
-                _context.BookingItems.Add(bookingItem);
+                context.BookingItems.Add(bookingItem);
             }
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetBookingById), new { id = booking.Id }, booking);
+            return Ok("Book successfully");
         }
 
         // Get booking details by ID
         [HttpGet("{id}")]
-        public async Task<ActionResult<Booking>> GetBookingById(int id)
+        public async Task<ActionResult> GetBookingById(int id)
         {
-            var booking = await _context.Bookings.FindAsync(id);
+            var booking = await context.Bookings.FindAsync(id);
 
             if (booking == null)
             {
                 return NotFound();
             }
 
-            return booking;
+            return Ok(booking);
         }
 
         // Customer views their bookings
-        [HttpGet("customer/{customerId}")]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetCustomerBookings(int customerId)
+        [HttpGet("customer/bookings")]
+        public async Task<ActionResult> GetCustomerBookings()
         {
-            return await _context.Bookings.Where(b => b.CustomerId == customerId).ToListAsync();
+            var uid = HttpContext.Session.GetInt32("uid");
+            if (uid == null)
+            {
+                return NotFound("User id not found");
+            }
+            var booking = await context.Bookings.Where(b => b.CustomerId == uid.Value).ToListAsync();
+
+            return Ok(booking);
         }
 
         // Customer cancels a booking
         [HttpDelete("{id}")]
         public async Task<IActionResult> CancelBooking(int id)
         {
-            var booking = await _context.Bookings.FindAsync(id);
+            var booking = await context.Bookings.FindAsync(id);
 
             if (booking == null)
             {
                 return NotFound();
             }
 
-            _context.Bookings.Remove(booking);
-            await _context.SaveChangesAsync();
+            context.Bookings.Remove(booking);
+            await context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
         // Caterer views bookings
-        [HttpGet("caterer/{catererId}")]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetCatererBookings(int catererId)
+        [HttpGet("caterer/bookings")]
+        public async Task<ActionResult> GetCatererBookings()
         {
-            return await _context.Bookings.Where(b => b.CatererId == catererId).ToListAsync();
+            var cid = HttpContext.Session.GetInt32("cid");
+            if (cid == null)
+            {
+                return NotFound("Caterer id not found");
+            }
+            var booking = await context.Bookings.Where(b => b.CatererId == cid.Value).ToListAsync();
+            return Ok(booking);
         }
 
         // Caterer updates booking status
-        [HttpPut("{id}/status")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBookingStatus(int id, [FromBody] string status)
         {
-            var booking = await _context.Bookings.FindAsync(id);
+            var booking = await context.Bookings.FindAsync(id);
 
             if (booking == null)
             {
@@ -110,23 +128,11 @@ namespace backend.Controllers
             }
 
             booking.BookingStatus = status;
-            booking.UpdatedAt = DateTime.Now;
+            booking.UpdatedAt = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
-    }
-    public class BookingDto
-    {
-        public int CustomerId { get; set; }
-        public int CatererId { get; set; }
-        public DateOnly BookingDate { get; set; }
-        public DateOnly EventDate { get; set; }
-        public string? Venue { get; set; }
-        public List<int> MenuItemIds { get; set; }
-        public decimal TotalAmount { get; set; }
-        public string BookingStatus { get; set; }
-        public int PaymentMethod { get; set; }
     }
 }

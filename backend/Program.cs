@@ -8,10 +8,9 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+// Add DbContext and SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
-// builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add cross-origin resource sharing
 builder.Services.AddCors(options =>
@@ -25,28 +24,28 @@ builder.Services.AddCors(options =>
         });
 });
 
-var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]);
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false,
-        ValidateAudience = false
-        // ValidateIssuer = true,
-        // ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        // ValidateAudience = true,
-        // ValidAudience = builder.Configuration["Jwt:Audience"
-    };
-});
+//var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]);
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddJwtBearer(options =>
+//{
+//    options.RequireHttpsMetadata = false;
+//    options.SaveToken = true;
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuerSigningKey = true,
+//        IssuerSigningKey = new SymmetricSecurityKey(key),
+//        ValidateIssuer = false,
+//        ValidateAudience = false
+//        // ValidateIssuer = true,
+//        // ValidIssuer = builder.Configuration["Jwt:Issuer"],
+//        // ValidateAudience = true,
+//        // ValidAudience = builder.Configuration["Jwt:Audience"
+//    };
+//});
 
 // Add memory cache
 builder.Services.AddDistributedMemoryCache();
@@ -99,12 +98,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSession();
-app.UseRouting();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
 app.MapControllers();
 
 app.Run();
