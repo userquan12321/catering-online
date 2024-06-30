@@ -5,28 +5,23 @@ namespace backend.Models.DTO
 {
     public class RegisterDTO
     {
-        [Required]
         [Range(0, 2)]
         public UserType Type { get; set; }
 
-        [Required]
-        [StringLength(255, MinimumLength = 4)]
+        [StringLength(255)]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(255, MinimumLength = 8)]
+        [StringLength(255)]
         public string Password { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(255, MinimumLength = 2)]
+        [StringLength(255)]
         public string FirstName { get; set; } = string.Empty;
 
         [StringLength(255)]
         public string LastName { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(16, MinimumLength = 8)]
+        [StringLength(20)]
         [Phone]
         public string PhoneNumber { get; set; } = string.Empty;
 

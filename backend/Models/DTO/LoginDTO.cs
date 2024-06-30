@@ -4,13 +4,11 @@ namespace backend.Models.DTO
 {
     public class LoginDTO
     {
-        [Required]
-        [StringLength(255, MinimumLength = 4)]
+        [StringLength(255)]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(255, MinimumLength = 8)]
+        [StringLength(255)]
         public string Password { get; set; } = string.Empty;
     }
 }

@@ -1,11 +1,7 @@
+using backend.Models;
+using backend.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using backend.Models;
-using Microsoft.AspNetCore.Authorization;
-using System.Threading.Tasks;
-using System.Linq;
-using System;
-using backend.Models.DTO;
 
 namespace backend.Controllers
 {
@@ -14,120 +10,79 @@ namespace backend.Controllers
     [ApiController]
     public class CatererController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context = context;
-        private Item item = new();
-
-        // GET: api/Caterer/items
-        [HttpGet("items")]
-        public async Task<ActionResult> GetItems()
+        // Caterer view all items
+        [HttpGet("{catererId}/items")]
+        public async Task<ActionResult> GetItems(int catererId)
         {
-            var cid = HttpContext.Session.GetInt32("cid");
-            if (cid == null)
-            {
-                return NotFound("Caterer id not found");
-            }
-            // Get item for current caterer
-            var items = await _context.Items
-                .Where(i => i.CatererId == cid)
-                .Select(i => new {
-                    i.Id,
-                    i.Name,
-                    i.Image,
-                    i.ServesCount,
-                    i.Price,
-                    i.CuisineId,
-                    i.CreatedAt,
-                    i.UpdatedAt
-                })
+            var items = await context.Items
+                .Where(i => i.CatererId == catererId)
                 .ToListAsync();
-
             return Ok(items);
         }
 
-        // POST: api/Caterer/id/items
-        [HttpPost("items")]
-        public async Task<ActionResult> AddItem(ItemDTO request)
+        // POST: api/Caterer/items
+        [HttpPost("{catererId}/items")]
+        public async Task<ActionResult> AddItem(int catererId, ItemDTO request)
         {
-            var cid = HttpContext.Session.GetInt32("cid");
-            if (cid == null)
+            request.CatererId = catererId;
+            Item item = new()
             {
-                return NotFound("Caterer id not found");
-            }
-            // Add item
-            item.CatererId = cid.Value;
-            item.CuisineId = request.CuisineId;
-            item.Name =  request.Name;
-            item.Price = request.Price;
-            item.ServesCount = request.ServesCount;
-            item.Image = request.Image;
-            item.CreatedAt = DateTime.UtcNow;
-            item.UpdatedAt = DateTime.UtcNow;
-            _context.Items.Add(item);
-            await _context.SaveChangesAsync();
-
-            return Ok("Item created successfully");
+                CatererId = request.CatererId,
+                CuisineId = request.CuisineId,
+                Name = request.Name,
+                Price = request.Price,
+                ServesCount = request.ServesCount,
+                Image = request.Image,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            context.Items.Add(item);
+            await context.SaveChangesAsync();
+            return Ok("Item added.");
         }
 
-        // PUT: api/Caterer/items/{id}
-        [HttpPut("items/{id}")]
-        public async Task<ActionResult> UpdateItem(int id, ItemDTO request)
+        // Caterer update item
+        [HttpPut("{catererId}/items/{itemId}")]
+        public async Task<ActionResult> UpdateItem(int catererId, int itemId, ItemDTO request)
         {
-            var cid = HttpContext.Session.GetInt32("cid");
-            if (cid == null)
-            {
-                return NotFound("Caterer id not found");
-            }
-            // Get item from caterer id and item id
-            var existingItem = await _context.Items.Where(x => x.CatererId == cid && x.Id == id).FirstOrDefaultAsync();
-            if (existingItem == null)
-            {
-                return NotFound("Item not found.");
-            }
-            // Update item
-            existingItem.Name = request.Name;
-            existingItem.Image = request.Image;
-            existingItem.CuisineId = request.CuisineId;
-            existingItem.ServesCount = request.ServesCount;
-            existingItem.Price = request.Price;
-            existingItem.UpdatedAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
-
-            return Ok("Item updated successfully.");
-        }
-
-        // DELETE: api/Caterer/items/{id}
-        [HttpDelete("items/{id}")]
-        public async Task<ActionResult> DeleteItem(int id)
-        {
-            var cid = HttpContext.Session.GetInt32("cid");
-            if (cid == null)
-            {
-                return NotFound("Caterer id not found");
-            }
-            // Get item from caterer id and item id
-            var item = await _context.Items.Where(x => x.CatererId == cid && x.Id == id).FirstOrDefaultAsync();
+            var item = await context.Items
+                .Where(x => x.CatererId == catererId && x.Id == itemId)
+                .FirstOrDefaultAsync();
             if (item == null)
             {
                 return NotFound("Item not found.");
             }
-            // Delete item
-            _context.Items.Remove(item);
-            await _context.SaveChangesAsync();
-
-            return Ok("Item deleted successfully.");
+            item.Name = request.Name;
+            item.Image = request.Image;
+            item.CuisineId = request.CuisineId;
+            item.ServesCount = request.ServesCount;
+            item.Price = request.Price;
+            item.UpdatedAt = DateTime.UtcNow;
+            await context.SaveChangesAsync();
+            return Ok("Item updated");
         }
 
-        // GET: api/Caterer/cuisines
+        // Caterer delete item
+        [HttpDelete("{catererId}/items/{itemId}")]
+        public async Task<ActionResult> DeleteItem(int catererId, int itemId)
+        {
+            var item = await context.Items
+                .Where(x => x.CatererId == catererId && x.Id == itemId)
+                .FirstOrDefaultAsync();
+            if (item == null)
+            {
+                return NotFound("Item not found.");
+            }
+            context.Items.Remove(item);
+            await context.SaveChangesAsync();
+            return Ok("Item deleted.");
+        }
+
+        // Caterer view all cuisines
         [HttpGet("cuisines")]
         public async Task<ActionResult> GetCuisines()
         {
-            var cuisines = await _context.CuisineTypes
-                .Select(ct => new {
-                    ct.Id,
-                    ct.CuisineName
-                })
-                .ToListAsync();
-
+            var cuisines = await context.CuisineTypes.ToListAsync();
             return Ok(cuisines);
         }
     }

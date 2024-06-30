@@ -9,10 +9,13 @@ namespace backend.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
         public int ProfileId { get; set; }
+
         [JsonIgnore]
         [ForeignKey(nameof(ProfileId))]
         public Profile? Profile { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<Item> Items { get; set; } = new List<Item>();
     }
 }

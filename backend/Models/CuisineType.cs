@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
@@ -9,12 +10,14 @@ namespace backend.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(255, MinimumLength = 2)]
+        [StringLength(255)]
         public string CuisineName { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Item> Items { get; set; } = new List<Item>();
     }
 }

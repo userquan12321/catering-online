@@ -9,14 +9,14 @@ namespace backend.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
         public int UserId { get; set; }
+
         [JsonIgnore]
         [ForeignKey(nameof(UserId))]
         public User? User { get; set; }
 
-        [Required]
         public int CatererId { get; set; }
+
         [JsonIgnore]
         [ForeignKey(nameof(CatererId))]
         public Caterer? Caterer { get; set; }

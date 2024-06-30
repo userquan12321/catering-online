@@ -11,35 +11,34 @@ namespace backend.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
         public int CatererId { get; set; }
+
         [JsonIgnore]
         [ForeignKey(nameof(CatererId))]
         public Caterer? Caterer { get; set; }
 
-        [Required]
         public int CuisineId { get; set; }
+
         [JsonIgnore]
         [ForeignKey(nameof(CuisineId))]
         public CuisineType? CuisineType { get; set; }
 
-        [Required]
-        [StringLength(255, MinimumLength = 2)]
+        [StringLength(255)]
         public string Name { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(1000)]
+        [StringLength(2000)]
         public string Image { get; set; } = string.Empty;
 
-        [Required]
         public int ServesCount { get; set; }
 
-        [Required]
         [Precision(18, 2)]
         public decimal Price { get; set; }
 
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
+
+        [JsonIgnore]
+        public ICollection<BookingItem> BookingItems { get; set; } = new List<BookingItem>();
     }
 }
