@@ -1,4 +1,4 @@
-import { useLoginMutation, useRegisterMutation } from '@/apis/auth/users.api'
+import { useLoginMutation, useRegisterMutation } from '@/apis/auth.api'
 import { USER_TYPE } from '@/constants/global.constant'
 import classes from '@/styles/pages/register.module.css'
 import { registerValidation } from '@/validations/register.validation'
