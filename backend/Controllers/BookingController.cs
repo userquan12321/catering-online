@@ -15,7 +15,7 @@ namespace backend.Controllers
         public async Task<ActionResult> AddBooking(int customerId, BookingDTO request)
         {
             request.CustomerId = customerId;
-            var booking = new Booking
+            Booking booking = new()
             {
                 CustomerId = request.CustomerId,
                 CatererId = request.CatererId,

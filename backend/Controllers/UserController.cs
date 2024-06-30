@@ -23,7 +23,8 @@ namespace backend.Controllers
                     profile.Address,
                     profile.PhoneNumber,
                     profile.Image,
-                    user.Email
+                    user.Email,
+                    user.Id,
                 })
                 .FirstOrDefaultAsync();
             if (profile == null)

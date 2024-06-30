@@ -19,6 +19,20 @@ namespace backend.Controllers
             return Ok(favorite);
         }
 
+        // Customer add caterer to favorite
+        [HttpPost("{userId}/favorite")]
+        public async Task<ActionResult> AddFavoriteCaterer(int userId, [FromBody]int catererId)
+        {
+            FavoriteList favoriteList = new()
+            {
+                UserId = userId,
+                CatererId = catererId,
+            };
+            context.FavoriteLists.Add(favoriteList);
+            await context.SaveChangesAsync();
+            return Ok("Caterer added to favorite.");
+        }
+
         // Customer delete caterer from favorite
         [HttpDelete("{userId}/favorite/{favoriteId}")]
         public async Task<IActionResult> DeleteFavorite(int userId, int favoriteId)
