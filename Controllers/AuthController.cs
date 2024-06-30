@@ -4,6 +4,7 @@ using backend.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using backend.Models.DTO;
 
 namespace backend.Controllers
 {
@@ -13,20 +14,20 @@ namespace backend.Controllers
     {
         private readonly ApplicationDbContext _context = context;
         private User user = new();
-        private UserProfile userProfile = new();
+        private Profile profile = new();
         private Caterer caterer = new();
 
         // POST: api/Auth/register
         [HttpPost("register")]
-        public async Task<ActionResult> Register(UserRegister request)
+        public async Task<ActionResult> Register(RegisterDTO request)
         {
             if (_context.Users.Any(x => x.Email == request.Email))
-            {
-                return BadRequest("Email already exist");
+            { 
+                return BadRequest("Email already exist"); 
             }
-            if (ModelState.IsValid == false)
-            {
-                return BadRequest("Invalid input");
+            if (ModelState.IsValid == false) 
+            { 
+                return BadRequest("Invalid input"); 
             }
             // Add user to Users table
             user.Type = request.Type;
@@ -36,48 +37,71 @@ namespace backend.Controllers
             user.UpdatedAt = DateTime.UtcNow;
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            // Add user profile to UserProfiles table
-            userProfile.UserId = user.Id;
-            userProfile.FirstName = request.FirstName;
-            userProfile.LastName = request.LastName;
-            userProfile.Address = request.Address;
-            userProfile.PhoneNumber = request.PhoneNumber;
-            _context.UserProfiles.Add(userProfile);
+
+            // Add user profile to Profiles table
+            profile.UserId = user.Id;
+            profile.FirstName = request.FirstName;
+            profile.LastName = request.LastName;
+            profile.Address = request.Address;
+            profile.PhoneNumber = request.PhoneNumber;
+            _context.Profiles.Add(profile);
             await _context.SaveChangesAsync();
+
             // Add caterer to Caterers table
             if (request.Type == Models.User.UserType.Caterer)
             {
+<<<<<<< HEAD
                 caterer.UserProfileId = userProfile.Id;
+=======
+                caterer.ProfileId = profile.Id;
+>>>>>>> 0d3a11e7efffb2bec340f057f117c13e70a2a64e
                 _context.Caterers.Add(caterer);
                 await _context.SaveChangesAsync();
             }
+
             return Ok("User registered successfully");
         }
 
         // POST: api/Auth/login
         [HttpPost("login")]
-        public async Task<ActionResult> Login(UserLogin request)
+        public async Task<ActionResult> Login(LoginDTO request)
         {
             var getUser = await _context.Users.Where(x => x.Email == request.Email).FirstOrDefaultAsync();
             if (getUser == null)
-            {
-                return NotFound("Email not found");
+            { 
+                return NotFound("Email not found"); 
             }
-            if (BCrypt.Net.BCrypt.Verify(request.Password, getUser.Password) == false)
+            var getProfile = await _context.Profiles.Where(x => x.UserId == getUser.Id).FirstOrDefaultAsync();
+            if (getProfile == null)
             {
-                return BadRequest("Wrong password");
+                return NotFound("Profile not found");
+            }
+            if (BCrypt.Net.BCrypt.Verify(request.Password, getUser.Password) == false) 
+            { 
+                return BadRequest("Wrong password"); 
             }
             if (ModelState.IsValid == false)
-            {
-                return BadRequest("Invalid input");
+            { 
+                return BadRequest("Invalid input"); 
             }
             // Create session
             HttpContext.Session.SetString("sid", HttpContext.Session.Id);
             HttpContext.Session.SetInt32("uid", getUser.Id);
+            HttpContext.Session.SetInt32("pid", getProfile.Id);
+            if (getUser.Type == Models.User.UserType.Caterer)
+            {
+                var getCaterer = await _context.Caterers.Where(x => x.ProfileId == getProfile.Id).FirstOrDefaultAsync();
+                if (getCaterer == null)
+                {
+                    return NotFound("Caterer not found");
+                }
+                HttpContext.Session.SetInt32("cid", getCaterer.Id);
+            }
             await HttpContext.Session.CommitAsync();
+
             // Create authentication cookie
             var claims = new List<Claim> {
-                    new("UID", getUser.Id.ToString()),
+                    new("userId", getUser.Id.ToString()),
                     new(ClaimTypes.Role, getUser.Type.ToString()),
                 };
             var claimsIdentity = new ClaimsIdentity(
@@ -91,7 +115,8 @@ namespace backend.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
-            return Ok(getUser.Type);
+
+            return Ok(new { UserType = getUser.Type, Name = getProfile.FirstName });
         }
 
         // POST: api/Auth/logout
@@ -103,7 +128,10 @@ namespace backend.Controllers
             // Clear session
             HttpContext.Session.Remove("sid");
             HttpContext.Session.Remove("uid");
+            HttpContext.Session.Remove("pid");
+            HttpContext.Session.Remove("cid");
             await HttpContext.Session.CommitAsync();
+
             return Ok("Logged out successfully");
         }
     }
