@@ -7,7 +7,7 @@ namespace backend.Models.DTO
         [StringLength(255)]
         public string Name { get; set; } = string.Empty;
 
-        [StringLength(1000)]
+        [StringLength(2000)]
         public string Image { get; set; } = string.Empty;
 
         public int ServesCount { get; set; }
