@@ -14,17 +14,16 @@ namespace backend.Controllers
         private readonly ApplicationDbContext _context = context;
 
         // GET: api/User/profile
-        [HttpGet("profile")]
-        public async Task<ActionResult> GetUserProfile()
+        [HttpGet("profile/{id}")]
+        public async Task<ActionResult> GetUserProfile(int? id)
         {
-            var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null) 
+            if (id == null || id == 0) 
             {
-                return NotFound("User id not found");
+                return BadRequest("Invalid user id");
             }
             // Get current session user detail
             var userProfile = await _context.Profiles
-                .Where(x => x.UserId == uid)
+                .Where(x => x.UserId == id)
                 .Join(_context.Users, profile => profile.UserId, user => user.Id, (profile, user) => new
                 {
                     profile.FirstName,
@@ -35,6 +34,7 @@ namespace backend.Controllers
                     user.Email
                 })
                 .FirstOrDefaultAsync();
+
             if (userProfile == null) 
             { 
                 return NotFound("User not found"); 

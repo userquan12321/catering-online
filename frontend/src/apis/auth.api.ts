@@ -5,6 +5,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 type LoginResponse = {
   userType: number
   firstName: string
+  userId: number
 }
 
 export const authApi = createApi({
