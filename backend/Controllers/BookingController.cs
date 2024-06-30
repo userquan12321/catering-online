@@ -109,8 +109,8 @@ namespace backend.Controllers
         }
 
         // Caterer update booking status
-        [HttpPut("{catererId}/caterer-bookings/{bookingId}")]
-        public async Task<ActionResult> UpdateBookingStatus(int catererId, int bookingId, [FromBody] string status)
+        [HttpPut("{catererId}/caterer-bookings/{bookingId}/{bookingStatus}")]
+        public async Task<ActionResult> UpdateBookingStatus(int catererId, int bookingId, string bookingStatus)
         {
             var booking = await context.Bookings
                 .Where(b => b.CatererId == catererId && b.Id == bookingId)
@@ -119,7 +119,7 @@ namespace backend.Controllers
             {
                 return NotFound("Booking not found.");
             }
-            booking.BookingStatus = status;
+            booking.BookingStatus = bookingStatus;
             booking.UpdatedAt = DateTime.UtcNow;
             await context.SaveChangesAsync();
             return Ok("Booking updated.");

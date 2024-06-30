@@ -20,8 +20,8 @@ namespace backend.Controllers
         }
 
         // Customer add caterer to favorite
-        [HttpPost("{userId}/favorite")]
-        public async Task<ActionResult> AddFavoriteCaterer(int userId, [FromBody]int catererId)
+        [HttpPost("{userId}/{catererId}")]
+        public async Task<ActionResult> AddFavoriteCaterer(int userId, int catererId)
         {
             FavoriteList favoriteList = new()
             {
