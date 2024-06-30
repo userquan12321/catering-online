@@ -42,6 +42,7 @@ namespace backend.Models
 
         public DateTime UpdatedAt { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<BookingItem> BookingItems { get; set; } = new List<BookingItem>();
     }
 }

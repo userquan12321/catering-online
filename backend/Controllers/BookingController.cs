@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using backend.Models;
 using backend.Models.DTO;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,16 +10,11 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class BookingController(ApplicationDbContext context) : ControllerBase
     {
-        // Customer books a caterer
-        [HttpPost]
-        public async Task<IActionResult> BookCaterer([FromBody] BookingDTO request)
+        // Customer add booking
+        [HttpPost("{customerId}/customer-bookings")]
+        public async Task<ActionResult> AddBooking(int customerId, BookingDTO request)
         {
-            var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
-            {
-                return NotFound("User id not found");
-            }
-            request.CustomerId = uid.Value;
+            request.CustomerId = customerId;
             var booking = new Booking
             {
                 CustomerId = request.CustomerId,
@@ -38,10 +28,8 @@ namespace backend.Controllers
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
-
             context.Bookings.Add(booking);
             await context.SaveChangesAsync();
-
             foreach (var itemId in request.MenuItemIds)
             {
                 var bookingItem = new BookingItem
@@ -52,87 +40,89 @@ namespace backend.Controllers
 
                 context.BookingItems.Add(bookingItem);
             }
-
             await context.SaveChangesAsync();
-
-            return Ok("Book successfully");
+            return Ok("Booking successfully.");
         }
 
-        // Get booking details by ID
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetBookingById(int id)
+        // Customer view all bookings
+        [HttpGet("{customerId}/customer-bookings")]
+        public async Task<ActionResult> GetCustomerBookings(int customerId)
         {
-            var booking = await context.Bookings.FindAsync(id);
-
-            if (booking == null)
-            {
-                return NotFound();
-            }
-
+            var booking = await context.Bookings
+                .Where(b => b.CustomerId == customerId)
+                .ToListAsync();
             return Ok(booking);
         }
 
-        // Customer views their bookings
-        [HttpGet("customer/bookings")]
-        public async Task<ActionResult> GetCustomerBookings()
+        // Customer view booking details
+        [HttpGet("{customerId}/customer-bookings/{bookingId}")]
+        public async Task<ActionResult> GetCustomerBooking(int customerId, int bookingId)
         {
-            var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
+            var booking = await context.Bookings
+                .Where(x => x.Id == bookingId && x.CustomerId == customerId)
+                .FirstOrDefaultAsync();
+            if (booking == null)
             {
-                return NotFound("User id not found");
+                return NotFound("Booking not found.");
             }
-            var booking = await context.Bookings.Where(b => b.CustomerId == uid.Value).ToListAsync();
-
             return Ok(booking);
         }
 
-        // Customer cancels a booking
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> CancelBooking(int id)
+        // Customer cancel booking
+        [HttpPut("{customerId}/customer-bookings/{bookingId}")]
+        public async Task<ActionResult> CancelBooking(int customerId, int bookingId)
         {
-            var booking = await context.Bookings.FindAsync(id);
-
+            var booking = await context.Bookings
+                .Where(b => b.CustomerId == customerId && b.Id == bookingId)
+                .FirstOrDefaultAsync();
             if (booking == null)
             {
-                return NotFound();
+                return NotFound("Booking not found.");
             }
-
-            context.Bookings.Remove(booking);
+            booking.BookingStatus = "Canceled";
             await context.SaveChangesAsync();
-
-            return Ok();
+            return Ok("Booking canceled");
         }
 
-        // Caterer views bookings
-        [HttpGet("caterer/bookings")]
-        public async Task<ActionResult> GetCatererBookings()
+        // Caterer view all bookings
+        [HttpGet("{catererId}/caterer-bookings")]
+        public async Task<ActionResult> GetCatererBookings(int catererId)
         {
-            var cid = HttpContext.Session.GetInt32("cid");
-            if (cid == null)
-            {
-                return NotFound("Caterer id not found");
-            }
-            var booking = await context.Bookings.Where(b => b.CatererId == cid.Value).ToListAsync();
+            var booking = await context.Bookings
+                .Where(b => b.CatererId == catererId)
+                .ToListAsync();
             return Ok(booking);
         }
 
-        // Caterer updates booking status
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBookingStatus(int id, [FromBody] string status)
+        // Caterer view booking details
+        [HttpGet("{catererId}/caterer-bookings/{bookingId}")]
+        public async Task<ActionResult> GetCatererBooking(int catererId, int bookingId)
         {
-            var booking = await context.Bookings.FindAsync(id);
-
+            var booking = await context.Bookings
+                .Where(b => b.Id == bookingId && b.CatererId == catererId)
+                .FirstOrDefaultAsync();
             if (booking == null)
             {
-                return NotFound();
+                return NotFound("Booking not found.");
             }
+            return Ok(booking);
+        }
 
+        // Caterer update booking status
+        [HttpPut("{catererId}/caterer-bookings/{bookingId}")]
+        public async Task<ActionResult> UpdateBookingStatus(int catererId, int bookingId, [FromBody] string status)
+        {
+            var booking = await context.Bookings
+                .Where(b => b.CatererId == catererId && b.Id == bookingId)
+                .FirstOrDefaultAsync();
+            if (booking == null)
+            {
+                return NotFound("Booking not found.");
+            }
             booking.BookingStatus = status;
             booking.UpdatedAt = DateTime.UtcNow;
-
             await context.SaveChangesAsync();
-
-            return Ok();
+            return Ok("Booking updated.");
         }
     }
 }

@@ -28,7 +28,7 @@ namespace backend.Models
         [StringLength(255)]
         public string Address { get; set; } = string.Empty;
 
-        [StringLength(1000)]
+        [StringLength(2000)]
         public string Image { get; set; } = string.Empty;
     }
 }

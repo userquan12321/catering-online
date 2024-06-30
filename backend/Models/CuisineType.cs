@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
@@ -15,5 +16,8 @@ namespace backend.Models
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Item> Items { get; set; } = new List<Item>();
     }
 }

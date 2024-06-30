@@ -26,7 +26,7 @@ namespace backend.Models
         [StringLength(255)]
         public string Name { get; set; } = string.Empty;
 
-        [StringLength(1000)]
+        [StringLength(2000)]
         public string Image { get; set; } = string.Empty;
 
         public int ServesCount { get; set; }
@@ -38,6 +38,7 @@ namespace backend.Models
 
         public DateTime UpdatedAt { get; set; }
 
-        public virtual ICollection<BookingItem> BookingItems { get; set; } = new List<BookingItem>();
+        [JsonIgnore]
+        public ICollection<BookingItem> BookingItems { get; set; } = new List<BookingItem>();
     }
 }

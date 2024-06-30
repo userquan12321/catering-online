@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using static backend.Models.User;
 
 namespace backend.Models
 {

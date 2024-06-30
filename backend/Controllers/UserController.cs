@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using backend.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using backend.Models;
 using backend.Models.DTO;
-using System.Security.Claims;
-using System.Drawing.Text;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
@@ -13,18 +10,12 @@ namespace backend.Controllers
     [ApiController]
     public class UserController(ApplicationDbContext context) : ControllerBase
     {
-        // GET: api/User/profile
-        [HttpGet("profile")]
-        public async Task<ActionResult> GetUserProfile()
+        // View user details
+        [HttpGet("profile/{userId}")]
+        public async Task<ActionResult> GetProfile(int userId)
         {
-            var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
-            {
-                return NotFound("User id not found");
-            }
-            // Get user detail for current user
             var profile = await context.Profiles
-                .Where(x => x.UserId == uid.Value)
+                .Where(x => x.UserId == userId)
                 .Join(context.Users, profile => profile.UserId, user => user.Id, (profile, user) => new
                 {
                     profile.FirstName,
@@ -35,34 +26,29 @@ namespace backend.Controllers
                     user.Email
                 })
                 .FirstOrDefaultAsync();
-            if (profile == null) 
-            { 
-                return NotFound("User not found"); 
+            if (profile == null)
+            {
+                return NotFound("User not found.");
             }
-
             return Ok(profile);
         }
 
-        // PUT: api/User/update-profile
-        [HttpPut("update-profile")]
-        public async Task<ActionResult> UserUpdateProfile(UpdateProfileDTO request)
+        // User update details
+        [HttpPut("update-profile/{userId}")]
+        public async Task<ActionResult> UpdateProfile(int userId, UpdateProfileDTO request)
         {
-            var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
+            var profile = await context.Profiles
+                .Where(x => x.UserId == userId)
+                .FirstOrDefaultAsync();
+            var user = await context.Users.FindAsync(userId);
+            if (profile == null || user == null)
             {
-                return NotFound("User id not found");
+                return NotFound("User not found.");
             }
-            var profile = await context.Profiles.Where(x => x.UserId == uid.Value).FirstOrDefaultAsync();
-            var user = await context.Users.FindAsync(uid);
-            if (profile == null || user == null) 
-            { 
-                return NotFound("User not found."); 
+            if (ModelState.IsValid == false)
+            {
+                return BadRequest("Invalid input.");
             }
-            if (ModelState.IsValid == false) 
-            { 
-                return BadRequest("Invalid input"); 
-            }
-            // Update profile
             profile.FirstName = request.FirstName;
             profile.LastName = request.LastName;
             profile.PhoneNumber = request.PhoneNumber;
@@ -70,37 +56,30 @@ namespace backend.Controllers
             profile.Image = request.Image;
             user.UpdatedAt = DateTime.UtcNow;
             await context.SaveChangesAsync();
-            return Ok("Profile updated successfully.");
+            return Ok("Profile updated.");
         }
 
-        // PUT: api/User/change-password
-        [HttpPut("change-password")]
-        public async Task<ActionResult> UserChangePassword(ChangePasswordDTO request)
+        // User change password
+        [HttpPut("change-password/{userId}")]
+        public async Task<ActionResult> ChangePassword(int userId, ChangePasswordDTO request)
         {
-            var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
+            var user = await context.Users.FindAsync(userId);
+            if (user == null)
             {
-                return NotFound("User id not found");
+                return NotFound("User not found.");
             }
-            var user = await context.Users.FindAsync(uid.Value);
-            if (user == null) 
-            { 
-                return NotFound("User not found."); 
+            if (BCrypt.Net.BCrypt.Verify(request.OldPassword, user.Password) == false)
+            {
+                return BadRequest("Wrong password.");
             }
-            if (BCrypt.Net.BCrypt.Verify(request.OldPassword, user.Password) == false) 
-            { 
-                return BadRequest("Wrong password"); 
+            if (ModelState.IsValid == false)
+            {
+                return BadRequest("Invalid input.");
             }
-            if (ModelState.IsValid == false) 
-            { 
-                return BadRequest("Invalid input"); 
-            }
-            // Change password
             user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
             user.UpdatedAt = DateTime.UtcNow;
             await context.SaveChangesAsync();
-
-            return Ok("Password changed successfully.");
+            return Ok("Password changed.");
         }
     }
 }

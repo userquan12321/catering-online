@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 using backend.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,94 +9,63 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class MessageController(ApplicationDbContext context) : ControllerBase
     {
-        // Get messages for the authenticated user
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Message>>> GetMessages()
+        // User view all messages
+        [HttpGet("{userId}")]
+        public async Task<ActionResult> GetMessages(int userId)
         {
-            var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
-            {
-                return NotFound("User id not found");
-            }
-            return await context.Messages
-                .Where(m => m.SenderId == uid.Value || m.ReceiverId == uid.Value)
+            var messages = await context.Messages
+                .Where(m => m.SenderId == userId || m.ReceiverId == userId)
                 .ToListAsync();
+            return Ok(messages);
         }
 
-        // Get message details
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Message>> GetMessage(int id)
+        // User view message details
+        [HttpGet("{userId}/{messageId}")]
+        public async Task<ActionResult> GetMessage(int userId, int messageId)
         {
-            var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
-            {
-                return NotFound("User id not found");
-            }
             var message = await context.Messages
-                .Where(m => m.Id == id && (m.SenderId == uid.Value || m.ReceiverId == uid.Value))
+                .Where(m => m.Id == messageId && (m.SenderId == userId || m.ReceiverId == userId))
                 .FirstOrDefaultAsync();
-
             if (message == null)
             {
-                return NotFound();
+                return NotFound("Message not found.");
             }
-
-            return message;
+            return Ok(message);
         }
 
-        // Reply to a message
-        [HttpPost("reply")]
-        public async Task<ActionResult<Message>> ReplyMessage(int originalMessageId, [FromBody] Message replyMessage)
+        // User reply message
+        [HttpPost("{userId}/reply")]
+        public async Task<ActionResult> ReplyMessage(int userId, int originalMessageId, [FromBody] Message replyMessage)
         {
-            var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
-            {
-                return NotFound("User id not found");
-            }
             var originalMessage = await context.Messages.FindAsync(originalMessageId);
-
-            if (originalMessage == null || (originalMessage.SenderId != uid.Value && originalMessage.ReceiverId != uid.Value))
+            if (originalMessage == null || (originalMessage.SenderId != userId && originalMessage.ReceiverId != userId))
             {
-                return NotFound();
+                return NotFound("Message not found.");
             }
-
-            replyMessage.SenderId = uid.Value;
-            replyMessage.ReceiverId = originalMessage.SenderId == uid.Value ? originalMessage.ReceiverId : originalMessage.SenderId;
+            replyMessage.SenderId = userId;
+            replyMessage.ReceiverId = originalMessage.SenderId == userId ? originalMessage.ReceiverId : originalMessage.SenderId;
             replyMessage.CreatedAt = DateTime.UtcNow;
             replyMessage.UpdatedAt = DateTime.UtcNow;
-
             context.Messages.Add(replyMessage);
             await context.SaveChangesAsync();
-
-            return Ok();
+            return Ok("Message sent.");
         }
 
-        // Delete a message
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMessage(int id)
+        // User delete message
+        [HttpDelete("{userId}/{messageId}")]
+        public async Task<IActionResult> DeleteMessage(int userId, int messageId)
         {
-            var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
-            {
-                return NotFound("User id not found");
-            }
             var message = await context.Messages
-                .Where(m => m.Id == id && (m.SenderId == uid || m.ReceiverId == uid))
+                .Where(m => m.Id == messageId && (m.SenderId == userId || m.ReceiverId == userId))
                 .FirstOrDefaultAsync();
-
             if (message == null)
             {
-                return NotFound();
+                return NotFound("Message not found.");
             }
-
             context.Messages.Remove(message);
             await context.SaveChangesAsync();
-
-            return Ok();
+            return Ok("Message deleted.");
         }
-
-
-
 
         // // a. Caterer should be able to check the messages
         // [HttpGet("caterer/{catererId}")]

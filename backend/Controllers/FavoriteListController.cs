@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using backend.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,35 +9,30 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class FavoriteListController(ApplicationDbContext context) : ControllerBase
     {
-        // a. Customer can view the list of their favourite caterers
-        [HttpGet("customer")]
-        public async Task<ActionResult<IEnumerable<FavoriteList>>> GetFavoritesForCustomer()
+        // Customer view the list of their favorite caterers
+        [HttpGet("{userId}/favorite")]
+        public async Task<ActionResult> GetCustomerFavoriteCaterers(int userId)
         {
-            var uid = HttpContext.Session.GetInt32("uid");
-            if (uid == null)
-            {
-                return NotFound("User id not found");
-            }
-            return await context.FavoriteLists
-                .Where(f => f.UserId == uid.Value)
-                .Include(f => f.Caterer)
+            var favorite = await context.FavoriteLists
+                .Where(f => f.UserId == userId)
                 .ToListAsync();
+            return Ok(favorite);
         }
 
-        // b. Customer should be able to delete from the list
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFavorite(int id)
+        // Customer delete caterer from favorite
+        [HttpDelete("{userId}/favorite/{favoriteId}")]
+        public async Task<IActionResult> DeleteFavorite(int userId, int favoriteId)
         {
-            var favorite = await context.FavoriteLists.FindAsync(id);
+            var favorite = await context.FavoriteLists
+                .Where(x => x.UserId == userId && x.Id == favoriteId)
+                .FirstOrDefaultAsync();
             if (favorite == null)
             {
-                return NotFound();
+                return NotFound("Favorite caterer not found.");
             }
-
             context.FavoriteLists.Remove(favorite);
             await context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok("Favorite caterer deleted.");
         }
     }
 }
