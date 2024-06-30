@@ -1,0 +1,25 @@
+import { RootState } from '@/redux/store'
+import classes from '@/styles/layouts/auth-layout.module.css'
+import { Card } from 'antd'
+import { useSelector } from 'react-redux'
+import { Navigate, Outlet } from 'react-router-dom'
+
+const AuthLayout = () => {
+  const userType = useSelector((state: RootState) => state.auth.userType)
+
+  const isAuthenticated = userType !== null
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />
+  }
+
+  return (
+    <div className={classes.layout}>
+      <Card className={classes.formWrapper}>
+        <Outlet />
+      </Card>
+    </div>
+  )
+}
+
+export default AuthLayout
