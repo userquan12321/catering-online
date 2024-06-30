@@ -1,7 +1,7 @@
 import { Menu, MenuProps } from 'antd'
 import { UserOutlined, LogoutOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-import { useLogoutMutation } from '@/apis/auth/users.api'
+import { useLogoutMutation } from '@/apis/auth.api'
 
 type Props = {
   onClose: () => void

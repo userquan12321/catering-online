@@ -2,7 +2,6 @@ import { configureStore } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
 import { rootReducer } from './rootReducer'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { authApi } from '@/apis/auth/users.api'
 import {
   FLUSH,
   PAUSE,
@@ -12,6 +11,7 @@ import {
   REHYDRATE,
   persistStore,
 } from 'redux-persist'
+import { authApi, profileApi } from '../apis'
 
 export const store = configureStore({
   reducer: rootReducer,
@@ -20,7 +20,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(authApi.middleware),
+    }).concat(authApi.middleware, profileApi.middleware),
 })
 
 export const persistor = persistStore(store)
