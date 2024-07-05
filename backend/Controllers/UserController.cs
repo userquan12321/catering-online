@@ -25,6 +25,7 @@ namespace backend.Controllers
                     profile.Image,
                     user.Email,
                     user.Id,
+                    user.Type
                 })
                 .FirstOrDefaultAsync();
             if (profile == null)

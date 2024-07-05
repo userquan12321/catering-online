@@ -12,12 +12,12 @@ type MenuItem = Required<MenuProps>['items'][number]
 const items: MenuItem[] = [
   {
     label: 'Profile',
-    key: 'profile',
+    key: '/profile',
     icon: <UserOutlined />,
   },
   {
     label: 'Logout',
-    key: 'logout',
+    key: '/logout',
     danger: true,
     icon: <LogoutOutlined />,
   },
@@ -30,7 +30,7 @@ const PopoverContent = ({ onClose }: Props) => {
   const onClick: MenuProps['onClick'] = async (e) => {
     onClose()
 
-    if (e.key === 'logout') {
+    if (e.key === '/logout') {
       try {
         await logout()
       } catch (error) {

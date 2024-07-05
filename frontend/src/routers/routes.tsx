@@ -1,4 +1,3 @@
-import LoadingFallback from '@/components/LoadingFallback'
 import { createBrowserRouter } from 'react-router-dom'
 import AuthLayout from '../layouts/AuthLayout'
 import MainLayout from '../layouts/MainLayout'
@@ -12,11 +11,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: (
-          <LoadingFallback>
-            <HomePage />
-          </LoadingFallback>
-        ),
+        element: <HomePage />,
       },
     ],
   },
@@ -30,11 +25,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: (
-          <LoadingFallback>
-            <ProfilePage />
-          </LoadingFallback>
-        ),
+        element: <ProfilePage />,
       },
     ],
   },
@@ -44,11 +35,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: (
-          <LoadingFallback>
-            <LoginPage />
-          </LoadingFallback>
-        ),
+        element: <LoginPage />,
       },
     ],
   },
@@ -58,11 +45,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: (
-          <LoadingFallback>
-            <RegisterPage />
-          </LoadingFallback>
-        ),
+        element: <RegisterPage />,
       },
     ],
   },
