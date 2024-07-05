@@ -13,7 +13,7 @@ const { Text } = Typography
 
 const UpdateProfile = () => {
   const userId = useSelector((state: RootState) => state.auth.userId)
-  const { data: profile, error, isLoading } = useGetProfileQuery(userId)
+  const { data: profile, isLoading, error } = useGetProfileQuery(userId)
 
   const [messageApi, contextHolder] = message.useMessage()
 
