@@ -1,4 +1,5 @@
 import { API_BASE_URL } from '@/constants/api.constant'
+import { ChangePasswordArgs, TProfile } from '@/types/profile.type'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const profileApi = createApi({
@@ -7,20 +8,21 @@ export const profileApi = createApi({
     baseUrl: API_BASE_URL,
   }),
   endpoints: (build) => ({
-    getProfile: build.query<unknown, number>({
+    getProfile: build.query<TProfile, number>({
       query: (id) => ({
         url: `user/profile/${id}`,
       }),
     }),
 
-    // logout: build.mutation<string, void>({
-    //   query: () => ({
-    //     url: 'auth/logout',
-    //     method: 'POST',
-    //     responseHandler: (response) => response.text(),
-    //   }),
-    // }),
+    changePassword: build.mutation<string, ChangePasswordArgs>({
+      query: ({ id, data }) => ({
+        url: `user/change-password/${id}`,
+        method: 'PUT',
+        body: data,
+        responseHandler: (response) => response.text(),
+      }),
+    }),
   }),
 })
 
-export const { useGetProfileQuery } = profileApi
+export const { useGetProfileQuery, useChangePasswordMutation } = profileApi

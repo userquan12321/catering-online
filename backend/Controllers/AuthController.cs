@@ -109,7 +109,7 @@ namespace backend.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
-            return Ok(new { UID = getUser.Id, PID = getProfile.Id, CID = catererId, UserType = getUser.Type, FirstName = getProfile.FirstName });
+            return Ok(new { UserId = getUser.Id, PID = getProfile.Id, CID = catererId, UserType = getUser.Type, FirstName = getProfile.FirstName });
         }
 
         // Logout user
