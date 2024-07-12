@@ -1,8 +1,19 @@
 import { createBrowserRouter } from 'react-router-dom'
-import AuthLayout from '../layouts/AuthLayout'
-import MainLayout from '../layouts/MainLayout'
+import AuthLayout from '@/layouts/AuthLayout'
+import MainLayout from '@/layouts/MainLayout'
+import AdminLayout from '@/layouts/AdminLayout'
 import ProtectedRoute from './ProtectedRoute'
-import { HomePage, LoginPage, ProfilePage, RegisterPage } from './lazy-routes'
+import {
+  HomePage,
+  LoginPage,
+  ProfilePage,
+  RegisterPage,
+  AdminDashBoard,
+  AdminUsers,
+  AdminCuisineTypes,
+  AdminCateringItems,
+  AdminBookings,
+} from './lazy-routes'
 
 const router = createBrowserRouter([
   {
@@ -46,6 +57,33 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <RegisterPage />,
+      },
+    ],
+  },
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    children: [
+      {
+        path: '',
+        element: <AdminDashBoard />,
+        index: true,
+      },
+      {
+        path: 'users',
+        element: <AdminUsers />,
+      },
+      {
+        path: 'cuisine-types',
+        element: <AdminCuisineTypes />,
+      },
+      {
+        path: 'catering-items',
+        element: <AdminCateringItems />,
+      },
+      {
+        path: 'bookings',
+        element: <AdminBookings />,
       },
     ],
   },
