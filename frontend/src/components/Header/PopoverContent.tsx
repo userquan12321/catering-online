@@ -1,6 +1,7 @@
-import { Menu, MenuProps } from 'antd'
-import { UserOutlined, LogoutOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
+import { LogoutOutlined,UserOutlined } from '@ant-design/icons'
+import { Menu, MenuProps } from 'antd'
+
 import { useLogoutMutation } from '@/apis/auth.api'
 
 type Props = {

@@ -1,17 +1,19 @@
-import { configureStore } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
-import { rootReducer } from './rootReducer'
+import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import {
   FLUSH,
   PAUSE,
   PERSIST,
+  persistStore,
   PURGE,
   REGISTER,
   REHYDRATE,
-  persistStore,
 } from 'redux-persist'
+
 import { authApi, profileApi } from '../apis'
+
+import { rootReducer } from './rootReducer'
 
 export const store = configureStore({
   reducer: rootReducer,

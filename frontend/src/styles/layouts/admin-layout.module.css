@@ -1,0 +1,8 @@
+.menuItem {
+  user-select: none;
+  font-weight: 600;
+}
+
+.content {
+  padding: 1.5rem;
+}

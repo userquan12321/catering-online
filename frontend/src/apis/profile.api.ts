@@ -1,6 +1,7 @@
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+
 import { API_BASE_URL } from '@/constants/api.constant'
 import { ChangePasswordArgs, TProfile } from '@/types/profile.type'
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const profileApi = createApi({
   reducerPath: 'profileApi',
