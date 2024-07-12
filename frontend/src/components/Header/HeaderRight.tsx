@@ -1,10 +1,13 @@
-import { RootState } from '@/redux/store'
-import '@/styles/components/header.style.css'
-import { Avatar, Flex, Popover, Typography } from 'antd'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { Avatar, Flex, Popover, Typography } from 'antd'
+
+import { RootState } from '@/redux/store'
+
 import PopoverContent from './PopoverContent'
+
+import '@/styles/components/header.style.css'
 
 const { Text } = Typography
 

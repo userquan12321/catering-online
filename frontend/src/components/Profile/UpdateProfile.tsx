@@ -1,13 +1,15 @@
+import { useEffect } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { useSelector } from 'react-redux'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Button, Col, Form, Input, message, Row, Typography } from 'antd'
+
 import { useGetProfileQuery } from '@/apis/profile.api'
 import { USER_TYPE_ARRAY } from '@/constants/global.constant'
 import { RootState } from '@/redux/store'
 import classes from '@/styles/pages/profile.module.css'
 import { profileValidation } from '@/validations/profile.validation'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, Col, Form, Input, message, Row, Typography } from 'antd'
-import { useEffect } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { useSelector } from 'react-redux'
+
 import UploadWidget from '../common/UploadWidget'
 
 const { Text } = Typography

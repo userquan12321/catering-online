@@ -1,19 +1,16 @@
 import { createBrowserRouter } from 'react-router-dom'
+
+import AdminLayout from '@/layouts/AdminLayout'
 import AuthLayout from '@/layouts/AuthLayout'
 import MainLayout from '@/layouts/MainLayout'
-import AdminLayout from '@/layouts/AdminLayout'
+import AdminBookings from '@/pages/admin/AdminBookingsPage'
+import AdminCateringItems from '@/pages/admin/AdminCateringItemsPage'
+import AdminCuisineTypes from '@/pages/admin/AdminCuisineTypesPage'
+import AdminDashBoard from '@/pages/admin/AdminDashBoardPage'
+import AdminUsers from '@/pages/admin/AdminUsersPage'
+
+import { HomePage, LoginPage, ProfilePage, RegisterPage } from './lazy-routes'
 import ProtectedRoute from './ProtectedRoute'
-import {
-  HomePage,
-  LoginPage,
-  ProfilePage,
-  RegisterPage,
-  AdminDashBoard,
-  AdminUsers,
-  AdminCuisineTypes,
-  AdminCateringItems,
-  AdminBookings,
-} from './lazy-routes'
 
 const router = createBrowserRouter([
   {

@@ -15,13 +15,13 @@ const AdminCuisineTypes = lazy(
 )
 
 export {
+  AdminBookings,
+  AdminCateringItems,
+  AdminCuisineTypes,
+  AdminDashBoard,
+  AdminUsers,
   HomePage,
   LoginPage,
   ProfilePage,
   RegisterPage,
-  AdminDashBoard,
-  AdminUsers,
-  AdminBookings,
-  AdminCateringItems,
-  AdminCuisineTypes,
 }

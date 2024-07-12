@@ -1,8 +1,9 @@
-import { RootState } from '@/redux/store'
-import classes from '@/styles/layouts/auth-layout.module.css'
-import { Card } from 'antd'
 import { useSelector } from 'react-redux'
 import { Navigate, Outlet } from 'react-router-dom'
+import { Card } from 'antd'
+
+import { RootState } from '@/redux/store'
+import classes from '@/styles/layouts/auth-layout.module.css'
 
 const AuthLayout = () => {
   const userType = useSelector((state: RootState) => state.auth.userType)

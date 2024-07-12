@@ -1,20 +1,21 @@
-import { useLoginMutation, useRegisterMutation } from '@/apis/auth.api'
-import { USER_TYPE } from '@/constants/global.constant'
-import classes from '@/styles/pages/register.module.css'
-import { registerValidation } from '@/validations/register.validation'
+import { Controller, useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
   Button,
   Col,
   Form,
   Input,
+  message,
   Row,
   Select,
   Typography,
-  message,
 } from 'antd'
-import { Controller, useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+
+import { useLoginMutation, useRegisterMutation } from '@/apis/auth.api'
+import { USER_TYPE } from '@/constants/global.constant'
+import classes from '@/styles/pages/register.module.css'
+import { registerValidation } from '@/validations/register.validation'
 
 const { Title } = Typography
 

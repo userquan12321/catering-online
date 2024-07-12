@@ -1,7 +1,8 @@
-import { RootState } from '@/redux/store'
 import { ReactNode } from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
+
+import { RootState } from '@/redux/store'
 
 type Props = {
   children: ReactNode

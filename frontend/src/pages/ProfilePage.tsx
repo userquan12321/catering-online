@@ -1,7 +1,8 @@
 import { Tabs, TabsProps } from 'antd'
-import classes from '@/styles/layouts/profile-layout.module.css'
-import UpdateProfile from '@/components/Profile/UpdateProfile'
+
 import ChangePassword from '@/components/Profile/ChangePassword'
+import UpdateProfile from '@/components/Profile/UpdateProfile'
+import classes from '@/styles/layouts/profile-layout.module.css'
 
 const items: TabsProps['items'] = [
   {

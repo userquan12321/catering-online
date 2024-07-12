@@ -1,12 +1,13 @@
-import { changePasswordValidation } from '@/validations/change-password'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, Col, Form, Input, Row, message } from 'antd'
 import { Controller, useForm } from 'react-hook-form'
+import { useSelector } from 'react-redux'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Button, Col, Form, Input, message,Row } from 'antd'
+
+import { useChangePasswordMutation } from '@/apis/profile.api'
+import { RootState } from '@/redux/store'
 import classes from '@/styles/pages/profile.module.css'
 import { ChangePasswordInput } from '@/types/profile.type'
-import { useChangePasswordMutation } from '@/apis/profile.api'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/redux/store'
+import { changePasswordValidation } from '@/validations/change-password'
 
 const ChangePassword = () => {
   const [messageApi, contextHolder] = message.useMessage()

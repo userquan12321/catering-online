@@ -1,6 +1,7 @@
 import { RouterProvider } from 'react-router-dom'
-import router from './routers/routes.tsx'
 import { Cloudinary } from '@cloudinary/url-gen'
+
+import router from './routers/routes.tsx'
 
 const App = () => {
   const cld = new Cloudinary({

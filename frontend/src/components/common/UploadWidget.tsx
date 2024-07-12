@@ -1,6 +1,6 @@
-import { Button } from 'antd'
 import { useEffect, useRef, useState } from 'react'
 import { UserOutlined } from '@ant-design/icons'
+import { Button } from 'antd'
 
 // Define the structure of the result from the Cloudinary upload widget
 interface CloudinaryUploadResult {
