@@ -23,7 +23,15 @@ export const profileApi = createApi({
         responseHandler: (response) => response.text(),
       }),
     }),
+    editProfile: build.mutation<string, any>({
+      query: ({ id, data }) => ({
+        url: `user/update-profile/${id}`,
+        method: 'PUT',
+        body: data,
+        responseHandler: (response) => response.text(),
+      }),
+    }),
   }),
 })
 
-export const { useGetProfileQuery, useChangePasswordMutation } = profileApi
+export const { useGetProfileQuery, useChangePasswordMutation, useEditProfileMutation } = profileApi

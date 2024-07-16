@@ -8,6 +8,7 @@ import AdminCateringItems from '@/pages/admin/AdminCateringItemsPage'
 import AdminCuisineTypes from '@/pages/admin/AdminCuisineTypesPage'
 import AdminDashBoard from '@/pages/admin/AdminDashBoardPage'
 import AdminUsers from '@/pages/admin/AdminUsersPage'
+import AdminMessages from '@/pages/admin/AdminMessagesPage'
 
 import { HomePage, LoginPage, ProfilePage, RegisterPage } from './lazy-routes'
 import ProtectedRoute from './ProtectedRoute'
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
       {
         path: 'bookings',
         element: <AdminBookings />,
+      },
+      {
+        path: 'messages',
+        element: <AdminMessages />,
       },
     ],
   },
