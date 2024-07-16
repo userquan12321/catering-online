@@ -15,4 +15,8 @@ export const menuItems = [
     title: 'Bookings',
     link: '/admin/bookings/',
   },
+  {
+    title: 'Messages',
+    link: '/admin/messages/',
+  },
 ]

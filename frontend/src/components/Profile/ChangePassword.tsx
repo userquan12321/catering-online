@@ -1,7 +1,7 @@
 import { Controller, useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, Col, Form, Input, message,Row } from 'antd'
+import { Button, Col, Form, Input, message, Row } from 'antd'
 
 import { useChangePasswordMutation } from '@/apis/profile.api'
 import { RootState } from '@/redux/store'
@@ -38,7 +38,15 @@ const ChangePassword = () => {
           type: 'error',
           content: res.error.data as string,
         })
+        return
       }
+
+      messageApi.open({
+        type: 'success',
+        content: res.data as string,
+      })
+
+      reset()
 
       console.log(res)
     } catch (error) {

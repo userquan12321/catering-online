@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Col, Form, Input, message, Row, Typography } from 'antd'
 
-import { useGetProfileQuery } from '@/apis/profile.api'
+import { useEditProfileMutation, useGetProfileQuery } from '@/apis/profile.api'
 import { USER_TYPE_ARRAY } from '@/constants/global.constant'
 import { RootState } from '@/redux/store'
 import classes from '@/styles/pages/profile.module.css'
@@ -17,8 +17,9 @@ const { Text } = Typography
 const UpdateProfile = () => {
   const userId = useSelector((state: RootState) => state.auth.userId)
   const { data: profile, isLoading, error } = useGetProfileQuery(userId)
-
+  const [imageUrl, setImageUrl] = useState('')
   const [messageApi, contextHolder] = message.useMessage()
+  const [editProfile, { isLoading: isEditLoading }] = useEditProfileMutation()
 
   const {
     handleSubmit,
@@ -37,17 +38,39 @@ const UpdateProfile = () => {
         phoneNumber: profile.phoneNumber,
         address: profile.address,
       })
+      setImageUrl(profile.image)
     }
   }, [profile, reset])
 
   const onSubmit = async (data: any) => {
-    // try {
-    // } catch (error) {
-    //   console.log(error)
-    // }
+    try {
+      const editRes = await editProfile({
+        id: userId,
+        data: {
+          ...data,
+          image: imageUrl,
+        }
+      })
+      
+      if (editRes.error && 'data' in editRes.error) {
+        messageApi.open({
+          type: 'error',
+          content: editRes.error.data as string,
+        })
+        return
+      }
+
+      messageApi.open({
+        type: 'success',
+        content: editRes.data as string,
+      })
+
+    } catch (error) {
+      console.log(error)
+    }
   }
 
-  if (isLoading) {
+  if (isLoading || isEditLoading) {
     return <p>Loading...</p>
   }
 
@@ -123,13 +146,13 @@ const UpdateProfile = () => {
 
         <Col span={12}>
           <p className={classes.label}>Avatar (should be 200px x 200px)</p>
-          <UploadWidget />
+          <UploadWidget imageUrl={imageUrl} setImageUrl={setImageUrl} />
         </Col>
       </Row>
 
       <Row justify="end" gutter={8}>
         <Col>
-          <Button type="primary" htmlType="submit" disabled={isLoading}>
+          <Button type="primary" htmlType="submit" disabled={isLoading || isEditLoading}>
             Update Profile
           </Button>
         </Col>
