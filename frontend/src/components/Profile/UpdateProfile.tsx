@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Col, Form, Input, Row, Typography } from 'antd'
 
 import { useEditProfileMutation, useGetProfileQuery } from '@/apis/profile.api'
 import { USER_TYPE_ARRAY } from '@/constants/global.constant'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
+import { setAvatar } from '@/redux/slices/auth.slice'
 import { RootState } from '@/redux/store'
 import classes from '@/styles/pages/profile.module.css'
+import { TProfileInput } from '@/types/profile.type'
 import { profileValidation } from '@/validations/profile.validation'
 
 import UploadWidget from '../common/UploadWidget'
@@ -16,6 +18,7 @@ import UploadWidget from '../common/UploadWidget'
 const { Text } = Typography
 
 const UpdateProfile = () => {
+  const dispatch = useDispatch()
   const userId = useSelector((state: RootState) => state.auth.userId)
   const { data: profile, isLoading, error } = useGetProfileQuery(userId)
   const [imageUrl, setImageUrl] = useState('')
@@ -43,7 +46,7 @@ const UpdateProfile = () => {
     }
   }, [profile, reset])
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: TProfileInput) => {
     try {
       const editRes = await editProfile({
         id: userId,
@@ -53,7 +56,7 @@ const UpdateProfile = () => {
         },
       })
 
-      handleAlert(editRes)
+      handleAlert(editRes, () => dispatch(setAvatar(imageUrl)))
     } catch (error) {
       console.log(error)
     }
@@ -73,6 +76,8 @@ const UpdateProfile = () => {
 
   return (
     <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
+      <>{contextHolder}</>
+
       <Row gutter={16} className={classes.spacingRow}>
         <Col span={12}>
           <div className={classes.spacingRow}>
@@ -150,8 +155,6 @@ const UpdateProfile = () => {
           </Button>
         </Col>
       </Row>
-
-      <>{contextHolder}</>
     </Form>
   )
 }

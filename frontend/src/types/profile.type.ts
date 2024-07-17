@@ -1,7 +1,14 @@
 import { RegisterBody } from './auth.type'
 
-export type TProfileInput = Omit<RegisterBody, 'password' | 'type'> & {
-  image: string
+export type TProfileInput = Omit<
+  RegisterBody,
+  'password' | 'type' | 'email' | 'address' | 'lastName'
+> &
+  Partial<Pick<RegisterBody, 'address' | 'lastName'>>
+
+export type TProfileArgs = {
+  id: number
+  data: TProfileInput & { image: string }
 }
 
 export type TProfile = Omit<RegisterBody, 'password'> & {
