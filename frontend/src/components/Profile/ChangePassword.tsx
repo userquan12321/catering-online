@@ -7,7 +7,7 @@ import { useChangePasswordMutation } from '@/apis/profile.api'
 import { RootState } from '@/redux/store'
 import classes from '@/styles/pages/profile.module.css'
 import { ChangePasswordInput } from '@/types/profile.type'
-import { changePasswordValidation } from '@/validations/change-password'
+import { changePasswordValidation } from '@/validations/change-password.validation'
 
 const ChangePassword = () => {
   const [messageApi, contextHolder] = message.useMessage()
