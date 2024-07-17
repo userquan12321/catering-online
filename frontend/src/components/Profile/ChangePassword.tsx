@@ -1,16 +1,17 @@
 import { Controller, useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, Col, Form, Input, message, Row } from 'antd'
+import { Button, Col, Form, Input, Row } from 'antd'
 
 import { useChangePasswordMutation } from '@/apis/profile.api'
+import { useAlert } from '@/hooks/globals/useAlert.hook'
 import { RootState } from '@/redux/store'
 import classes from '@/styles/pages/profile.module.css'
 import { ChangePasswordInput } from '@/types/profile.type'
 import { changePasswordValidation } from '@/validations/change-password.validation'
 
 const ChangePassword = () => {
-  const [messageApi, contextHolder] = message.useMessage()
+  const { handleAlert, contextHolder } = useAlert()
   const [changePassword, { isLoading }] = useChangePasswordMutation()
   const userId = useSelector((state: RootState) => state.auth.userId)
 
@@ -33,22 +34,7 @@ const ChangePassword = () => {
         },
       })
 
-      if (res.error && 'data' in res.error) {
-        messageApi.open({
-          type: 'error',
-          content: res.error.data as string,
-        })
-        return
-      }
-
-      messageApi.open({
-        type: 'success',
-        content: res.data as string,
-      })
-
-      reset()
-
-      console.log(res)
+      handleAlert(res, reset)
     } catch (error) {
       console.log(error)
     }
