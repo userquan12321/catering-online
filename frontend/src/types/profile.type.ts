@@ -11,7 +11,7 @@ export type TProfile = Omit<RegisterBody, 'password'> & {
 
 export type ChangePasswordInput = {
   oldPassword: string
-  password: string
+  newPassword: string
   confirmPassword: string
 }
 
