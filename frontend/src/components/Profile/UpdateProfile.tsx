@@ -1,8 +1,8 @@
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Button, Col, Form, Input, Row, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, Col, Form, Input, message, Row, Typography } from 'antd'
 
 import { useEditProfileMutation, useGetProfileQuery } from '@/apis/profile.api'
 import { USER_TYPE_ARRAY } from '@/constants/global.constant'
@@ -10,6 +10,7 @@ import { RootState } from '@/redux/store'
 import classes from '@/styles/pages/profile.module.css'
 import { profileValidation } from '@/validations/profile.validation'
 
+import { useAlert } from '@/hooks/globals/useAlert.hook'
 import UploadWidget from '../common/UploadWidget'
 
 const { Text } = Typography
@@ -18,7 +19,7 @@ const UpdateProfile = () => {
   const userId = useSelector((state: RootState) => state.auth.userId)
   const { data: profile, isLoading, error } = useGetProfileQuery(userId)
   const [imageUrl, setImageUrl] = useState('')
-  const [messageApi, contextHolder] = message.useMessage()
+  const { handleAlert, contextHolder } = useAlert()
   const [editProfile, { isLoading: isEditLoading }] = useEditProfileMutation()
 
   const {
@@ -49,22 +50,10 @@ const UpdateProfile = () => {
         data: {
           ...data,
           image: imageUrl,
-        }
-      })
-      
-      if (editRes.error && 'data' in editRes.error) {
-        messageApi.open({
-          type: 'error',
-          content: editRes.error.data as string,
-        })
-        return
-      }
-
-      messageApi.open({
-        type: 'success',
-        content: editRes.data as string,
+        },
       })
 
+      handleAlert(editRes)
     } catch (error) {
       console.log(error)
     }
@@ -152,7 +141,11 @@ const UpdateProfile = () => {
 
       <Row justify="end" gutter={8}>
         <Col>
-          <Button type="primary" htmlType="submit" disabled={isLoading || isEditLoading}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={isLoading || isEditLoading}
+          >
             Update Profile
           </Button>
         </Col>

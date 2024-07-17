@@ -1,7 +1,7 @@
 import { Controller, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, Col, Form, Input, message,Row, Typography } from 'antd'
+import { Button, Col, Form, Input, message, Row, Typography } from 'antd'
 
 import { useLoginMutation } from '@/apis/auth.api'
 import { USER_TYPE } from '@/constants/global.constant'
