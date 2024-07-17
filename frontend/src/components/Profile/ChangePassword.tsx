@@ -29,7 +29,7 @@ const ChangePassword = () => {
         id: userId,
         data: {
           oldPassword: data.oldPassword,
-          password: data.password,
+          newPassword: data.newPassword,
         },
       })
 
@@ -77,11 +77,11 @@ const ChangePassword = () => {
       <Form.Item
         label="New password"
         required
-        help={errors.password?.message}
-        validateStatus={errors.password ? 'error' : ''}
+        help={errors.newPassword?.message}
+        validateStatus={errors.newPassword ? 'error' : ''}
       >
         <Controller
-          name="password"
+          name="newPassword"
           control={control}
           defaultValue=""
           render={({ field }) => <Input.Password {...field} />}
