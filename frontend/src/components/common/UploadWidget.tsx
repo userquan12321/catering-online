@@ -1,6 +1,6 @@
+import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import { UserOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
-import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 
 // Define the structure of the result from the Cloudinary upload widget
 interface CloudinaryUploadResult {
@@ -47,7 +47,6 @@ const UploadWidget = ({ imageUrl, setImageUrl }: Props) => {
 
   useEffect(() => {
     cloudinaryRef.current = window.cloudinary
-    console.log(cloudinaryRef.current)
 
     const widget = cloudinaryRef.current?.createUploadWidget(
       {
@@ -70,7 +69,7 @@ const UploadWidget = ({ imageUrl, setImageUrl }: Props) => {
       return
     }
     widgetRef.current = null
-  }, [])
+  }, [setImageUrl])
 
   return (
     <div style={{ width: 'fit-content', display: 'grid', gap: '1rem' }}>

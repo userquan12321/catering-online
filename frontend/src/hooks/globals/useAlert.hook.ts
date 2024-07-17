@@ -25,11 +25,8 @@ export const useAlert = () => {
         })
         return
       }
-
-      messageApi.open({
-        type: 'success',
-        content: res.data as string,
-      })
+      console.log(2)
+      messageApi.success(res.data as string)
       callback && callback()
     },
     [messageApi],

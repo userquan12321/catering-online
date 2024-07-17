@@ -140,7 +140,8 @@ namespace backend.Controllers
                 PID = getProfile.Id, 
                 CID = catererId, 
                 UserType = getUser.Type, 
-                FirstName = getProfile.FirstName 
+                FirstName = getProfile.FirstName,
+                Avatar = getProfile.Image
             });
         }
 

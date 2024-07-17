@@ -1,18 +1,24 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { API_BASE_URL } from '@/constants/api.constant'
-import { ChangePasswordArgs, TProfile } from '@/types/profile.type'
+import {
+  ChangePasswordArgs,
+  TProfile,
+  TProfileArgs,
+} from '@/types/profile.type'
 
 export const profileApi = createApi({
   reducerPath: 'profileApi',
   baseQuery: fetchBaseQuery({
     baseUrl: API_BASE_URL,
   }),
+  tagTypes: ['Profile'],
   endpoints: (build) => ({
     getProfile: build.query<TProfile, number>({
       query: (id) => ({
         url: `user/profile/${id}`,
       }),
+      providesTags: ['Profile'],
     }),
 
     changePassword: build.mutation<string, ChangePasswordArgs>({
@@ -23,15 +29,20 @@ export const profileApi = createApi({
         responseHandler: (response) => response.text(),
       }),
     }),
-    editProfile: build.mutation<string, any>({
+    editProfile: build.mutation<string, TProfileArgs>({
       query: ({ id, data }) => ({
         url: `user/update-profile/${id}`,
         method: 'PUT',
         body: data,
         responseHandler: (response) => response.text(),
       }),
+      invalidatesTags: ['Profile'],
     }),
   }),
 })
 
-export const { useGetProfileQuery, useChangePasswordMutation, useEditProfileMutation } = profileApi
+export const {
+  useGetProfileQuery,
+  useChangePasswordMutation,
+  useEditProfileMutation,
+} = profileApi

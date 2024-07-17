@@ -7,6 +7,7 @@ type LoginResponse = {
   userType: number
   firstName: string
   userId: number
+  avatar: string
 }
 
 export const authApi = createApi({

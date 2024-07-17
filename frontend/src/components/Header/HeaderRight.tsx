@@ -12,8 +12,10 @@ import '@/styles/components/header.style.css'
 const { Text } = Typography
 
 const HeaderRight = () => {
-  const firstName = useSelector((state: RootState) => state.auth.firstName)
+  const { firstName, avatar } = useSelector((state: RootState) => state.auth)
   const [open, setOpen] = useState(false)
+
+  console.log(avatar)
 
   if (firstName) {
     return (
@@ -26,7 +28,11 @@ const HeaderRight = () => {
           open={open}
           onOpenChange={setOpen}
         >
-          <Avatar className="icon">{firstName[0].toUpperCase()}</Avatar>
+          {avatar ? (
+            <Avatar src={avatar} className="icon" alt="Avatar" />
+          ) : (
+            <Avatar className="icon">{firstName[0].toUpperCase()}</Avatar>
+          )}
         </Popover>
       </Flex>
     )
