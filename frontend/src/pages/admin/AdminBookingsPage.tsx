@@ -1,4 +1,4 @@
-import { Select, Space, Table, TableProps, Tag } from 'antd'
+import { Space, Table, Tag } from 'antd'
 
 interface DataType {
   key: number
@@ -6,10 +6,6 @@ interface DataType {
   age: number
   address: string
   description: string
-}
-
-const handleChange = (value: string) => {
-  console.log(`selected ${value}`)
 }
 
 const columns = [
