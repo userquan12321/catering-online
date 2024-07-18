@@ -1,5 +1,4 @@
-import React from 'react'
-import { Select, Space, Table, TableProps } from 'antd'
+import { Space, Table, Tag } from 'antd'
 
 interface DataType {
   key: number
@@ -9,11 +8,11 @@ interface DataType {
   description: string
 }
 
-const handleChange = (value: string) => {
-  console.log(`selected ${value}`)
-}
-
 const columns = [
+  {
+    title: 'ID',
+    dataIndex: 'key',
+  },
   {
     title: 'Name',
     dataIndex: 'name',
@@ -44,15 +43,9 @@ const columns = [
     dataIndex: 'status',
     render: () => (
       <>
-        <Select
-          defaultValue="pending"
-          onChange={handleChange}
-          options={[
-            { value: 'pending', label: 'pending' },
-            { value: 'ongoing', label: 'ongoing' },
-            { value: 'complete', label: 'complete' },
-          ]}
-        />
+        <Tag color="red">cancelled</Tag>
+        <Tag color="green">complete</Tag>
+        <Tag color="yellow">pending</Tag>
       </>
     ),
   },
@@ -84,18 +77,14 @@ const defaultExpandable = {
   expandedRowRender: (record: DataType) => <p>{record.description}</p>,
 }
 
-const AdminBookingsPage: React.FC = () => {
-  const tableProps: TableProps<DataType> = {
-    size: 'large', // Keep size as large by default
-    expandable: defaultExpandable, // Use default expandable config
-    pagination: { position: ['bottomLeft'] }, // Set pagination to bottom left and right by default
-    columns,
-    dataSource: data,
-  }
-
+const AdminBookingsPage = () => {
   return (
     <>
-      <Table {...tableProps} />
+      <Table
+        expandable={defaultExpandable}
+        columns={columns}
+        dataSource={data}
+      />
     </>
   )
 }
