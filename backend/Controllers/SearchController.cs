@@ -8,29 +8,33 @@ namespace backend.Controllers
     [ApiController]
     public class SearchController(ApplicationDbContext context) : ControllerBase
     {
-        // User search caterer with cuisine
         [HttpGet("caterers")]
-        public async Task<ActionResult> SearchCaterers(string? cuisine)
+        public async Task<ActionResult> SearchCaterers([FromQuery] int page = 1)
         {
-            var query = from c in context.Caterers
-                        join p in context.Profiles on c.ProfileId equals p.Id
-                        join i in context.Items on c.Id equals i.CatererId
-                        join ct in context.CuisineTypes on i.CuisineId equals ct.Id
-                        select (new
-                        {
-                            c.Id,
-                            p.FirstName,
-                            p.LastName,
-                            p.Image,
-                            ct.CuisineName
-                        });
-            if (!string.IsNullOrEmpty(cuisine))
+            int pageSize = 10;
+            var caterers = await context.Caterers
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Include(c => c.Profile)
+                    .Select(c => new
+                    {
+                        c.Id,
+                        c.Profile!.FirstName,
+                        c.Profile.LastName,
+                        c.Profile.Image,
+                        c.Profile.PhoneNumber,
+                        c.Profile.User!.Email,
+                        c.Profile.UserId,
+                        c.Profile.Address,
+                    })
+                    .ToListAsync();
+
+             if (caterers == null)
             {
-                query = query.Where(a => a.CuisineName == cuisine);
+                return NotFound();
             }
-            query = query.OrderBy(a => a.Id);
-            var result = await query.ToListAsync();
-            return Ok(result);
+
+            return Ok(caterers);
         }
 
         // Get caterer items

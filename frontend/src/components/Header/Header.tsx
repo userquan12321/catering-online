@@ -8,7 +8,7 @@ import '@/styles/components/header.style.css'
 
 const Header = () => {
   return (
-    <Layout.Header>
+    <Layout.Header id="header">
       <nav id="navbar">
         <Link to="/" className="logo">
           Catering

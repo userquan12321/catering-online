@@ -21,5 +21,8 @@
     "source.fixAll.eslint": "explicit"
   },
   "eslint.validate": ["javascript", "typescript"],
-  "eslint.nodePath": "./node_modules/eslint"
+  "eslint.nodePath": "./node_modules/eslint",
+  "[csharp]": {
+    "editor.formatOnSave": true
+  }
 }

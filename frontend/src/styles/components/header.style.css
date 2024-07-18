@@ -1,3 +1,10 @@
+#header {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 9;
+}
+
 #navbar {
   display: flex;
   justify-content: space-between;
@@ -34,5 +41,16 @@
 
   & .welcome-text {
     color: white;
+    font-weight: 700;
+  }
+}
+
+.header-nav {
+  flex: 1;
+  justify-content: center;
+  background-color: transparent;
+
+  & > li {
+    color: white !important;
   }
 }

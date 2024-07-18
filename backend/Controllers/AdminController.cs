@@ -5,12 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
-    //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController(ApplicationDbContext context) : ControllerBase
     {
-        // Admin view all users
         [HttpGet("users")]
         public async Task<ActionResult> GetUsers()
         {
