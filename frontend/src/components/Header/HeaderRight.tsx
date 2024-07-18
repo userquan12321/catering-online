@@ -15,8 +15,6 @@ const HeaderRight = () => {
   const { firstName, avatar } = useSelector((state: RootState) => state.auth)
   const [open, setOpen] = useState(false)
 
-  console.log(avatar)
-
   if (firstName) {
     return (
       <Flex gap={8} align="center">

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { LogoutOutlined,UserOutlined } from '@ant-design/icons'
+import { HeartOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { Menu, MenuProps } from 'antd'
 
 import { useLogoutMutation } from '@/apis/auth.api'
@@ -15,6 +15,11 @@ const items: MenuItem[] = [
     label: 'Profile',
     key: '/profile',
     icon: <UserOutlined />,
+  },
+  {
+    label: 'Favorite List',
+    key: '/favorite-list',
+    icon: <HeartOutlined />,
   },
   {
     label: 'Logout',
