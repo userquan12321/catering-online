@@ -1,35 +1,36 @@
-import React, { useState } from 'react';
-import { Button, Modal, Form, Input, message, List } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import { useGetCuisinesQuery, useAddCuisineMutation } from '@/apis/admin.api';
-import { CuisineDTO } from '@/types/cuisine.type';
+import { useState } from 'react'
+import { PlusOutlined } from '@ant-design/icons'
+import { Button, Form, Input, List, message, Modal } from 'antd'
+
+import { useAddCuisineMutation, useGetCuisinesQuery } from '@/apis/admin.api'
+import { CuisineInput } from '@/types/cuisine.type'
 
 const AdminCuisineTypesPage = () => {
-  const [form] = Form.useForm();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const { data: cuisines = [], refetch } = useGetCuisinesQuery();
-  const [addCuisine, { isLoading }] = useAddCuisineMutation();
+  const [form] = Form.useForm()
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const { data: cuisines = [], refetch } = useGetCuisinesQuery()
+  const [addCuisine, { isLoading }] = useAddCuisineMutation()
 
   const showModal = () => {
-    setIsModalVisible(true);
-  };
+    setIsModalVisible(true)
+  }
 
   const handleCancel = () => {
-    setIsModalVisible(false);
-    form.resetFields();
-  };
+    setIsModalVisible(false)
+    form.resetFields()
+  }
 
-  const onFinish = async (values: CuisineDTO) => {
+  const onFinish = async (values: CuisineInput) => {
     try {
-      await addCuisine(values).unwrap();
-      message.success('Cuisine added successfully');
-      form.resetFields();
-      setIsModalVisible(false);
-      refetch();
+      const res = await addCuisine(values)
+      message.success(res.data as string)
+      form.resetFields()
+      setIsModalVisible(false)
+      refetch()
     } catch (error) {
-      message.error('Failed to add cuisine');
+      message.error('Failed to add cuisine')
     }
-  };
+  }
 
   return (
     <>
@@ -59,10 +60,12 @@ const AdminCuisineTypesPage = () => {
       </Modal>
       <List
         dataSource={cuisines}
-        renderItem={(cuisine) => <List.Item key={cuisine.id}>{cuisine.cuisineName}</List.Item>}
+        renderItem={(cuisine) => (
+          <List.Item key={cuisine.id}>{cuisine.cuisineName}</List.Item>
+        )}
       />
     </>
-  );
-};
+  )
+}
 
 export default AdminCuisineTypesPage
