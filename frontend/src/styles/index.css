@@ -19,8 +19,24 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+main {
+  margin-top: 4rem;
+}
+
 .section {
   margin-bottom: 1rem;
   background-color: #fdf5ea;
   padding: 1.5rem 0;
+}
+
+.section-no-bg {
+  margin-bottom: 1rem;
+  padding: 1.5rem 0;
+}
+
+.grid-3 {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
 }

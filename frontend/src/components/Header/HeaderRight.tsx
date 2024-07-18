@@ -18,7 +18,7 @@ const HeaderRight = () => {
   if (firstName) {
     return (
       <Flex gap={8} align="center">
-        <Text className="welcome-text">{`Welcome ${firstName}`}</Text>
+        <Text className="welcome-text">{`Welcome ${firstName}!`}</Text>
         <Popover
           trigger="click"
           placement="bottomRight"

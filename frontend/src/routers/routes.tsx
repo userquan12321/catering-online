@@ -11,6 +11,7 @@ import AdminMessages from '@/pages/admin/AdminMessagesPage'
 import AdminUsers from '@/pages/admin/AdminUsersPage'
 
 import {
+  CaterersPage,
   FavoriteListPage,
   HomePage,
   LoginPage,
@@ -27,6 +28,16 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <HomePage />,
+      },
+    ],
+  },
+  {
+    path: '/caterers',
+    element: <MainLayout />,
+    children: [
+      {
+        path: '',
+        element: <CaterersPage />,
       },
     ],
   },

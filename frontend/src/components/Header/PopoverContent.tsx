@@ -3,12 +3,11 @@ import { HeartOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { Menu, MenuProps } from 'antd'
 
 import { useLogoutMutation } from '@/apis/auth.api'
+import { MenuItem } from '@/types/menu.type'
 
 type Props = {
   onClose: () => void
 }
-
-type MenuItem = Required<MenuProps>['items'][number]
 
 const items: MenuItem[] = [
   {

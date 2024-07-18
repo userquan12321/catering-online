@@ -1,14 +1,10 @@
+import { Link } from 'react-router-dom'
 import { Button, Image, Typography } from 'antd'
 
+import { BANNER_URLS } from '@/constants/data/banners.constant'
 import classes from '@/styles/components/home/intro.module.css'
 
 const { Title, Paragraph } = Typography
-
-const BANNER_URLS = [
-  'https://c1.wallpaperflare.com/preview/43/130/490/buffet-dining-dinner-lunch.jpg',
-  'https://t4.ftcdn.net/jpg/02/75/39/31/360_F_275393147_SA3KtHDTUMoEn6hBbhNiTPeO92gHYgyr.jpg',
-  'https://media.istockphoto.com/id/1054862736/photo/waiter-carrying-plates-with-meat-dish.jpg?s=612x612&w=0&k=20&c=sAPvulfoGCwWvH26kd3dh7WtfMSnYdEB2eqNu3hSMt4=',
-]
 
 const HeroIntro = () => {
   return (
@@ -24,9 +20,9 @@ const HeroIntro = () => {
           asperiores et, earum id.
         </Paragraph>
         <Button type="primary" size="large">
-          BOOKING NOW!
+          <Link to="/caterers">Start planning!</Link>
         </Button>
-        <div className={classes.bannerContainer}>
+        <div className="grid-3">
           {BANNER_URLS.map((item) => (
             <Image src={item} key={item} alt="Banner" height="100%" />
           ))}
