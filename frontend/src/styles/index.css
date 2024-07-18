@@ -18,3 +18,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.section {
+  margin-bottom: 1rem;
+  background-color: #fdf5ea;
+  padding: 1.5rem 0;
+}
