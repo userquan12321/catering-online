@@ -16,26 +16,26 @@ const AdminCuisineTypesPage = () => {
 
   const [addCuisine, { isLoading }] = useAddCuisineMutation()
 
-  const showModal = () => {
-    setIsModalVisible(true)
-  }
+  const showDrawer = () => {
+    setIsDrawerVisible(true);
+  };
 
-  const handleCancel = () => {
-    setIsModalVisible(false)
-    form.resetFields()
-  }
+  const onClose = () => {
+    setIsDrawerVisible(false);
+    form.resetFields();
+  };
 
   const onFinish = async (values: CuisineInput) => {
     try {
-      const res = await addCuisine(values)
-      message.success(res.data as string)
-      form.resetFields()
-      setIsModalVisible(false)
-      refetch()
+      const res = await addCuisine(values);
+      message.success(res.data as string);
+      form.resetFields();
+      setIsDrawerVisible(false);
+      refetch();
     } catch (error) {
-      message.error('Failed to add cuisine')
+      message.error('Failed to add cuisine');
     }
-  }
+  };
 
   const onSelectChange = (newSelectedRowKeys: Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys)
@@ -81,14 +81,14 @@ const AdminCuisineTypesPage = () => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal} icon={<PlusOutlined />}>
+      <Button type="primary" onClick={showDrawer} icon={<PlusOutlined />}>
         Add Cuisine
       </Button>
-      <Modal
+      <Drawer
         title="Add Cuisine"
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
+        onClose={onClose}
+        open={isDrawerVisible}
+        width={300}
       >
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item
@@ -113,7 +113,7 @@ const AdminCuisineTypesPage = () => {
         rowKey={(record) => record.id}
       />
     </>
-  )
-}
+  );
+};
 
-export default AdminCuisineTypesPage
+export default AdminCuisineTypesPage;
