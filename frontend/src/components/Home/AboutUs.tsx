@@ -1,12 +1,15 @@
 import { Flex, Typography } from 'antd'
 
-const { Title, Paragraph } = Typography
+import { aboutUsData } from '@/constants/data/about-us.constant'
+import classes from '@/styles/components/home/about-us.module.css'
+
+const { Title, Paragraph, Text } = Typography
 
 const AboutUs = () => {
   return (
-    <section className="section">
+    <section className="section" id="about-us">
       <div className="container">
-        <Title level={4}>About Us</Title>
+        <Title level={3}>About Us</Title>
         <Flex justify="space-between" gap={50}>
           <Paragraph>
             We create unforgettable dining experiences for any occasion with
@@ -18,7 +21,23 @@ const AboutUs = () => {
             cuisine, Italian elegance, or innovative fusion dishes, we have you
             covered.
           </Paragraph>
-          <div></div>
+          <div className={classes.achievements}>
+            {aboutUsData.map((item) => (
+              <div className={classes.achievement} key={item.id}>
+                <img
+                  className={classes.icon}
+                  src={item.icon}
+                  alt={item.label}
+                />
+                <div>
+                  <Text strong className={classes.achievementValue}>
+                    {item.value}
+                  </Text>
+                  <Text>{item.label}</Text>
+                </div>
+              </div>
+            ))}
+          </div>
         </Flex>
       </div>
     </section>

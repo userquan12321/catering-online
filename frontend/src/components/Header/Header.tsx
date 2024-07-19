@@ -6,14 +6,18 @@ import HeaderRight from './HeaderRight'
 
 import '@/styles/components/header.style.css'
 
-const Header = () => {
+type Props = {
+  isAdmin?: boolean
+}
+
+const Header = ({ isAdmin }: Props) => {
   return (
     <Layout.Header id="header">
       <nav id="navbar">
         <Link to="/" className="logo">
           Catering
         </Link>
-        <HeaderNav />
+        {!isAdmin && <HeaderNav />}
         <HeaderRight />
       </nav>
     </Layout.Header>

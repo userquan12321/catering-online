@@ -6,7 +6,7 @@ const { Title, Paragraph } = Typography
 
 const Events = () => {
   return (
-    <div className="container">
+    <div id="service" className="container">
       <div className="grid-3 section-no-bg">
         {eventsData.map((item) => (
           <section key={item.id}>

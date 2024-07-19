@@ -74,7 +74,15 @@ namespace backend.Controllers
         [HttpGet("cuisines")]
         public async Task<ActionResult> GetCuisines()
         {
-            var cuisines = await context.CuisineTypes.ToListAsync();
+            var cuisines = await context.CuisineTypes
+                .OrderByDescending(c => c.UpdatedAt)
+                .Select(c => 
+                    new {
+                        c.Id,
+                        c.CuisineName
+                    })
+                .ToListAsync();
+
             return Ok(cuisines);
         }
 

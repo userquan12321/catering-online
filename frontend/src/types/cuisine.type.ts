@@ -1,8 +1,6 @@
-export type CuisineDTO = {
+export type CuisineType = {
   id: number
   cuisineName: string
-  createdAt?: string
-  updatedAt?: string
 }
 
 export type CuisineInput = {

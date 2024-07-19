@@ -1,14 +1,19 @@
-import { useState } from 'react'
-import { PlusOutlined } from '@ant-design/icons'
-import { Button, Form, Input, List, message, Modal } from 'antd'
+import { Key, useState } from 'react'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import type { TableColumnsType, TableProps } from 'antd'
+import { Button, Flex, Form, Input, message, Modal, Table } from 'antd'
 
 import { useAddCuisineMutation, useGetCuisinesQuery } from '@/apis/admin.api'
-import { CuisineInput } from '@/types/cuisine.type'
+import { CuisineInput, CuisineType } from '@/types/cuisine.type'
+
+type TableRowSelection<T> = TableProps<T>['rowSelection']
 
 const AdminCuisineTypesPage = () => {
   const [form] = Form.useForm()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const { data: cuisines = [], refetch } = useGetCuisinesQuery()
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([])
+
   const [addCuisine, { isLoading }] = useAddCuisineMutation()
 
   const showModal = () => {
@@ -30,6 +35,48 @@ const AdminCuisineTypesPage = () => {
     } catch (error) {
       message.error('Failed to add cuisine')
     }
+  }
+
+  const onSelectChange = (newSelectedRowKeys: Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys)
+  }
+
+  const rowSelection: TableRowSelection<CuisineType> = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  }
+
+  const columns: TableColumnsType<CuisineType> = [
+    {
+      title: 'Cuisine Id',
+      dataIndex: 'id',
+    },
+    {
+      title: 'Name',
+      dataIndex: 'cuisineName',
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      render: (_, record) => (
+        <Flex gap={8}>
+          <Button type="primary" onClick={() => handleEdit(record.id)}>
+            <EditOutlined />
+          </Button>
+          <Button type="primary" danger onClick={() => handleDelete(record.id)}>
+            <DeleteOutlined />
+          </Button>
+        </Flex>
+      ),
+    },
+  ]
+
+  const handleEdit = (id: number) => {
+    console.log('Edit', id)
+  }
+
+  const handleDelete = (id: number) => {
+    console.log('Delete', id)
   }
 
   return (
@@ -58,11 +105,12 @@ const AdminCuisineTypesPage = () => {
           </Form.Item>
         </Form>
       </Modal>
-      <List
+      <Table
+        className="table"
+        rowSelection={rowSelection}
+        columns={columns}
         dataSource={cuisines}
-        renderItem={(cuisine) => (
-          <List.Item key={cuisine.id}>{cuisine.cuisineName}</List.Item>
-        )}
+        rowKey={(record) => record.id}
       />
     </>
   )
