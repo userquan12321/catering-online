@@ -1,24 +1,28 @@
-import { certificate, focus, like } from '@/assets/svgs'
+import { certificateSvg, focusSvg, likeSvg, orderSvg } from '@/assets/svgs'
 
 export const aboutUsData = [
   {
     id: 1,
-    label: 'Experience',
-    icon: certificate,
+    label: 'Experiences',
+    value: '5+ years',
+    icon: certificateSvg,
   },
   {
     id: 1,
     label: 'Bookings',
-    icon: certificate,
+    value: '5000+',
+    icon: orderSvg,
   },
   {
     id: 2,
-    label: 'Completed orders per month',
-    icon: focus,
+    label: 'Orders per month',
+    value: '100+',
+    icon: focusSvg,
   },
   {
     id: 3,
     label: 'Satisfaction',
-    icon: like,
+    value: '98%',
+    icon: likeSvg,
   },
 ]

@@ -4,19 +4,19 @@ import { MenuItem } from '@/types/menu.type'
 
 const items: MenuItem[] = [
   {
-    label: 'Service',
+    label: <a href="#service">Service</a>,
     key: 'service',
   },
   {
-    label: 'Cuisines',
+    label: <a href="#cuisines">Cuisines</a>,
     key: 'cuisines',
   },
   {
-    label: 'Our Recent Events',
+    label: <a href="#recent-events">Our Recent Events</a>,
     key: 'recent-events',
   },
   {
-    label: 'About Us',
+    label: <a href="#about-us">About Us</a>,
     key: 'about-us',
   },
 ]

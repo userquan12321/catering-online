@@ -1,5 +1,6 @@
-import certificate from './about-us/certificate.svg'
-import focus from './about-us/focus.svg'
-import like from './about-us/like.svg'
+import certificateSvg from './about-us/certificate.svg'
+import focusSvg from './about-us/focus.svg'
+import likeSvg from './about-us/like.svg'
+import orderSvg from './about-us/order.svg'
 
-export { certificate, focus, like }
+export { certificateSvg, focusSvg, likeSvg, orderSvg }

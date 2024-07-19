@@ -1,0 +1,24 @@
+.achievements {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  min-width: 500px;
+}
+
+.achievement {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.achievementValue {
+  display: block;
+  font-size: 1.2rem;
+}
+
+.icon {
+  user-select: none;
+  width: 3rem;
+  filter: brightness(0) saturate(100%) invert(21%) sepia(70%) saturate(4562%)
+    hue-rotate(103deg) brightness(96%) contrast(101%);
+}
