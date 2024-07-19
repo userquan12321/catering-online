@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Button, Image, Typography } from 'antd'
 
-import { BANNER_URLS } from '@/constants/data/banners.constant'
+import { bannerUrls } from '@/constants/data/banners.constant'
 import classes from '@/styles/components/home/intro.module.css'
 
 const { Title, Paragraph } = Typography
@@ -23,7 +23,7 @@ const HeroIntro = () => {
           <Link to="/caterers">Start planning!</Link>
         </Button>
         <div className="grid-3">
-          {BANNER_URLS.map((item) => (
+          {bannerUrls.map((item) => (
             <Image src={item} key={item} alt="Banner" height="100%" />
           ))}
         </div>
