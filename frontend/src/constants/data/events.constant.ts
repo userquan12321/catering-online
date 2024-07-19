@@ -1,4 +1,4 @@
-export const EVENTS = [
+export const eventsData = [
   {
     id: 1,
     title: 'Wedding',
