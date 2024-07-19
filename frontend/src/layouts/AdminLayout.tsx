@@ -11,9 +11,9 @@ import classes from '@/styles/layouts/admin-layout.module.css'
 const AdminLayout = () => {
   return (
     <Layout>
-      <Header />
+      <Header isAdmin />
       <Layout>
-        <Sider width={200}>
+        <Sider width={200} className="margin-header">
           <Menu theme="dark" defaultSelectedKeys={[menuItems[0].link]}>
             {menuItems.map((item) => (
               <Menu.Item key={item.link} className={classes.menuItem}>

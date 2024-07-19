@@ -19,7 +19,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-main {
+.margin-header {
   margin-top: 4rem;
 }
 
@@ -32,6 +32,10 @@ main {
 .section-no-bg {
   margin-bottom: 1rem;
   padding: 1.5rem 0;
+}
+
+.table {
+  margin-top: 1.5rem;
 }
 
 .grid-3 {
