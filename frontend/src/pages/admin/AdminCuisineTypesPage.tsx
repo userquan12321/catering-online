@@ -1,20 +1,20 @@
-import { Key, useState } from 'react'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
-import type { TableColumnsType, TableProps } from 'antd'
-import { Button, Flex, Form, Input, message, Modal, Table } from 'antd'
+import { Key, useState } from 'react';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import type { TableColumnsType, TableProps } from 'antd';
+import { Button, Drawer, Form, Input, message, Table } from 'antd';
 
-import { useAddCuisineMutation, useGetCuisinesQuery } from '@/apis/admin.api'
-import { CuisineInput, CuisineType } from '@/types/cuisine.type'
+import { useAddCuisineMutation, useGetCuisinesQuery } from '@/apis/admin.api';
+import { CuisineInput, CuisineType } from '@/types/cuisine.type';
 
-type TableRowSelection<T> = TableProps<T>['rowSelection']
+type TableRowSelection<T> = TableProps<T>['rowSelection'];
 
 const AdminCuisineTypesPage = () => {
-  const [form] = Form.useForm()
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const { data: cuisines = [], refetch } = useGetCuisinesQuery()
-  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([])
+  const [form] = Form.useForm();
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const { data: cuisines = [], refetch } = useGetCuisinesQuery();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
 
-  const [addCuisine, { isLoading }] = useAddCuisineMutation()
+  const [addCuisine, { isLoading }] = useAddCuisineMutation();
 
   const showDrawer = () => {
     setIsDrawerVisible(true);
@@ -38,13 +38,13 @@ const AdminCuisineTypesPage = () => {
   };
 
   const onSelectChange = (newSelectedRowKeys: Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys)
-  }
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
 
   const rowSelection: TableRowSelection<CuisineType> = {
     selectedRowKeys,
     onChange: onSelectChange,
-  }
+  };
 
   const columns: TableColumnsType<CuisineType> = [
     {
@@ -59,25 +59,25 @@ const AdminCuisineTypesPage = () => {
       title: 'Action',
       dataIndex: 'action',
       render: (_, record) => (
-        <Flex gap={8}>
+        <div style={{ display: 'flex', gap: '8px' }}>
           <Button type="primary" onClick={() => handleEdit(record.id)}>
             <EditOutlined />
           </Button>
           <Button type="primary" danger onClick={() => handleDelete(record.id)}>
             <DeleteOutlined />
           </Button>
-        </Flex>
+        </div>
       ),
     },
-  ]
+  ];
 
   const handleEdit = (id: number) => {
-    console.log('Edit', id)
-  }
+    console.log('Edit', id);
+  };
 
   const handleDelete = (id: number) => {
-    console.log('Delete', id)
-  }
+    console.log('Delete', id);
+  };
 
   return (
     <>
@@ -104,7 +104,8 @@ const AdminCuisineTypesPage = () => {
             </Button>
           </Form.Item>
         </Form>
-      </Modal>
+      </Drawer>
+      
       <Table
         className="table"
         rowSelection={rowSelection}
