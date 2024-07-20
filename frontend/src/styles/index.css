@@ -1,9 +1,14 @@
-@import url('utils.css');
+@import url('global/common.css');
+@import url('global/utils.css');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+textarea {
+  resize: none !important;
 }
 
 #root {

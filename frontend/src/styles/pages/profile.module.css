@@ -2,6 +2,23 @@
   margin-bottom: 1.5rem;
 }
 
+.avatarWrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.avatar {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  font-size: 100px;
+  display: flex;
+  justify-content: center;
+}
+
 .label {
   margin-bottom: 0.5rem;
 }

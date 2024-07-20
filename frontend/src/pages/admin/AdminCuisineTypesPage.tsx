@@ -6,6 +6,7 @@ import { Button, Col, Form, Input, message, Row, Typography } from 'antd'
 
 import { useAddCuisineMutation, useGetCuisinesQuery } from '@/apis/admin.api'
 import CustomTable from '@/components/common/CustomTable'
+import UploadWidget from '@/components/common/UploadWidget'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
 import { CuisineInput, CuisineType } from '@/types/cuisine.type'
 import { cuisineTypeValidation } from '@/validations/cuisine-type.validation'
@@ -96,6 +97,22 @@ const AdminCuisineTypesPage = () => {
           control={control}
           defaultValue=""
           render={({ field }) => <Input.TextArea rows={3} {...field} />}
+        />
+      </Form.Item>
+
+      <Form.Item label="Cuisine image" required>
+        <Controller
+          name="cuisineImage"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <div className="upload-image">
+              {field.value ? (
+                <img className="w-full" src={field.value} alt="Cuisine Image" />
+              ) : null}
+              <UploadWidget onChange={field.onChange} />
+            </div>
+          )}
         />
       </Form.Item>
 

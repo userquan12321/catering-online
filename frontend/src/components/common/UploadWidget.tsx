@@ -1,8 +1,9 @@
-import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
-import { UserOutlined } from '@ant-design/icons'
+import { useEffect, useRef } from 'react'
+import { EditOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 
-// Define the structure of the result from the Cloudinary upload widget
+import classes from '@/styles/components/upload-btn.module.css'
+
 interface CloudinaryUploadResult {
   event: string
   info: {
@@ -37,11 +38,10 @@ interface CloudinaryWidget {
 }
 
 interface Props {
-  imageUrl: string
-  setImageUrl: Dispatch<SetStateAction<string>>
+  onChange: (url: string) => void
 }
 
-const UploadWidget = ({ imageUrl, setImageUrl }: Props) => {
+const UploadWidget = ({ onChange }: Props) => {
   const cloudinaryRef = useRef<CloudinaryWidget | null>(null)
   const widgetRef = useRef<{ open: () => void } | null>(null)
 
@@ -55,7 +55,7 @@ const UploadWidget = ({ imageUrl, setImageUrl }: Props) => {
       },
       (error, result) => {
         if (result?.event === 'success') {
-          setImageUrl(result.info.secure_url)
+          onChange(result.info.secure_url)
           return
         }
         if (error) {
@@ -69,27 +69,16 @@ const UploadWidget = ({ imageUrl, setImageUrl }: Props) => {
       return
     }
     widgetRef.current = null
-  }, [setImageUrl])
+  }, [onChange])
 
   return (
-    <div style={{ width: 'fit-content', display: 'grid', gap: '1rem' }}>
-      {imageUrl ? (
-        <img
-          src={imageUrl}
-          alt="Avatar"
-          style={{ width: '200px', aspectRatio: 1, objectFit: 'cover' }}
-        />
-      ) : (
-        <UserOutlined style={{ fontSize: '200px', border: '1px solid' }} />
-      )}
-      <Button
-        type="primary"
-        style={{ display: 'block' }}
-        onClick={() => widgetRef.current?.open()}
-      >
-        Upload Image
-      </Button>
-    </div>
+    <Button
+      className={classes.uploadBtn}
+      type="primary"
+      onClick={() => widgetRef.current?.open()}
+    >
+      <EditOutlined />
+    </Button>
   )
 }
 

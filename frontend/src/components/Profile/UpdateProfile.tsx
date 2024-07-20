@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
+import { UserOutlined } from '@ant-design/icons'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Col, Form, Input, Row, Typography } from 'antd'
 
@@ -45,6 +46,10 @@ const UpdateProfile = () => {
       setImageUrl(profile.image)
     }
   }, [profile, reset])
+
+  const onChangeImage = (url: string) => {
+    setImageUrl(url)
+  }
 
   const onSubmit = async (data: TProfileInput) => {
     try {
@@ -140,7 +145,14 @@ const UpdateProfile = () => {
 
         <Col span={12}>
           <p className={classes.label}>Avatar (should be 200px x 200px)</p>
-          <UploadWidget imageUrl={imageUrl} setImageUrl={setImageUrl} />
+          <div className={classes.avatarWrapper}>
+            {imageUrl ? (
+              <img src={imageUrl} alt="Avatar" className={classes.avatar} />
+            ) : (
+              <UserOutlined className={classes.avatar} />
+            )}
+            <UploadWidget onChange={onChangeImage} />
+          </div>
         </Col>
       </Row>
 

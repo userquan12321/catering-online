@@ -5,6 +5,4 @@ export type CuisineType = {
   cuisineImage: string
 }
 
-export type CuisineInput = {
-  cuisineName: string
-}
+export type CuisineInput = Omit<CuisineType, 'id'>

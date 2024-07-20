@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
-import { Avatar, Layout, Menu, MenuProps, theme } from 'antd'
+import { useState } from 'react'
 import { UserOutlined } from '@ant-design/icons'
+import { Avatar, Layout, Menu, MenuProps, theme } from 'antd'
+
 import MessageDetail from '@/components/Messages/MessageDetail'
 
 const { Content, Sider } = Layout
@@ -57,11 +58,11 @@ const AdminMessagesPage: React.FC = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken()
 
-  const [selectedMenuItem, setSelectedMenuItem] = useState(null);
+  const [selectedMenuItem, setSelectedMenuItem] = useState(null)
 
-  const handleMenuSelect = (items:any) => {
-    setSelectedMenuItem(items.key);
-  };
+  const handleMenuSelect = (items: any) => {
+    setSelectedMenuItem(items.key)
+  }
 
   return (
     <Layout
@@ -92,7 +93,7 @@ const AdminMessagesPage: React.FC = () => {
         />
       </Sider>
       <Content style={{ background: colorBgContainer }}>
-        <MessageDetail selectedItem={selectedMenuItem}/>
+        <MessageDetail selectedItem={selectedMenuItem} />
       </Content>
     </Layout>
   )
