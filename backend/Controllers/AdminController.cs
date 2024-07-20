@@ -1,5 +1,6 @@
 ﻿using backend.Models;
 using backend.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ namespace backend.Controllers
     [ApiController]
     public class AdminController(ApplicationDbContext context) : ControllerBase
     {
+        [Authorize(Roles = "Admin")]
         [HttpGet("users")]
         public async Task<ActionResult> GetUsers()
         {
