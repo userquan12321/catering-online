@@ -3,8 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using backend.Models;
 using backend.Models.DTO;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -23,7 +21,7 @@ namespace backend.Controllers
             _context = context;
             _configuration = configuration;
         }
-  
+
         // Register user
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterDTO request)
@@ -68,7 +66,6 @@ namespace backend.Controllers
             return Ok("User registered.");
         }
 
-        // Login user
         [HttpPost("login")]
         public async Task<ActionResult> Login(LoginDTO request)
         {
@@ -82,6 +79,7 @@ namespace backend.Controllers
             var getProfile = await _context.Profiles
                 .Where(x => x.UserId == getUser.Id)
                 .FirstOrDefaultAsync();
+
             if (getProfile == null)
             {
                 return NotFound("Profile not found.");
@@ -89,85 +87,43 @@ namespace backend.Controllers
             var getCaterer = await _context.Caterers
                 .Where(x => x.ProfileId == getProfile.Id)
                 .FirstOrDefaultAsync();
+
             int catererId = 0;
+
             if (getCaterer != null)
             {
                 catererId = getCaterer.Id;
             }
-            if (BCrypt.Net.BCrypt.Verify(request.Password, getUser.Password) == false)
-            {
-                return BadRequest("Wrong password.");
-            }
+
             if (ModelState.IsValid == false)
             {
                 return BadRequest("Invalid input.");
             }
 
-            string accessTokenSecret = _configuration["Secrets:AccessTokenSecret"] ?? "";
-            string refreshTokenSecret = _configuration["Secrets:RefreshTokenSecret"] ?? "";
-            
-            if (accessTokenSecret == "" || refreshTokenSecret == "")
-            {
-                return StatusCode(500, "Server error.");
-            }
-
-            var accessTokenExpiry = TimeSpan.FromHours(24);
-            var refreshTokenExpiry = TimeSpan.FromDays(7);
-
-            // Create authentication cookie
             var claims = new List<Claim> {
-                    new("userId", getUser.Id.ToString()),
-                    new(ClaimTypes.Role, getUser.Type.ToString()),
-                };
-
-            var accessToken = GenerateToken(claims, accessTokenSecret, accessTokenExpiry);
-            var refreshToken = GenerateToken(claims, refreshTokenSecret, refreshTokenExpiry);
-
-              // Configure HttpOnly cookie for access token
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.Add(accessTokenExpiry)
+                new (JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]!),
+                new (JwtRegisteredClaimNames.Jti, _configuration["Jwt:Subject"]!),
+                new ("UserId", getUser.Id.ToString()),
+                new (ClaimTypes.Role, getUser.Type.ToString()),
             };
 
-            Response.Cookies.Append("accessToken", accessToken, cookieOptions);
-       
-            // Create encrypted cookie and add it to the current response
-     
-            return Ok(new { 
-                RefreshToken = refreshToken,
-                UserId = getUser.Id, 
-                PID = getProfile.Id, 
-                CID = catererId, 
-                UserType = getUser.Type, 
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var accessToken = new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                signingCredentials: signIn
+            );
+            string accessTokenValue = new JwtSecurityTokenHandler().WriteToken(accessToken);
+            return Ok(new
+            {
+                AccessToken = accessTokenValue,
+                UserType = getUser.Type,
                 FirstName = getProfile.FirstName,
                 Avatar = getProfile.Image
             });
-        }
-
-        private static string GenerateToken(List<Claim> claims, string secret, TimeSpan expiry)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(secret);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.Add(expiry),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
-
-        // Logout user
-        [HttpPost("logout")]
-        public async Task<ActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            Response.Cookies.Delete("accessToken");
-            return Ok("Logged out.");
         }
     }
 }

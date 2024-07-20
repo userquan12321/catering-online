@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { UserOutlined } from '@ant-design/icons'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Col, Form, Input, Row, Typography } from 'antd'
@@ -9,7 +9,6 @@ import { useEditProfileMutation, useGetProfileQuery } from '@/apis/profile.api'
 import { USER_TYPE_ARRAY } from '@/constants/global.constant'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
 import { setAvatar } from '@/redux/slices/auth.slice'
-import { RootState } from '@/redux/store'
 import classes from '@/styles/pages/profile.module.css'
 import { TProfileInput } from '@/types/profile.type'
 import { profileValidation } from '@/validations/profile.validation'
@@ -20,8 +19,7 @@ const { Text } = Typography
 
 const UpdateProfile = () => {
   const dispatch = useDispatch()
-  const userId = useSelector((state: RootState) => state.auth.userId)
-  const { data: profile, isLoading, error } = useGetProfileQuery(userId)
+  const { data: profile, isLoading, error } = useGetProfileQuery()
   const [imageUrl, setImageUrl] = useState('')
   const { handleAlert, contextHolder } = useAlert()
   const [editProfile, { isLoading: isEditLoading }] = useEditProfileMutation()
@@ -54,11 +52,8 @@ const UpdateProfile = () => {
   const onSubmit = async (data: TProfileInput) => {
     try {
       const editRes = await editProfile({
-        id: userId,
-        data: {
-          ...data,
-          image: imageUrl,
-        },
+        ...data,
+        image: imageUrl,
       })
 
       handleAlert(editRes, () => dispatch(setAvatar(imageUrl)))

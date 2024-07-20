@@ -8,19 +8,19 @@ export const aboutUsData = [
     icon: certificateSvg,
   },
   {
-    id: 1,
+    id: 2,
     label: 'Bookings',
     value: '5000+',
     icon: orderSvg,
   },
   {
-    id: 2,
+    id: 3,
     label: 'Orders per month',
     value: '100+',
     icon: focusSvg,
   },
   {
-    id: 3,
+    id: 4,
     label: 'Satisfaction',
     value: '98%',
     icon: likeSvg,

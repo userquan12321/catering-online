@@ -5,15 +5,15 @@ import { authApi } from '@/apis/index'
 interface AuthState {
   userType: number | null
   firstName: string
-  userId: number
   avatar: string
+  accessToken: string
 }
 
 const initialState: AuthState = {
   userType: null,
   firstName: '',
-  userId: 0,
   avatar: '',
+  accessToken: '',
 }
 
 const authSlice = createSlice({
@@ -23,6 +23,9 @@ const authSlice = createSlice({
     setAvatar: (state, action) => {
       state.avatar = action.payload
     },
+    logout: (state) => {
+      Object.assign(state, initialState)
+    },
   },
   extraReducers: (builder) => {
     builder.addMatcher(
@@ -30,15 +33,12 @@ const authSlice = createSlice({
       (state, action) => {
         state.userType = action.payload.userType
         state.firstName = action.payload.firstName
-        state.userId = action.payload.userId
         state.avatar = action.payload.avatar
+        state.accessToken = action.payload.accessToken
       },
     )
-    builder.addMatcher(authApi.endpoints.logout.matchFulfilled, (state) => {
-      Object.assign(state, initialState)
-    })
   },
 })
 
-export const { setAvatar } = authSlice.actions
+export const { setAvatar, logout } = authSlice.actions
 export const { reducer: authReducer } = authSlice

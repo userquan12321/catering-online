@@ -6,10 +6,7 @@ export type TProfileInput = Omit<
 > &
   Partial<Pick<RegisterBody, 'address' | 'lastName'>>
 
-export type TProfileArgs = {
-  id: number
-  data: TProfileInput & { image: string }
-}
+export type TProfileArgs = TProfileInput & { image: string }
 
 export type TProfile = Omit<RegisterBody, 'password'> & {
   id: number
@@ -22,7 +19,4 @@ export type ChangePasswordInput = {
   confirmPassword: string
 }
 
-export type ChangePasswordArgs = {
-  id: number
-  data: Omit<ChangePasswordInput, 'confirmPassword'>
-}
+export type ChangePasswordArgs = Omit<ChangePasswordInput, 'confirmPassword'>
