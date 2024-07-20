@@ -1,32 +1,38 @@
-import { Dispatch, Key, SetStateAction, useState } from 'react'
+import { Key, useState } from 'react'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { Button, Drawer, Flex, Table, TableColumnsType, TableProps } from 'antd'
 
 type BaseProps<T> = TableProps<T> & {
-  renderAddDrawerContent: () => JSX.Element
-  renderEditDrawerContent?: () => JSX.Element
+  renderDrawerContent: () => JSX.Element
   openDrawer: boolean
-  setOpenDrawer: Dispatch<SetStateAction<boolean>>
+  onAdd: () => void
+  onClose: () => void
   customColumns: TableColumnsType<T>
-  addText?: string
-  hasEdit?: boolean
-  openEditDrawer?: boolean
-  setOpenEditDrawer?: Dispatch<SetStateAction<boolean>>
-  onEdit?: (id: number) => void
+  name: string
+}
+
+type EditableProps<T> = BaseProps<T> & {
+  hasEdit?: true
+  isEditing: boolean
+  onEdit: (id: number) => void
   onDelete: (id: number) => void
 }
 
+type NonEditableProps<T> = BaseProps<T> & {
+  hasEdit: false
+}
+
+type Props<T> = EditableProps<T> | NonEditableProps<T>
+
 const CustomTable = <T extends { id: number }>({
   openDrawer,
-  setOpenDrawer,
-  addText,
-  renderAddDrawerContent,
-  renderEditDrawerContent,
-  openEditDrawer,
-  setOpenEditDrawer,
+  onAdd,
+  onClose,
+  name,
+  renderDrawerContent,
   hasEdit = true,
   ...props
-}: BaseProps<T>) => {
+}: Props<T>) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([])
 
   const onSelectChange = (newSelectedRowKeys: Key[]) => {
@@ -44,14 +50,14 @@ const CustomTable = <T extends { id: number }>({
             <Flex gap={8}>
               <Button
                 type="primary"
-                onClick={() => (props.onEdit as (id: number) => void)(record.id)}
+                onClick={() => (props as EditableProps<T>).onEdit(record.id)}
               >
                 <EditOutlined />
               </Button>
               <Button
                 type="primary"
                 danger
-                onClick={() => (props.onDelete as (id: number) => void)(record.id)}
+                onClick={() => (props as EditableProps<T>).onDelete(record.id)}
               >
                 <DeleteOutlined />
               </Button>
@@ -67,13 +73,9 @@ const CustomTable = <T extends { id: number }>({
 
   return (
     <>
-      {addText && (
-        <Button
-          type="primary"
-          onClick={() => setOpenDrawer(true)}
-          icon={<PlusOutlined />}
-        >
-          {addText}
+      {name && (
+        <Button type="primary" onClick={onAdd} icon={<PlusOutlined />}>
+          {`Add ${name}`}
         </Button>
       )}
       <Table
@@ -83,23 +85,13 @@ const CustomTable = <T extends { id: number }>({
         {...props}
       />
       <Drawer
-        title="Add Cuisine"
-        onClose={() => setOpenDrawer(false)}
+        title={`${hasEdit && (props as EditableProps<T>).isEditing ? 'Edit' : 'Add'} ${name}`}
+        onClose={onClose}
         open={openDrawer}
         width={500}
       >
-        {renderAddDrawerContent()}
+        {renderDrawerContent()}
       </Drawer>
-      {renderEditDrawerContent && (
-        <Drawer
-          title="Edit Cuisine"
-          onClose={() => setOpenEditDrawer && setOpenEditDrawer(false)}
-          open={openEditDrawer}
-          width={500}
-        >
-          {renderEditDrawerContent()}
-        </Drawer>
-      )}
     </>
   )
 }
