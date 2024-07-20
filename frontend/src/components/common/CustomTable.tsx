@@ -3,33 +3,30 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { Button, Drawer, Flex, Table, TableColumnsType, TableProps } from 'antd'
 
 type BaseProps<T> = TableProps<T> & {
-  renderDrawerContent: () => JSX.Element
+  renderAddDrawerContent: () => JSX.Element
+  renderEditDrawerContent?: () => JSX.Element
   openDrawer: boolean
   setOpenDrawer: Dispatch<SetStateAction<boolean>>
   customColumns: TableColumnsType<T>
   addText?: string
-}
-
-type EditableProps<T> = BaseProps<T> & {
-  hasEdit?: true
-  onEdit: (id: number) => void
+  hasEdit?: boolean
+  openEditDrawer?: boolean
+  setOpenEditDrawer?: Dispatch<SetStateAction<boolean>>
+  onEdit?: (id: number) => void
   onDelete: (id: number) => void
 }
-
-type NonEditableProps<T> = BaseProps<T> & {
-  hasEdit: false
-}
-
-type Props<T> = EditableProps<T> | NonEditableProps<T>
 
 const CustomTable = <T extends { id: number }>({
   openDrawer,
   setOpenDrawer,
   addText,
-  renderDrawerContent,
+  renderAddDrawerContent,
+  renderEditDrawerContent,
+  openEditDrawer,
+  setOpenEditDrawer,
   hasEdit = true,
   ...props
-}: Props<T>) => {
+}: BaseProps<T>) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([])
 
   const onSelectChange = (newSelectedRowKeys: Key[]) => {
@@ -47,14 +44,14 @@ const CustomTable = <T extends { id: number }>({
             <Flex gap={8}>
               <Button
                 type="primary"
-                onClick={() => (props as EditableProps<T>).onEdit(record.id)}
+                onClick={() => (props.onEdit as (id: number) => void)(record.id)}
               >
                 <EditOutlined />
               </Button>
               <Button
                 type="primary"
                 danger
-                onClick={() => (props as EditableProps<T>).onDelete(record.id)}
+                onClick={() => (props.onDelete as (id: number) => void)(record.id)}
               >
                 <DeleteOutlined />
               </Button>
@@ -91,8 +88,18 @@ const CustomTable = <T extends { id: number }>({
         open={openDrawer}
         width={500}
       >
-        {renderDrawerContent()}
+        {renderAddDrawerContent()}
       </Drawer>
+      {renderEditDrawerContent && (
+        <Drawer
+          title="Edit Cuisine"
+          onClose={() => setOpenEditDrawer && setOpenEditDrawer(false)}
+          open={openEditDrawer}
+          width={500}
+        >
+          {renderEditDrawerContent()}
+        </Drawer>
+      )}
     </>
   )
 }
