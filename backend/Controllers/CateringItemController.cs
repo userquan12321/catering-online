@@ -1,27 +1,36 @@
 using backend.Models;
 using backend.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
-    //[Authorize(Roles = "Caterer")]
+    [Authorize(Roles = "Caterer, Admin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class CatererController(ApplicationDbContext context) : ControllerBase
+    public class CateringItemController(ApplicationDbContext context) : ControllerBase
     {
-        // Caterer view all items
-        [HttpGet("{catererId}/items")]
+        [HttpGet("{catererId}")]
         public async Task<ActionResult> GetItems(int catererId)
         {
             var items = await context.Items
                 .Where(i => i.CatererId == catererId)
+                .Select(i => new
+                {
+                    i.Id,
+                    i.CuisineId,
+                    i.Name,
+                    i.Price,
+                    i.ServesCount,
+                    i.Image,
+                    i.CuisineType!.CuisineName
+                })
                 .ToListAsync();
             return Ok(items);
         }
 
-        // POST: api/Caterer/items
-        [HttpPost("{catererId}/items")]
+        [HttpPost("{catererId}")]
         public async Task<ActionResult> AddItem(int catererId, ItemDTO request)
         {
             Item item = new()
@@ -41,7 +50,7 @@ namespace backend.Controllers
         }
 
         // Caterer update item
-        [HttpPut("{catererId}/items/{itemId}")]
+        [HttpPut("{catererId}/{itemId}")]
         public async Task<ActionResult> UpdateItem(int catererId, int itemId, ItemDTO request)
         {
             var item = await context.Items
@@ -62,7 +71,7 @@ namespace backend.Controllers
         }
 
         // Caterer delete item
-        [HttpDelete("{catererId}/items/{itemId}")]
+        [HttpDelete("{catererId}/{itemId}")]
         public async Task<ActionResult> DeleteItem(int catererId, int itemId)
         {
             var item = await context.Items

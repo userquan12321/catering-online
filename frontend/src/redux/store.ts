@@ -11,7 +11,7 @@ import {
   REHYDRATE,
 } from 'redux-persist'
 
-import { authApi, cuisineApi, profileApi } from '../apis'
+import { authApi, cateringItemApi, cuisineApi, profileApi } from '../apis'
 
 import { rootReducer } from './rootReducer'
 
@@ -25,7 +25,12 @@ export const store = configureStore({
       thunk: {
         extraArgument: { profileApi },
       },
-    }).concat(authApi.middleware, profileApi.middleware, cuisineApi.middleware),
+    }).concat(
+      authApi.middleware,
+      profileApi.middleware,
+      cuisineApi.middleware,
+      cateringItemApi.middleware,
+    ),
 })
 
 export const persistor = persistStore(store)

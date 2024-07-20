@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { Layout, Menu, Typography } from 'antd'
 import { Content } from 'antd/es/layout/layout'
 import Sider from 'antd/es/layout/Sider'
 
 import Header from '@/components/Header/Header'
 import { menuItems } from '@/constants/admin.constant'
+import { RootState } from '@/redux/store'
 import classes from '@/styles/layouts/admin-layout.module.css'
 
 const AdminLayout = () => {
@@ -13,6 +15,14 @@ const AdminLayout = () => {
   const [selectedKey, setSelectedKey] = useState(pathname)
 
   const title = menuItems.find((item) => item?.key === pathname)?.title
+
+  const userType = useSelector((state: RootState) => state.auth.userType)
+
+  const isAuthenticated = userType !== null && userType !== 0
+
+  if (!isAuthenticated) {
+    return <Navigate to="/" replace />
+  }
 
   return (
     <Layout>

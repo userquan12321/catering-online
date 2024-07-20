@@ -1,5 +1,6 @@
-import { cuisineApi } from './admin.api'
 import { authApi } from './auth.api'
+import { cateringItemApi } from './catering-item.api'
+import { cuisineApi } from './cuisine-type.api'
 import { profileApi } from './profile.api'
 
-export { authApi, cuisineApi, profileApi }
+export { authApi, cateringItemApi, cuisineApi, profileApi }
