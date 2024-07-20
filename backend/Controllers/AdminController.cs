@@ -126,6 +126,8 @@ namespace backend.Controllers
                 return NotFound("Cuisine not found.");
             }
             cuisine.CuisineName = request.CuisineName;
+            cuisine.Description = request.Description;
+            cuisine.CuisineImage = request.CuisineImage;
             cuisine.UpdatedAt = DateTime.UtcNow;
             await context.SaveChangesAsync();
             return Ok("Cuisine updated.");
