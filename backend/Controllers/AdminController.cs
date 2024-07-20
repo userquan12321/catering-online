@@ -88,10 +88,14 @@ namespace backend.Controllers
             return Ok(cuisines);
         }
 
-        // Admin add cuisine
         [HttpPost("cuisines")]
         public async Task<ActionResult> AddCuisine(CuisineDTO request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid data.");
+            }
+            
             CuisineType cuisine = new()
             {
                 CuisineName = request.CuisineName,

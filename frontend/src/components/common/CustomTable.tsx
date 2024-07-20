@@ -89,7 +89,7 @@ const CustomTable = <T extends { id: number }>({
         title="Add Cuisine"
         onClose={() => setOpenDrawer(false)}
         open={openDrawer}
-        width={300}
+        width={500}
       >
         {renderDrawerContent()}
       </Drawer>

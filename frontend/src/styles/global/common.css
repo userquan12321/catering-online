@@ -1,0 +1,7 @@
+.upload-image {
+  min-height: 200px;
+  overflow: hidden;
+  position: relative;
+  border: 1px dashed #ccc;
+  border-radius: 0.25rem;
+}
