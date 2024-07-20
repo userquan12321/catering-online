@@ -1,7 +1,7 @@
 import { Key, useState } from 'react'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import type { TableColumnsType, TableProps } from 'antd'
-import { Button, Flex, Form, Input, message, Modal, Table } from 'antd'
+import { Button, Drawer, Flex, Form, Input, message, Table } from 'antd'
 
 import { useAddCuisineMutation, useGetCuisinesQuery } from '@/apis/admin.api'
 import { CuisineInput, CuisineType } from '@/types/cuisine.type'
@@ -10,18 +10,18 @@ type TableRowSelection<T> = TableProps<T>['rowSelection']
 
 const AdminCuisineTypesPage = () => {
   const [form] = Form.useForm()
-  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false)
   const { data: cuisines = [], refetch } = useGetCuisinesQuery()
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([])
 
   const [addCuisine, { isLoading }] = useAddCuisineMutation()
 
-  const showModal = () => {
-    setIsModalVisible(true)
+  const showDrawer = () => {
+    setIsDrawerVisible(true)
   }
 
-  const handleCancel = () => {
-    setIsModalVisible(false)
+  const onClose = () => {
+    setIsDrawerVisible(false)
     form.resetFields()
   }
 
@@ -30,7 +30,7 @@ const AdminCuisineTypesPage = () => {
       const res = await addCuisine(values)
       message.success(res.data as string)
       form.resetFields()
-      setIsModalVisible(false)
+      setIsDrawerVisible(false)
       refetch()
     } catch (error) {
       message.error('Failed to add cuisine')
@@ -81,14 +81,14 @@ const AdminCuisineTypesPage = () => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal} icon={<PlusOutlined />}>
+      <Button type="primary" onClick={showDrawer} icon={<PlusOutlined />}>
         Add Cuisine
       </Button>
-      <Modal
+      <Drawer
         title="Add Cuisine"
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
+        onClose={onClose}
+        open={isDrawerVisible}
+        width={300}
       >
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item
@@ -104,7 +104,8 @@ const AdminCuisineTypesPage = () => {
             </Button>
           </Form.Item>
         </Form>
-      </Modal>
+      </Drawer>
+
       <Table
         className="table"
         rowSelection={rowSelection}
