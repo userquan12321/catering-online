@@ -79,7 +79,9 @@ namespace backend.Controllers
                 .Select(c => 
                     new {
                         c.Id,
-                        c.CuisineName
+                        c.CuisineName,
+                        c.CuisineImage,
+                        c.Description
                     })
                 .ToListAsync();
 
@@ -93,6 +95,8 @@ namespace backend.Controllers
             CuisineType cuisine = new()
             {
                 CuisineName = request.CuisineName,
+                Description = request.Description,
+                CuisineImage = request.CuisineImage,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };

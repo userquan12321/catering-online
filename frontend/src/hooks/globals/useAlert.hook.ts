@@ -25,7 +25,6 @@ export const useAlert = () => {
         })
         return
       }
-      console.log(2)
       messageApi.success(res.data as string)
       callback && callback()
     },

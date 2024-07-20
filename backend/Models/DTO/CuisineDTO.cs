@@ -6,5 +6,7 @@ namespace backend.Models.DTO
     {
         [StringLength(255)]
         public string CuisineName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string CuisineImage { get; set; } = string.Empty;
     }
 }

@@ -13,6 +13,13 @@ namespace backend.Models
         [StringLength(255)]
         public string CuisineName { get; set; } = string.Empty;
 
+        [StringLength(2000)]
+        public string Description { get; set; } = string.Empty;
+
+        [StringLength(2000)]
+        public string CuisineImage { get; set; } = string.Empty;
+
+
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }

@@ -1,49 +1,44 @@
-import { Key, useState } from 'react'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
-import type { TableColumnsType, TableProps } from 'antd'
-import { Button, Drawer, Flex, Form, Input, message, Table } from 'antd'
+import { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import type { TableColumnsType } from 'antd'
+import { Button, Col, Form, Input, message, Row, Typography } from 'antd'
 
 import { useAddCuisineMutation, useGetCuisinesQuery } from '@/apis/admin.api'
+import CustomTable from '@/components/common/CustomTable'
+import { useAlert } from '@/hooks/globals/useAlert.hook'
 import { CuisineInput, CuisineType } from '@/types/cuisine.type'
-
-type TableRowSelection<T> = TableProps<T>['rowSelection']
+import { cuisineTypeValidation } from '@/validations/cuisine-type.validation'
 
 const AdminCuisineTypesPage = () => {
-  const [form] = Form.useForm()
-  const [isDrawerVisible, setIsDrawerVisible] = useState(false)
-  const { data: cuisines = [], refetch } = useGetCuisinesQuery()
-  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([])
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(cuisineTypeValidation),
+  })
+
+  const { handleAlert, contextHolder } = useAlert()
+
+  const { data: cuisines = [], isLoading: isLoadingData } =
+    useGetCuisinesQuery()
 
   const [addCuisine, { isLoading }] = useAddCuisineMutation()
 
-  const showDrawer = () => {
-    setIsDrawerVisible(true)
-  }
+  const [openDrawer, setOpenDrawer] = useState(false)
 
-  const onClose = () => {
-    setIsDrawerVisible(false)
-    form.resetFields()
-  }
-
-  const onFinish = async (values: CuisineInput) => {
+  const onSubmit = async (values: CuisineInput) => {
     try {
       const res = await addCuisine(values)
-      message.success(res.data as string)
-      form.resetFields()
-      setIsDrawerVisible(false)
-      refetch()
+      handleAlert(res, () => {
+        setOpenDrawer(false)
+        reset()
+      })
     } catch (error) {
       message.error('Failed to add cuisine')
     }
-  }
-
-  const onSelectChange = (newSelectedRowKeys: Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys)
-  }
-
-  const rowSelection: TableRowSelection<CuisineType> = {
-    selectedRowKeys,
-    onChange: onSelectChange,
   }
 
   const columns: TableColumnsType<CuisineType> = [
@@ -54,20 +49,15 @@ const AdminCuisineTypesPage = () => {
     {
       title: 'Name',
       dataIndex: 'cuisineName',
+      render: (_, record) => (
+        <Typography.Text className="text-nowrap">
+          {record.cuisineName}
+        </Typography.Text>
+      ),
     },
     {
-      title: 'Action',
-      dataIndex: 'action',
-      render: (_, record) => (
-        <Flex gap={8}>
-          <Button type="primary" onClick={() => handleEdit(record.id)}>
-            <EditOutlined />
-          </Button>
-          <Button type="primary" danger onClick={() => handleDelete(record.id)}>
-            <DeleteOutlined />
-          </Button>
-        </Flex>
-      ),
+      title: 'Description',
+      dataIndex: 'description',
     },
   ]
 
@@ -79,41 +69,69 @@ const AdminCuisineTypesPage = () => {
     console.log('Delete', id)
   }
 
-  return (
-    <>
-      <Button type="primary" onClick={showDrawer} icon={<PlusOutlined />}>
-        Add Cuisine
-      </Button>
-      <Drawer
-        title="Add Cuisine"
-        onClose={onClose}
-        open={isDrawerVisible}
-        width={300}
+  const renderDrawerContent = () => (
+    <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
+      <Form.Item
+        label="Cuisine name"
+        required
+        help={errors.cuisineName?.message}
+        validateStatus={errors.cuisineName ? 'error' : ''}
       >
-        <Form form={form} layout="vertical" onFinish={onFinish}>
-          <Form.Item
-            name="cuisineName"
-            label="Cuisine Name"
-            rules={[{ required: true, message: 'Please enter cuisine name' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isLoading}>
-              Add Cuisine
-            </Button>
-          </Form.Item>
-        </Form>
-      </Drawer>
+        <Controller
+          name="cuisineName"
+          control={control}
+          defaultValue=""
+          render={({ field }) => <Input {...field} />}
+        />
+      </Form.Item>
 
-      <Table
-        className="table"
-        rowSelection={rowSelection}
-        columns={columns}
-        dataSource={cuisines}
-        rowKey={(record) => record.id}
-      />
-    </>
+      <Form.Item
+        label="Description"
+        required
+        help={errors.description?.message}
+        validateStatus={errors.description ? 'error' : ''}
+      >
+        <Controller
+          name="description"
+          control={control}
+          defaultValue=""
+          render={({ field }) => <Input.TextArea rows={3} {...field} />}
+        />
+      </Form.Item>
+
+      <Row justify="end" gutter={8}>
+        <Col>
+          <Button type="default" htmlType="reset" onClick={() => reset()}>
+            Reset
+          </Button>
+        </Col>
+        <Col>
+          <Button type="primary" htmlType="submit" disabled={isLoading}>
+            Add
+          </Button>
+        </Col>
+      </Row>
+
+      <>{contextHolder}</>
+    </Form>
+  )
+
+  if (isLoadingData) {
+    return <p>Loading...</p>
+  }
+
+  return (
+    <CustomTable
+      openDrawer={openDrawer}
+      setOpenDrawer={setOpenDrawer}
+      addText="Add Cuisine"
+      renderDrawerContent={renderDrawerContent}
+      customColumns={columns}
+      onDelete={handleDelete}
+      onEdit={handleEdit}
+      dataSource={cuisines}
+      rowKey={(record) => record.id}
+    />
   )
 }
 
