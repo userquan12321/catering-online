@@ -6,7 +6,7 @@ import { LoginBody, RegisterBody } from '@/types/auth.type'
 type LoginResponse = {
   userType: number
   firstName: string
-  userId: number
+  accessToken: string
   avatar: string
 }
 
@@ -32,17 +32,7 @@ export const authApi = createApi({
         body: userData,
       }),
     }),
-    logout: build.mutation<string, void>({
-      query: () => ({
-        url: 'auth/logout',
-        method: 'POST',
-        responseHandler: (response) => response.text(),
-      }),
-    }),
   }),
 })
 
-
-
-export const { useRegisterMutation, useLoginMutation, useLogoutMutation } =
-  authApi
+export const { useRegisterMutation, useLoginMutation } = authApi

@@ -2,7 +2,8 @@ import { useNavigate } from 'react-router-dom'
 import { HeartOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { Menu, MenuProps } from 'antd'
 
-import { useLogoutMutation } from '@/apis/auth.api'
+import { logout } from '@/redux/slices/auth.slice'
+import { useAppDispatch } from '@/redux/store'
 import { MenuItem } from '@/types/menu.type'
 
 type Props = {
@@ -29,15 +30,15 @@ const items: MenuItem[] = [
 ]
 
 const PopoverContent = ({ onClose }: Props) => {
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const [logout] = useLogoutMutation()
 
-  const onClick: MenuProps['onClick'] = async (e) => {
+  const onClick: MenuProps['onClick'] = (e) => {
     onClose()
 
     if (e.key === '/logout') {
       try {
-        await logout()
+        dispatch(logout())
       } catch (error) {
         console.log(error)
       }

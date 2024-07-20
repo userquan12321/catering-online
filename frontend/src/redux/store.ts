@@ -22,6 +22,9 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
+      thunk: {
+        extraArgument: { profileApi },
+      },
     }).concat(authApi.middleware, profileApi.middleware, cuisineApi.middleware),
 })
 

@@ -78,8 +78,9 @@ namespace backend.Controllers
         {
             var cuisines = await context.CuisineTypes
                 .OrderByDescending(c => c.UpdatedAt)
-                .Select(c => 
-                    new {
+                .Select(c =>
+                    new
+                    {
                         c.Id,
                         c.CuisineName,
                         c.CuisineImage,
@@ -97,7 +98,7 @@ namespace backend.Controllers
             {
                 return BadRequest("Invalid data.");
             }
-            
+
             CuisineType cuisine = new()
             {
                 CuisineName = request.CuisineName,
@@ -115,6 +116,10 @@ namespace backend.Controllers
         [HttpPut("cuisines/{cuisineId}")]
         public async Task<ActionResult> UpdateCuisine(int cuisineId, CuisineDTO request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid data.");
+            }
             var cuisine = await context.CuisineTypes.FindAsync(cuisineId);
             if (cuisine == null)
             {

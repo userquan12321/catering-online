@@ -38,13 +38,17 @@ builder.Services.AddSession(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
     options.IdleTimeout = TimeSpan.FromMinutes(20);
 });
+
 builder.Services
-    .AddAuthentication(option => {
+    .AddAuthentication(option =>
+    {
         option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     })
-    .AddJwtBearer(option => {
-        option.TokenValidationParameters = new TokenValidationParameters {
+    .AddJwtBearer(option =>
+    {
+        option.TokenValidationParameters = new TokenValidationParameters
+        {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
@@ -54,7 +58,7 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
     });
-  
+
 // Add authorization
 builder.Services.AddAuthorization();
 
@@ -62,8 +66,10 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(option=> {
-    option.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme {
+builder.Services.AddSwaggerGen(option =>
+{
+    option.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
         In = ParameterLocation.Header,
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey

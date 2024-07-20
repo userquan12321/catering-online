@@ -3,8 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using backend.Models;
 using backend.Models.DTO;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -23,7 +21,7 @@ namespace backend.Controllers
             _context = context;
             _configuration = configuration;
         }
-  
+
         // Register user
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterDTO request)
@@ -74,7 +72,6 @@ namespace backend.Controllers
             var getUser = await _context.Users
                 .Where(x => x.Email == request.Email)
                 .FirstOrDefaultAsync();
-
             if (getUser == null)
             {
                 return NotFound("Email not found.");
@@ -120,37 +117,13 @@ namespace backend.Controllers
                 signingCredentials: signIn
             );
             string accessTokenValue = new JwtSecurityTokenHandler().WriteToken(accessToken);
-            return Ok(new { 
+            return Ok(new
+            {
                 AccessToken = accessTokenValue,
                 UserType = getUser.Type,
                 FirstName = getProfile.FirstName,
                 Avatar = getProfile.Image
             });
-        }
-
-        private static string GenerateToken(List<Claim> claims, string secret, TimeSpan expiry)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(secret);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.Add(expiry),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
-
-        // Logout user
-        [HttpPost("logout")]
-        public async Task<ActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            Response.Cookies.Delete("accessToken");
-            return Ok("Logged out.");
         }
     }
 }
