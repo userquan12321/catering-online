@@ -14,12 +14,6 @@ namespace backend.Models.DTO
 
         public decimal Price { get; set; }
 
-        public int CatererId { get; set; }
-
         public int CuisineId { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime UpdatedAt { get; set; }
     }
 }
