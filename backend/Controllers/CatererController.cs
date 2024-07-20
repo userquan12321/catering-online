@@ -24,10 +24,9 @@ namespace backend.Controllers
         [HttpPost("{catererId}/items")]
         public async Task<ActionResult> AddItem(int catererId, ItemDTO request)
         {
-            request.CatererId = catererId;
             Item item = new()
             {
-                CatererId = request.CatererId,
+                CatererId = catererId,
                 CuisineId = request.CuisineId,
                 Name = request.Name,
                 Price = request.Price,
@@ -76,14 +75,6 @@ namespace backend.Controllers
             context.Items.Remove(item);
             await context.SaveChangesAsync();
             return Ok("Item deleted.");
-        }
-
-        // Caterer view all cuisines
-        [HttpGet("cuisines")]
-        public async Task<ActionResult> GetCuisines()
-        {
-            var cuisines = await context.CuisineTypes.ToListAsync();
-            return Ok(cuisines);
         }
     }
 }
