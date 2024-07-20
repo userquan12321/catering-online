@@ -22,7 +22,7 @@ const AdminLayout = () => {
             ))}
           </Menu>
         </Sider>
-        <Content className={classes.content}>
+        <Content className={`${classes.content} margin-header`}>
           <Outlet />
         </Content>
       </Layout>

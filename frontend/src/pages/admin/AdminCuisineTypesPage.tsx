@@ -1,50 +1,50 @@
-import { Key, useState } from 'react';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import type { TableColumnsType, TableProps } from 'antd';
-import { Button, Drawer, Form, Input, message, Table } from 'antd';
+import { Key, useState } from 'react'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import type { TableColumnsType, TableProps } from 'antd'
+import { Button, Drawer, Flex, Form, Input, message, Table } from 'antd'
 
-import { useAddCuisineMutation, useGetCuisinesQuery } from '@/apis/admin.api';
-import { CuisineInput, CuisineType } from '@/types/cuisine.type';
+import { useAddCuisineMutation, useGetCuisinesQuery } from '@/apis/admin.api'
+import { CuisineInput, CuisineType } from '@/types/cuisine.type'
 
-type TableRowSelection<T> = TableProps<T>['rowSelection'];
+type TableRowSelection<T> = TableProps<T>['rowSelection']
 
 const AdminCuisineTypesPage = () => {
-  const [form] = Form.useForm();
-  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
-  const { data: cuisines = [], refetch } = useGetCuisinesQuery();
-  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
+  const [form] = Form.useForm()
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false)
+  const { data: cuisines = [], refetch } = useGetCuisinesQuery()
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([])
 
-  const [addCuisine, { isLoading }] = useAddCuisineMutation();
+  const [addCuisine, { isLoading }] = useAddCuisineMutation()
 
   const showDrawer = () => {
-    setIsDrawerVisible(true);
-  };
+    setIsDrawerVisible(true)
+  }
 
   const onClose = () => {
-    setIsDrawerVisible(false);
-    form.resetFields();
-  };
+    setIsDrawerVisible(false)
+    form.resetFields()
+  }
 
   const onFinish = async (values: CuisineInput) => {
     try {
-      const res = await addCuisine(values);
-      message.success(res.data as string);
-      form.resetFields();
-      setIsDrawerVisible(false);
-      refetch();
+      const res = await addCuisine(values)
+      message.success(res.data as string)
+      form.resetFields()
+      setIsDrawerVisible(false)
+      refetch()
     } catch (error) {
-      message.error('Failed to add cuisine');
+      message.error('Failed to add cuisine')
     }
-  };
+  }
 
   const onSelectChange = (newSelectedRowKeys: Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
+    setSelectedRowKeys(newSelectedRowKeys)
+  }
 
   const rowSelection: TableRowSelection<CuisineType> = {
     selectedRowKeys,
     onChange: onSelectChange,
-  };
+  }
 
   const columns: TableColumnsType<CuisineType> = [
     {
@@ -59,25 +59,25 @@ const AdminCuisineTypesPage = () => {
       title: 'Action',
       dataIndex: 'action',
       render: (_, record) => (
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <Flex gap={8}>
           <Button type="primary" onClick={() => handleEdit(record.id)}>
             <EditOutlined />
           </Button>
           <Button type="primary" danger onClick={() => handleDelete(record.id)}>
             <DeleteOutlined />
           </Button>
-        </div>
+        </Flex>
       ),
     },
-  ];
+  ]
 
   const handleEdit = (id: number) => {
-    console.log('Edit', id);
-  };
+    console.log('Edit', id)
+  }
 
   const handleDelete = (id: number) => {
-    console.log('Delete', id);
-  };
+    console.log('Delete', id)
+  }
 
   return (
     <>
@@ -105,7 +105,7 @@ const AdminCuisineTypesPage = () => {
           </Form.Item>
         </Form>
       </Drawer>
-      
+
       <Table
         className="table"
         rowSelection={rowSelection}
@@ -114,7 +114,7 @@ const AdminCuisineTypesPage = () => {
         rowKey={(record) => record.id}
       />
     </>
-  );
-};
+  )
+}
 
-export default AdminCuisineTypesPage;
+export default AdminCuisineTypesPage
