@@ -9,7 +9,7 @@ import {
   useDeleteCuisineMutation,
   useEditCuisineMutation,
   useGetCuisinesQuery,
-} from '@/apis/admin.api'
+} from '@/apis/cuisine-type.api'
 import CustomTable from '@/components/common/CustomTable'
 import UploadWidget from '@/components/common/UploadWidget'
 import { useAlert } from '@/hooks/globals/useAlert.hook'

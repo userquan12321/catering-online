@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit'
 import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
-import { authApi, cuisineApi, profileApi } from '../apis'
+import { authApi, cateringItemApi, cuisineApi, profileApi } from '../apis'
 
 import { authReducer } from './slices/auth.slice'
 
@@ -18,4 +18,5 @@ export const rootReducer = combineReducers({
   [authApi.reducerPath]: authApi.reducer,
   [profileApi.reducerPath]: profileApi.reducer,
   [cuisineApi.reducerPath]: cuisineApi.reducer,
+  [cateringItemApi.reducerPath]: cateringItemApi.reducer,
 })
