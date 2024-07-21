@@ -1,6 +1,7 @@
 using backend.Helpers;
 using backend.Models;
 using backend.Models.DTO;
+using backend.Models.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,16 +14,40 @@ namespace backend.Controllers
     public class FavoriteListController(ApplicationDbContext context) : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult> GetCustomerFavoriteCaterers()
+        public async Task<ActionResult> GetCustomerFavoriteCaterers([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
         {
             try
             {
                 int userId = UserHelper.GetValidUserId(HttpContext.User);
+                var caterersQuery = context.Caterers.BuildCaterersQuery(page, pageSize);
+                var caterers = await caterersQuery
+                   .Join(context.FavoriteList, c => c.Id, f => f.CatererId, (caterer, favorite) => new
+                   {
+                       caterer.Id,
+                       caterer.Profile!.FirstName,
+                       caterer.Profile.LastName,
+                       caterer.Profile.Image,
+                       caterer.Profile.Address,
+                       CuisineTypes = caterer.Items.Select(i => i.CuisineType!.CuisineName).Distinct().ToList(),
+                       FavoriteId = context.FavoriteList.Where(f => f.UserId == userId && f.CatererId == caterer.Id).Select(f => f.Id).FirstOrDefault()
+                   })
+                    .Select(result => result)
+                    .ToListAsync();
 
-                var favorites = await context.FavoriteList
-                  .Where(f => f.UserId == userId)
-                  .ToListAsync();
-                return Ok(favorites);
+                int total = await context.FavoriteList
+                    .Where(f => f.UserId == userId)
+                    .CountAsync();
+
+                if (caterers == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(new
+                {
+                    caterers,
+                    total
+                });
 
             }
             catch (UnauthorizedAccessException ex)
