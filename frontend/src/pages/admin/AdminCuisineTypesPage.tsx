@@ -28,8 +28,9 @@ const AdminCuisineTypesPage = () => {
   })
 
   const { handleAlert, contextHolder } = useAlert()
-  const { data: cuisines = [], isLoading: isLoadingData } =
-    useGetCuisinesQuery()
+  const { data: cuisines = [], isLoading: isLoadingData } = useGetCuisinesQuery(
+    {},
+  )
 
   const [addCuisine, { isLoading: addLoading }] = useAddCuisineMutation()
   const [editCuisine, { isLoading: editLoading }] = useEditCuisineMutation()
