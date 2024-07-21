@@ -1,5 +1,7 @@
+using backend.Helpers;
 using backend.Models;
 using backend.Models.DTO;
+using backend.Models.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,23 +13,39 @@ namespace backend.Controllers
     [ApiController]
     public class CateringItemController(ApplicationDbContext context) : ControllerBase
     {
-        [HttpGet("{catererId}")]
-        public async Task<ActionResult> GetItems(int catererId)
+        [HttpGet]
+        public async Task<ActionResult> GetItems()
         {
-            var items = await context.Items
-                .Where(i => i.CatererId == catererId)
-                .Select(i => new
+            TokenData tokenData = UserHelper.GetRoleAndCatererId(HttpContext.User);
+
+            try
+            {
+                if (tokenData.UserType == "Caterer" && tokenData.CatererId != 0 && tokenData.CatererId != null)
                 {
-                    i.Id,
-                    i.CuisineId,
-                    i.Name,
-                    i.Price,
-                    i.ServesCount,
-                    i.Image,
-                    i.CuisineType!.CuisineName
-                })
-                .ToListAsync();
-            return Ok(items);
+                    var items = await context.Items
+                        .Where(i => i.CatererId == tokenData.CatererId)
+                        .Select(i => new
+                        {
+                            i.Id,
+                            i.CuisineId,
+                            i.Name,
+                            i.Price,
+                            i.ServesCount,
+                            i.Image,
+                            i.CuisineType!.CuisineName
+                        })
+                        .ToListAsync();
+                    return Ok(items);
+                }
+
+                return Unauthorized();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+
+
         }
 
         [HttpPost("{catererId}")]

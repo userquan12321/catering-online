@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { API_BASE_URL } from '@/constants/api.constant'
+import { RootState } from '@/redux/store'
 import {
   CateringItem,
   CateringItemInput,
@@ -9,11 +10,23 @@ import {
 
 export const cateringItemApi = createApi({
   reducerPath: 'cateringItemApi',
-  baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: API_BASE_URL,
+    prepareHeaders: (headers, { getState }) => {
+      const accessToken = (getState() as RootState).auth.accessToken
+
+      if (accessToken) {
+        headers.set('Authorization', `Bearer ${accessToken}`)
+      }
+
+      return headers
+    },
+  }),
+
   tagTypes: ['Item'],
   endpoints: (builder) => ({
     getCateringItems: builder.query<CateringItem[], void>({
-      query: (id) => `cateringItem/${id}`,
+      query: () => 'cateringItem',
       providesTags: ['Item'],
     }),
 

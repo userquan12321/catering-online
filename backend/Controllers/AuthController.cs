@@ -104,6 +104,7 @@ namespace backend.Controllers
                 new (JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]!),
                 new (JwtRegisteredClaimNames.Jti, _configuration["Jwt:Subject"]!),
                 new ("UserId", getUser.Id.ToString()),
+                new ("CatererId", catererId.ToString()),
                 new (ClaimTypes.Role, getUser.Type.ToString()),
             };
 

@@ -1,7 +1,13 @@
 import { useNavigate } from 'react-router-dom'
-import { HeartOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons'
+import {
+  AppstoreOutlined,
+  HeartOutlined,
+  LogoutOutlined,
+  UserOutlined,
+} from '@ant-design/icons'
 import { Menu, MenuProps } from 'antd'
 
+import { useAuthorized } from '@/hooks/globals/useAuthorized.hook'
 import { logout } from '@/redux/slices/auth.slice'
 import { useAppDispatch } from '@/redux/store'
 import { MenuItem } from '@/types/menu.type'
@@ -29,9 +35,16 @@ const items: MenuItem[] = [
   },
 ]
 
+const authorizedItem: MenuItem = {
+  label: 'Management',
+  key: '/admin',
+  icon: <AppstoreOutlined />,
+}
+
 const PopoverContent = ({ onClose }: Props) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const isAuthorized = useAuthorized()
 
   const onClick: MenuProps['onClick'] = (e) => {
     onClose()
@@ -47,7 +60,13 @@ const PopoverContent = ({ onClose }: Props) => {
     navigate(e.key)
   }
 
-  return <Menu onClick={onClick} mode="inline" items={items} />
+  return (
+    <Menu
+      onClick={onClick}
+      mode="inline"
+      items={isAuthorized ? [authorizedItem, ...items] : items}
+    />
+  )
 }
 
 export default PopoverContent

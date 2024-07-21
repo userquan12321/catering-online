@@ -1,5 +1,4 @@
 ﻿using backend.Models;
-using backend.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -70,81 +69,6 @@ namespace backend.Controllers
             context.Users.Remove(user);
             await context.SaveChangesAsync();
             return Ok("User deleted.");
-        }
-
-        // Admin view all cuisines
-        [HttpGet("cuisines")]
-        public async Task<ActionResult> GetCuisines()
-        {
-            var cuisines = await context.CuisineTypes
-                .OrderByDescending(c => c.UpdatedAt)
-                .Select(c =>
-                    new
-                    {
-                        c.Id,
-                        c.CuisineName,
-                        c.CuisineImage,
-                        c.Description
-                    })
-                .ToListAsync();
-
-            return Ok(cuisines);
-        }
-
-        [HttpPost("cuisines")]
-        public async Task<ActionResult> AddCuisine(CuisineDTO request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid data.");
-            }
-
-            CuisineType cuisine = new()
-            {
-                CuisineName = request.CuisineName,
-                Description = request.Description,
-                CuisineImage = request.CuisineImage,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
-            context.CuisineTypes.Add(cuisine);
-            await context.SaveChangesAsync();
-            return Ok("Cuisine added.");
-        }
-
-        // Admin update cuisine
-        [HttpPut("cuisines/{cuisineId}")]
-        public async Task<ActionResult> UpdateCuisine(int cuisineId, CuisineDTO request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid data.");
-            }
-            var cuisine = await context.CuisineTypes.FindAsync(cuisineId);
-            if (cuisine == null)
-            {
-                return NotFound("Cuisine not found.");
-            }
-            cuisine.CuisineName = request.CuisineName;
-            cuisine.Description = request.Description;
-            cuisine.CuisineImage = request.CuisineImage;
-            cuisine.UpdatedAt = DateTime.UtcNow;
-            await context.SaveChangesAsync();
-            return Ok("Cuisine updated.");
-        }
-
-        // Admin delete cuisine
-        [HttpDelete("cuisines/{cuisineId}")]
-        public async Task<ActionResult> DeleteCuisine(int cuisineId)
-        {
-            var cuisine = await context.CuisineTypes.FindAsync(cuisineId);
-            if (cuisine == null)
-            {
-                return NotFound("Cuisine not found.");
-            }
-            context.CuisineTypes.Remove(cuisine);
-            await context.SaveChangesAsync();
-            return Ok("Cuisine deleted");
         }
 
         // Admin view all items
