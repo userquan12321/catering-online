@@ -23,6 +23,7 @@
   "eslint.validate": ["javascript", "typescript"],
   "eslint.nodePath": "./node_modules/eslint",
   "[csharp]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
   }
 }

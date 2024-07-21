@@ -6,6 +6,10 @@
   width: 100%;
 }
 
+.pe-none {
+  pointer-events: none;
+}
+
 .shadow {
   box-shadow:
     0 10px 15px -3px rgb(0 0 0 / 0.1),

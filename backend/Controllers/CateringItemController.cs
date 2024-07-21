@@ -1,5 +1,7 @@
+using backend.Helpers;
 using backend.Models;
 using backend.Models.DTO;
+using backend.Models.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,79 +13,134 @@ namespace backend.Controllers
     [ApiController]
     public class CateringItemController(ApplicationDbContext context) : ControllerBase
     {
-        [HttpGet("{catererId}")]
-        public async Task<ActionResult> GetItems(int catererId)
+        [HttpGet]
+        public async Task<ActionResult> GetItems()
         {
-            var items = await context.Items
-                .Where(i => i.CatererId == catererId)
-                .Select(i => new
+            TokenData tokenData = UserHelper.GetRoleAndCatererId(HttpContext.User);
+
+            try
+            {
+                if (tokenData.UserType == "Caterer" && tokenData.CatererId != 0 && tokenData.CatererId != null)
                 {
-                    i.Id,
-                    i.CuisineId,
-                    i.Name,
-                    i.Price,
-                    i.ServesCount,
-                    i.Image,
-                    i.CuisineType!.CuisineName
-                })
-                .ToListAsync();
-            return Ok(items);
-        }
+                    var items = await context.Items
+                        .Where(i => i.CatererId == tokenData.CatererId)
+                        .Select(i => new
+                        {
+                            i.Id,
+                            i.CuisineId,
+                            i.Name,
+                            i.Price,
+                            i.ServesCount,
+                            i.Image,
+                            i.CuisineType!.CuisineName
+                        })
+                        .ToListAsync();
+                    return Ok(items);
+                }
 
-        [HttpPost("{catererId}")]
-        public async Task<ActionResult> AddItem(int catererId, ItemDTO request)
-        {
-            Item item = new()
-            {
-                CatererId = catererId,
-                CuisineId = request.CuisineId,
-                Name = request.Name,
-                Price = request.Price,
-                ServesCount = request.ServesCount,
-                Image = request.Image,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
-            context.Items.Add(item);
-            await context.SaveChangesAsync();
-            return Ok("Item added.");
-        }
-
-        // Caterer update item
-        [HttpPut("{catererId}/{itemId}")]
-        public async Task<ActionResult> UpdateItem(int catererId, int itemId, ItemDTO request)
-        {
-            var item = await context.Items
-                .Where(x => x.CatererId == catererId && x.Id == itemId)
-                .FirstOrDefaultAsync();
-            if (item == null)
-            {
-                return NotFound("Item not found.");
+                return Unauthorized();
             }
-            item.Name = request.Name;
-            item.Image = request.Image;
-            item.CuisineId = request.CuisineId;
-            item.ServesCount = request.ServesCount;
-            item.Price = request.Price;
-            item.UpdatedAt = DateTime.UtcNow;
-            await context.SaveChangesAsync();
-            return Ok("Item updated");
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+
+
         }
 
-        // Caterer delete item
-        [HttpDelete("{catererId}/{itemId}")]
-        public async Task<ActionResult> DeleteItem(int catererId, int itemId)
+        [HttpPost]
+        public async Task<ActionResult> AddItem(ItemDTO request)
         {
-            var item = await context.Items
-                .Where(x => x.CatererId == catererId && x.Id == itemId)
-                .FirstOrDefaultAsync();
-            if (item == null)
+            TokenData tokenData = UserHelper.GetRoleAndCatererId(HttpContext.User);
+            try
             {
-                return NotFound("Item not found.");
+                if (tokenData.UserType == "Caterer" && tokenData.CatererId != 0 && tokenData.CatererId != null)
+                {
+                    Item item = new()
+                    {
+                        CatererId = (int)tokenData.CatererId,
+                        CuisineId = request.CuisineId,
+                        Name = request.Name,
+                        Price = request.Price,
+                        ServesCount = request.ServesCount,
+                        Image = request.Image,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    };
+                    context.Items.Add(item);
+                    await context.SaveChangesAsync();
+                    return Ok("Item added.");
+                }
+
+                return Unauthorized();
             }
-            context.Items.Remove(item);
-            await context.SaveChangesAsync();
-            return Ok("Item deleted.");
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+
+        }
+
+        [HttpPut("{itemId}")]
+        public async Task<ActionResult> UpdateItem(int itemId, ItemDTO request)
+        {
+            TokenData tokenData = UserHelper.GetRoleAndCatererId(HttpContext.User);
+            try
+            {
+                if (tokenData.UserType == "Caterer" && tokenData.CatererId != 0 && tokenData.CatererId != null)
+                {
+                    var item = await context.Items
+                        .Where(x => x.CatererId == tokenData.CatererId && x.Id == itemId)
+                        .FirstOrDefaultAsync();
+                    if (item == null)
+                    {
+                        return NotFound("Item not found.");
+                    }
+                    item.Name = request.Name;
+                    item.Image = request.Image;
+                    item.CuisineId = request.CuisineId;
+                    item.ServesCount = request.ServesCount;
+                    item.Price = request.Price;
+                    item.UpdatedAt = DateTime.UtcNow;
+                    await context.SaveChangesAsync();
+                    return Ok("Item updated");
+                }
+
+                return Unauthorized();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+        }
+
+        [HttpDelete("{itemId}")]
+        public async Task<ActionResult> DeleteItem(int itemId)
+        {
+            TokenData tokenData = UserHelper.GetRoleAndCatererId(HttpContext.User);
+            try
+            {
+                if (tokenData.UserType == "Caterer" && tokenData.CatererId != 0 && tokenData.CatererId != null)
+                {
+                    var item = await context.Items
+                        .Where(x => x.CatererId == tokenData.CatererId && x.Id == itemId)
+                        .FirstOrDefaultAsync();
+                    if (item == null)
+                    {
+                        return NotFound("Item not found.");
+                    }
+                    context.Items.Remove(item);
+                    await context.SaveChangesAsync();
+                    return Ok("Item deleted.");
+                }
+
+                return Unauthorized();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+
         }
     }
 }

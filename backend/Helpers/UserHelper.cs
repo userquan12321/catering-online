@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using backend.Models.Helpers;
 
 namespace backend.Helpers
 {
@@ -15,6 +16,24 @@ namespace backend.Helpers
             catch (FormatException)
             {
                 throw new UnauthorizedAccessException("Invalid 'UserId' format. Expected integer.");
+            }
+        }
+        public static TokenData GetRoleAndCatererId(ClaimsPrincipal user)
+        {
+            string? userType = user.FindFirstValue(ClaimTypes.Role) ?? throw new UnauthorizedAccessException("Missing 'UserType' claim.");
+            string? catererId = user.FindFirstValue("CatererId") ?? throw new UnauthorizedAccessException("Missing 'CatererId' claim.");
+
+            try
+            {
+                return new TokenData
+                {
+                    UserType = userType,
+                    CatererId = int.Parse(catererId)
+                };
+            }
+            catch (FormatException)
+            {
+                throw new UnauthorizedAccessException("Invalid 'CatererId' format. Expected integer.");
             }
         }
     }

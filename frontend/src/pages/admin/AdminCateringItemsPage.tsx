@@ -2,10 +2,23 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import type { TableColumnsType } from 'antd'
-import { Button, Col, Form, Input, message, Modal, Row, Typography } from 'antd'
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  message,
+  Modal,
+  Row,
+  Select,
+  Typography,
+} from 'antd'
 
 import {
-  useAddCuisineMutation,
+  useAddCateringItemMutation,
+  useGetCateringItemsQuery,
+} from '@/apis/catering-item.api'
+import {
   useDeleteCuisineMutation,
   useEditCuisineMutation,
   useGetCuisinesQuery,
@@ -13,8 +26,8 @@ import {
 import CustomTable from '@/components/common/CustomTable'
 import UploadWidget from '@/components/common/UploadWidget'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
-import { CuisineInput, CuisineType } from '@/types/cuisine.type'
-import { cuisineTypeValidation } from '@/validations/cuisine-type.validation'
+import { CateringItem, CateringItemInput } from '@/types/catering-item.type'
+import { cateringValidation } from '@/validations/catering.validation'
 
 const AdminCateringItemsPage = () => {
   const {
@@ -24,32 +37,34 @@ const AdminCateringItemsPage = () => {
     reset,
     setValue,
   } = useForm({
-    resolver: yupResolver(cuisineTypeValidation),
+    resolver: yupResolver(cateringValidation),
   })
 
   const { handleAlert, contextHolder } = useAlert()
-  const { data: cuisines = [], isLoading: isLoadingData } =
+  const { data: cateringItems = [], isLoading: isLoadingData } =
+    useGetCateringItemsQuery()
+  const { data: cuisines = [], isLoading: isLoadingCuisine } =
     useGetCuisinesQuery()
 
-  const [addCuisine, { isLoading: addLoading }] = useAddCuisineMutation()
+  const [addCatering, { isLoading: addLoading }] = useAddCateringItemMutation()
   const [editCuisine, { isLoading: editLoading }] = useEditCuisineMutation()
   const [deleteCuisine] = useDeleteCuisineMutation()
 
   const [openDrawer, setOpenDrawer] = useState(false)
   const [currentCuisineId, setCurrentCuisineId] = useState<number | null>(null)
 
-  const onSubmit = async (values: CuisineInput) => {
+  const onSubmit = async (values: CateringItemInput) => {
     try {
-      if (currentCuisineId) {
-        const res = await editCuisine({ id: currentCuisineId, ...values })
-        handleAlert(res, () => {
-          setOpenDrawer(false)
-          setCurrentCuisineId(null)
-          reset()
-        })
-        return
-      }
-      const res = await addCuisine(values)
+      // if (currentCuisineId) {
+      //   const res = await editCuisine({ id: currentCuisineId, ...values })
+      //   handleAlert(res, () => {
+      //     setOpenDrawer(false)
+      //     setCurrentCuisineId(null)
+      //     reset()
+      //   })
+      //   return
+      // }
+      const res = await addCatering(values)
       handleAlert(res, () => {
         setOpenDrawer(false)
         reset()
@@ -59,13 +74,20 @@ const AdminCateringItemsPage = () => {
     }
   }
 
-  const columns: TableColumnsType<CuisineType> = [
+  const columns: TableColumnsType<CateringItem> = [
     {
-      title: 'Cuisine Id',
+      title: 'Item Id',
       dataIndex: 'id',
     },
     {
       title: 'Name',
+      dataIndex: 'name',
+      render: (_, record) => (
+        <Typography.Text className="text-nowrap">{record.name}</Typography.Text>
+      ),
+    },
+    {
+      title: 'Cuisine Name',
       dataIndex: 'cuisineName',
       render: (_, record) => (
         <Typography.Text className="text-nowrap">
@@ -74,8 +96,13 @@ const AdminCateringItemsPage = () => {
       ),
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
+      title: 'Price',
+      dataIndex: 'price',
+      render: (_, record) => '$' + record.price.toFixed(2),
+    },
+    {
+      title: 'Serves Count',
+      dataIndex: 'servesCount',
     },
   ]
 
@@ -90,52 +117,103 @@ const AdminCateringItemsPage = () => {
   }
 
   const handleEdit = (id: number) => {
-    setOpenDrawer(true)
-    setCurrentCuisineId(id)
-
-    const cuisineToEdit = cuisines.find((cuisine) => cuisine.id === id)
-
-    if (cuisineToEdit) {
-      setValue('cuisineName', cuisineToEdit.cuisineName)
-      setValue('description', cuisineToEdit.description)
-      setValue('cuisineImage', cuisineToEdit.cuisineImage)
-    }
+    // setOpenDrawer(true)
+    // setCurrentCuisineId(id)
+    // const cuisineToEdit = cuisines.find((cuisine) => cuisine.id === id)
+    // if (cuisineToEdit) {
+    //   setValue('cuisineName', cuisineToEdit.cuisineName)
+    //   setValue('description', cuisineToEdit.description)
+    //   setValue('cuisineImage', cuisineToEdit.cuisineImage)
+    // }
   }
 
   const handleDelete = (id: number) => {
-    const cuisineToDelete = cuisines.find((cuisine) => cuisine.id === id)
-    if (!cuisineToDelete) {
-      message.error('Cuisine not found!')
-      return
-    }
-    Modal.confirm({
-      title: `Are you sure you want to delete "${cuisineToDelete.cuisineName}"?`,
-      onOk: async () => {
-        try {
-          const res = await deleteCuisine(id)
-          handleAlert(res)
-        } catch (error) {
-          message.error('Failed to delete cuisine!')
-        }
-      },
-    })
+    // const cuisineToDelete = cuisines.find((cuisine) => cuisine.id === id)
+    // if (!cuisineToDelete) {
+    //   message.error('Cuisine not found!')
+    //   return
+    // }
+    // Modal.confirm({
+    //   title: `Are you sure you want to delete "${cuisineToDelete.cuisineName}"?`,
+    //   onOk: async () => {
+    //     try {
+    //       const res = await deleteCuisine(id)
+    //       handleAlert(res)
+    //     } catch (error) {
+    //       message.error('Failed to delete cuisine!')
+    //     }
+    //   },
+    // })
   }
 
   const renderDrawerContent = () => (
     <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
       <Form.Item
-        label="Cuisine name"
+        label="Catering name"
         required
-        help={errors.cuisineName?.message}
-        validateStatus={errors.cuisineName ? 'error' : ''}
+        help={errors.name?.message}
+        validateStatus={errors.name ? 'error' : ''}
       >
         <Controller
-          name="cuisineName"
+          name="name"
           control={control}
           defaultValue=""
           render={({ field }) => <Input {...field} />}
         />
       </Form.Item>
+
+      <Form.Item
+        label="Cuisine name"
+        required
+        help={errors.cuisineId?.message}
+        validateStatus={errors.cuisineId ? 'error' : ''}
+      >
+        <Controller
+          name="cuisineId"
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              options={cuisines.map((cuisine) => ({
+                label: cuisine.cuisineName,
+                value: cuisine.id,
+              }))}
+              disabled={isLoadingCuisine}
+            />
+          )}
+        />
+      </Form.Item>
+
+      <Row gutter={8}>
+        <Col span={12}>
+          <Form.Item
+            label="Serves count"
+            required
+            help={errors.servesCount?.message}
+            validateStatus={errors.servesCount ? 'error' : ''}
+          >
+            <Controller
+              name="servesCount"
+              control={control}
+              render={({ field }) => <Input type="number" {...field} />}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="Price"
+            required
+            help={errors.price?.message}
+            validateStatus={errors.price ? 'error' : ''}
+          >
+            <Controller
+              name="price"
+              control={control}
+              render={({ field }) => <Input type="number" {...field} />}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
 
       <Form.Item
         label="Description"
@@ -151,15 +229,24 @@ const AdminCateringItemsPage = () => {
         />
       </Form.Item>
 
-      <Form.Item label="Cuisine image" required>
+      <Form.Item
+        label="Cuisine image"
+        required
+        help={errors.image?.message}
+        validateStatus={errors.image ? 'error' : ''}
+      >
         <Controller
-          name="cuisineImage"
+          name="image"
           control={control}
           defaultValue=""
           render={({ field }) => (
             <div className="upload-image">
               {field.value ? (
-                <img className="w-full" src={field.value} alt="Cuisine Image" />
+                <img
+                  className="w-full"
+                  src={field.value}
+                  alt="Catering Image"
+                />
               ) : null}
               <UploadWidget onChange={field.onChange} />
             </div>
@@ -167,7 +254,7 @@ const AdminCateringItemsPage = () => {
         />
       </Form.Item>
 
-      <Row justify="end" gutter={8}>
+      <Row justify="end" gutter={8} className="action-drawer-btns">
         <Col>
           <Button type="default" htmlType="reset" onClick={() => reset()}>
             Reset
@@ -203,7 +290,7 @@ const AdminCateringItemsPage = () => {
       onDelete={handleDelete}
       onEdit={handleEdit}
       isEditing={!!currentCuisineId}
-      dataSource={cuisines}
+      dataSource={cateringItems}
       rowKey={(record) => record.id}
     />
   )
