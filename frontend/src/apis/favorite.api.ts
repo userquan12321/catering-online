@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { API_BASE_URL } from '@/constants/api.constant'
 import { RootState } from '@/redux/store'
+import { CatererRes, QueryArgs } from '@/types/caterer.type'
 
 export const favoriteApi = createApi({
   reducerPath: 'favoriteApi',
@@ -19,7 +20,7 @@ export const favoriteApi = createApi({
   }),
   tagTypes: ['Favorite'],
   endpoints: (builder) => ({
-    getFavoriteList: builder.query<unknown, void>({
+    getFavoriteList: builder.query<CatererRes, QueryArgs>({
       query: () => 'favoriteList',
       providesTags: ['Favorite'],
     }),

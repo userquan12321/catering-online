@@ -5,7 +5,10 @@ import { HeartFilled, HeartOutlined } from '@ant-design/icons'
 import { Button, Modal } from 'antd'
 
 import { useGetCaterersQuery } from '@/apis/caterers.api'
-import { useAddFavoriteMutation } from '@/apis/favorite.api'
+import {
+  useAddFavoriteMutation,
+  useDeleteFavoriteMutation,
+} from '@/apis/favorite.api'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
 import { RootState } from '@/redux/store'
 import classes from '@/styles/components/caterers/card.module.css'
@@ -21,6 +24,7 @@ const FavoriteBtn = memo(({ catererId, favoriteId, currentPage }: Props) => {
     page: currentPage,
   })
   const [addFavorite] = useAddFavoriteMutation()
+  const [deleteFavorite] = useDeleteFavoriteMutation()
   const userType = useSelector((state: RootState) => state.auth.userType)
   const navigate = useNavigate()
 
@@ -37,7 +41,12 @@ const FavoriteBtn = memo(({ catererId, favoriteId, currentPage }: Props) => {
       return
     }
     try {
-      const res = await addFavorite(catererId)
+      let res
+      if (favoriteId > 0) {
+        res = await deleteFavorite(favoriteId)
+      } else {
+        res = await addFavorite(catererId)
+      }
       handleAlert(res, refetch)
     } catch (error) {
       console.log(error)
