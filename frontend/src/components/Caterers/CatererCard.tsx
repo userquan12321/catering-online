@@ -23,7 +23,7 @@ const CatererCard = ({ data, currentPage }: Props) => {
       />
       <FavoriteBtn
         catererId={data.id}
-        isFavorite={data.isFavorite}
+        favoriteId={data.favoriteId}
         currentPage={currentPage}
       />
 

@@ -24,7 +24,13 @@ const HeroIntro = () => {
         </Button>
         <div className="grid-3">
           {bannerUrls.map((item) => (
-            <Image src={item} key={item} alt="Banner" height="100%" />
+            <Image
+              src={item}
+              key={item}
+              alt="Banner"
+              height="100%"
+              preview={false}
+            />
           ))}
         </div>
       </div>

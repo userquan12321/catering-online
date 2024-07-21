@@ -1,0 +1,10 @@
+.heroBanner {
+  aspect-ratio: 6/1;
+  object-fit: cover;
+}
+
+.avatar {
+  position: absolute;
+  bottom: -100px;
+  left: 200px;
+}

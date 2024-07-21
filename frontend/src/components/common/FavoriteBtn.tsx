@@ -15,11 +15,11 @@ import classes from '@/styles/components/caterers/card.module.css'
 
 type Props = {
   catererId: number
-  isFavorite: boolean
+  favoriteId: number
   currentPage: number
 }
 
-const FavoriteBtn = memo(({ catererId, isFavorite, currentPage }: Props) => {  
+const FavoriteBtn = memo(({ catererId, favoriteId, currentPage }: Props) => {
   const { refetch } = useGetCaterersQuery({
     page: currentPage,
   })
@@ -42,8 +42,8 @@ const FavoriteBtn = memo(({ catererId, isFavorite, currentPage }: Props) => {
     }
     try {
       let res
-      if (isFavorite) {
-        res = await deleteFavorite(catererId)
+      if (favoriteId > 0) {
+        res = await deleteFavorite(favoriteId)
       } else {
         res = await addFavorite(catererId)
       }
@@ -57,7 +57,7 @@ const FavoriteBtn = memo(({ catererId, isFavorite, currentPage }: Props) => {
     <>
       <>{contextHolder}</>
       <Button className={classes.favoriteBtn} onClick={handleFavorite}>
-        {isFavorite ? (
+        {favoriteId > 0 ? (
           <HeartFilled className={classes.favoriteIcon} />
         ) : (
           <HeartOutlined />
