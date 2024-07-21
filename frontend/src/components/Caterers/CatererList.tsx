@@ -3,6 +3,7 @@ import { Col, Empty, Pagination, Row } from 'antd'
 
 import { useGetCaterersQuery } from '@/apis/caterers.api'
 import { PAGE_SIZE } from '@/constants/global.constant'
+import { useRefetch } from '@/hooks/globals/useRefetch.hook'
 
 import CatererCard from './CatererCard'
 
@@ -13,9 +14,11 @@ const CatererList = () => {
     return page ? +page : 1
   }
 
-  const { data, isLoading } = useGetCaterersQuery({
+  const { data, isLoading, refetch } = useGetCaterersQuery({
     page: getCurrentPage(),
   })
+
+  useRefetch(refetch, false)
 
   const handleChange = (page: number) => {
     setSearchParams({ page: page.toString() })

@@ -8,6 +8,7 @@ import { Button, Col, Form, Input, Row, Typography } from 'antd'
 import { useEditProfileMutation, useGetProfileQuery } from '@/apis/profile.api'
 import { USER_TYPE_ARRAY } from '@/constants/global.constant'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
+import { useRefetch } from '@/hooks/globals/useRefetch.hook'
 import { setAvatar } from '@/redux/slices/auth.slice'
 import classes from '@/styles/pages/profile.module.css'
 import { TProfileInput } from '@/types/profile.type'
@@ -19,10 +20,12 @@ const { Text } = Typography
 
 const UpdateProfile = () => {
   const dispatch = useDispatch()
-  const { data: profile, isLoading, error } = useGetProfileQuery()
+  const { data: profile, isLoading, error, refetch } = useGetProfileQuery()
   const [imageUrl, setImageUrl] = useState('')
   const { handleAlert, contextHolder } = useAlert()
   const [editProfile, { isLoading: isEditLoading }] = useEditProfileMutation()
+
+  useRefetch(refetch)
 
   const {
     handleSubmit,

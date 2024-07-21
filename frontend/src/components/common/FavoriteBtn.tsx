@@ -32,6 +32,7 @@ const FavoriteBtn = memo(({ catererId, isFavorite, currentPage }: Props) => {
         title: 'Login Required',
         content: 'You need to login to add this caterer to your favorite list.',
         onOk: () => navigate('/login'),
+        okText: 'Login',
       })
       return
     }

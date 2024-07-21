@@ -37,6 +37,14 @@ namespace backend.Controllers
                 return BadRequest("Invalid data.");
             }
 
+            var checkCuisine = await context.CuisineTypes
+                .FirstOrDefaultAsync(c => c.CuisineName == request.CuisineName);
+
+            if (checkCuisine != null)
+            {
+                return BadRequest("Cuisine already exists.");
+            }
+
             CuisineType cuisine = new()
             {
                 CuisineName = request.CuisineName,
