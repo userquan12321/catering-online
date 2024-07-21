@@ -16,6 +16,6 @@ namespace backend.Models
         public Profile? Profile { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<Item> Items { get; set; } = new List<Item>();
+        public ICollection<Item> Items { get; set; } = [];
     }
 }

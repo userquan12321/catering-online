@@ -1,10 +1,11 @@
 using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
-    //[Authorize(Roles = "Admin, Customer, Caterer")]
+    [Authorize(Roles = "Admin, Customer, Caterer")]
     [ApiController]
     [Route("api/[controller]")]
     public class FavoriteListController(ApplicationDbContext context) : ControllerBase

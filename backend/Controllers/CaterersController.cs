@@ -6,15 +6,16 @@ namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SearchController(ApplicationDbContext context) : ControllerBase
+    public class CaterersController(ApplicationDbContext context) : ControllerBase
     {
-        [HttpGet("caterers")]
-        public async Task<ActionResult> SearchCaterers([FromQuery] int page = 1)
+        [HttpGet]
+        public async Task<ActionResult> SearchCaterers([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
         {
-            int pageSize = 10;
             var caterers = await context.Caterers
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
+                    .Include(c => c.Items)
+                    .ThenInclude(c => c.CuisineType)
                     .Include(c => c.Profile)
                     .Select(c => new
                     {
@@ -22,23 +23,27 @@ namespace backend.Controllers
                         c.Profile!.FirstName,
                         c.Profile.LastName,
                         c.Profile.Image,
-                        c.Profile.PhoneNumber,
-                        c.Profile.User!.Email,
-                        c.Profile.UserId,
                         c.Profile.Address,
+                        CuisineTypes = c.Items.Select(i => i.CuisineType!.CuisineName).Distinct().ToList()
                     })
                     .ToListAsync();
+
+            var total = await context.Caterers.CountAsync();
 
             if (caterers == null)
             {
                 return NotFound();
             }
 
-            return Ok(caterers);
+            return Ok(new
+            {
+                caterers,
+                total
+            });
         }
 
         // Get caterer items
-        [HttpGet("caterers/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult> GetCatererItems(int id)
         {
             if (context.Caterers.Any(x => x.Id == id) == false)

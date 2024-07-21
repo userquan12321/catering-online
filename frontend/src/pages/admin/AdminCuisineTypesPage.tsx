@@ -108,8 +108,9 @@ const AdminCuisineTypesPage = () => {
       message.error('Cuisine not found!')
       return
     }
-    Modal.confirm({
+    Modal.warning({
       title: `Are you sure you want to delete "${cuisineToDelete.cuisineName}"?`,
+      okButtonProps: { danger: true },
       onOk: async () => {
         try {
           const res = await deleteCuisine(id)

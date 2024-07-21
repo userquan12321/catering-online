@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Layout } from 'antd'
 
 import HeaderNav from './HeaderNav'
@@ -11,13 +11,15 @@ type Props = {
 }
 
 const Header = ({ isAdmin }: Props) => {
+  const { pathname } = useLocation()
+
   return (
     <Layout.Header id="header">
       <nav id="navbar">
         <Link to="/" className="logo">
           Catering
         </Link>
-        {!isAdmin && <HeaderNav />}
+        {!isAdmin && pathname === '/' && <HeaderNav />}
         <HeaderRight />
       </nav>
     </Layout.Header>

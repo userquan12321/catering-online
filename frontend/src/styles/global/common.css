@@ -13,3 +13,15 @@
   background-color: white;
   padding: 1.5rem 0;
 }
+
+.container {
+  margin: 0 auto;
+  padding: 0 1rem;
+  max-width: 1200px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}

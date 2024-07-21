@@ -5,3 +5,5 @@ export enum USER_TYPE {
 }
 
 export const USER_TYPE_ARRAY = ['Customer', 'Caterer', 'Admin']
+
+export const PAGE_SIZE = 20

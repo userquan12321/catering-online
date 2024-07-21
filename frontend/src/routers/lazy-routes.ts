@@ -9,6 +9,9 @@ const AdminCuisineTypes = lazy(
 )
 const AdminDashBoard = lazy(() => import('../pages/admin/AdminDashBoardPage'))
 const AdminUsers = lazy(() => import('../pages/admin/AdminUsersPage'))
+const CatererDetailPage = lazy(
+  () => import('../pages/public/CatererDetailPage'),
+)
 const CaterersPage = lazy(() => import('../pages/public/CaterersPage'))
 const FavoriteListPage = lazy(() => import('../pages/private/FavoriteListPage'))
 const HomePage = lazy(() => import('../pages/public/HomePage'))
@@ -22,6 +25,7 @@ export {
   AdminCuisineTypes,
   AdminDashBoard,
   AdminUsers,
+  CatererDetailPage,
   CaterersPage,
   FavoriteListPage,
   HomePage,
