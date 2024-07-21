@@ -11,9 +11,9 @@ namespace backend.Controllers
     public class CuisinesController(ApplicationDbContext context) : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult> GetCuisines()
+        public async Task<ActionResult> GetCuisines([FromQuery] int? numberOfCuisines)
         {
-            var cuisines = await context.CuisineTypes
+            var cuisinesQuery = context.CuisineTypes
                 .OrderByDescending(c => c.UpdatedAt)
                 .Select(c =>
                     new
@@ -23,10 +23,18 @@ namespace backend.Controllers
                         c.CuisineImage,
                         c.Description
                     })
-                .ToListAsync();
+                .AsQueryable();
+
+            if (numberOfCuisines.HasValue)
+            {
+                cuisinesQuery = cuisinesQuery.Take(numberOfCuisines.Value);
+            }
+
+            var cuisines = await cuisinesQuery.ToListAsync();
 
             return Ok(cuisines);
         }
+
 
         [Authorize(Roles = "Admin")]
         [HttpPost]

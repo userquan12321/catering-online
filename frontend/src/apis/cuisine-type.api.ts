@@ -20,8 +20,9 @@ export const cuisineApi = createApi({
   }),
   tagTypes: ['Cuisine'],
   endpoints: (builder) => ({
-    getCuisines: builder.query<CuisineType[], void>({
-      query: () => 'cuisines',
+    getCuisines: builder.query<CuisineType[], { num?: number }>({
+      query: ({ num }) =>
+        `cuisines${num !== undefined ? '?numberOfCuisines=' + num : ''}`,
       providesTags: ['Cuisine'],
     }),
 

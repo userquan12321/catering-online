@@ -44,7 +44,7 @@ const AdminCateringItemsPage = () => {
   const { data: cateringItems = [], isLoading: isLoadingData } =
     useGetCateringItemsQuery()
   const { data: cuisines = [], isLoading: isLoadingCuisine } =
-    useGetCuisinesQuery()
+    useGetCuisinesQuery({})
 
   const [addCatering, { isLoading: addLoading }] = useAddCateringItemMutation()
   const [editCuisine, { isLoading: editLoading }] = useEditCuisineMutation()
