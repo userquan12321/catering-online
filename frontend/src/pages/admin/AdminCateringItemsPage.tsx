@@ -2,18 +2,31 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import type { TableColumnsType } from 'antd'
-import { Button, Col, Form, Input, message, Modal, Row, Typography } from 'antd'
-
-import { useGetCateringItemsQuery } from '@/apis/catering-item.api'
 import {
-  useAddCuisineMutation,
+  Button,
+  Col,
+  Form,
+  Input,
+  message,
+  Modal,
+  Row,
+  Select,
+  Typography,
+} from 'antd'
+
+import {
+  useAddCateringItemMutation,
+  useGetCateringItemsQuery,
+} from '@/apis/catering-item.api'
+import {
   useDeleteCuisineMutation,
   useEditCuisineMutation,
+  useGetCuisinesQuery,
 } from '@/apis/cuisine-type.api'
 import CustomTable from '@/components/common/CustomTable'
 import UploadWidget from '@/components/common/UploadWidget'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
-import { CateringItem } from '@/types/catering-item.type'
+import { CateringItem, CateringItemInput } from '@/types/catering-item.type'
 import { cateringValidation } from '@/validations/catering.validation'
 
 const AdminCateringItemsPage = () => {
@@ -30,26 +43,28 @@ const AdminCateringItemsPage = () => {
   const { handleAlert, contextHolder } = useAlert()
   const { data: cateringItems = [], isLoading: isLoadingData } =
     useGetCateringItemsQuery()
+  const { data: cuisines = [], isLoading: isLoadingCuisine } =
+    useGetCuisinesQuery()
 
-  const [addCuisine, { isLoading: addLoading }] = useAddCuisineMutation()
+  const [addCatering, { isLoading: addLoading }] = useAddCateringItemMutation()
   const [editCuisine, { isLoading: editLoading }] = useEditCuisineMutation()
   const [deleteCuisine] = useDeleteCuisineMutation()
 
   const [openDrawer, setOpenDrawer] = useState(false)
   const [currentCuisineId, setCurrentCuisineId] = useState<number | null>(null)
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: CateringItemInput) => {
     try {
-      if (currentCuisineId) {
-        const res = await editCuisine({ id: currentCuisineId, ...values })
-        handleAlert(res, () => {
-          setOpenDrawer(false)
-          setCurrentCuisineId(null)
-          reset()
-        })
-        return
-      }
-      const res = await addCuisine(values)
+      // if (currentCuisineId) {
+      //   const res = await editCuisine({ id: currentCuisineId, ...values })
+      //   handleAlert(res, () => {
+      //     setOpenDrawer(false)
+      //     setCurrentCuisineId(null)
+      //     reset()
+      //   })
+      //   return
+      // }
+      const res = await addCatering(values)
       handleAlert(res, () => {
         setOpenDrawer(false)
         reset()
@@ -61,7 +76,7 @@ const AdminCateringItemsPage = () => {
 
   const columns: TableColumnsType<CateringItem> = [
     {
-      title: 'Catering Id',
+      title: 'Item Id',
       dataIndex: 'id',
     },
     {
@@ -83,7 +98,7 @@ const AdminCateringItemsPage = () => {
     {
       title: 'Price',
       dataIndex: 'price',
-      render: (_, record) => '$' + record.price,
+      render: (_, record) => '$' + record.price.toFixed(2),
     },
     {
       title: 'Serves Count',
@@ -144,6 +159,28 @@ const AdminCateringItemsPage = () => {
           control={control}
           defaultValue=""
           render={({ field }) => <Input {...field} />}
+        />
+      </Form.Item>
+
+      <Form.Item
+        label="Cuisine name"
+        required
+        help={errors.cuisineId?.message}
+        validateStatus={errors.cuisineId ? 'error' : ''}
+      >
+        <Controller
+          name="cuisineId"
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              options={cuisines.map((cuisine) => ({
+                label: cuisine.cuisineName,
+                value: cuisine.id,
+              }))}
+              disabled={isLoadingCuisine}
+            />
+          )}
         />
       </Form.Item>
 
@@ -217,7 +254,7 @@ const AdminCateringItemsPage = () => {
         />
       </Form.Item>
 
-      <Row justify="end" gutter={8}>
+      <Row justify="end" gutter={8} className="action-drawer-btns">
         <Col>
           <Button type="default" htmlType="reset" onClick={() => reset()}>
             Reset

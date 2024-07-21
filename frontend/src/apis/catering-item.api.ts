@@ -31,8 +31,8 @@ export const cateringItemApi = createApi({
     }),
 
     addCateringItem: builder.mutation<string, CateringItemInput>({
-      query: ({ catererId, ...newItem }) => ({
-        url: `cateringItem/${catererId}`,
+      query: (newItem) => ({
+        url: 'cateringItem',
         method: 'POST',
         body: newItem,
         responseHandler: (response) => response.text(),
@@ -44,8 +44,8 @@ export const cateringItemApi = createApi({
       string,
       { id: number } & CateringItemInput
     >({
-      query: ({ id, catererId, ...updatedItem }) => ({
-        url: `cateringItem/${catererId}/${id}`,
+      query: ({ id, ...updatedItem }) => ({
+        url: `cateringItem/${id}`,
         method: 'PUT',
         body: updatedItem,
         responseHandler: (response) => response.text(),
@@ -54,8 +54,8 @@ export const cateringItemApi = createApi({
     }),
 
     deleteCateringItem: builder.mutation<string, DeleteCateringItemInput>({
-      query: ({ catererId, id }) => ({
-        url: `cateringItem/${catererId}/${id}`,
+      query: (id) => ({
+        url: `cateringItem/${id}`,
         method: 'DELETE',
         responseHandler: (response) => response.text(),
       }),
