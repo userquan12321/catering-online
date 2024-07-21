@@ -27,7 +27,10 @@ namespace backend.Controllers
                     c.Profile.Image,
                     c.Profile.Address,
                     CuisineTypes = c.Items.Select(i => i.CuisineType!.CuisineName).Distinct().ToList(),
-                    isFavorite = !string.IsNullOrEmpty(userId) && context.FavoriteList.Any(f => f.UserId == int.Parse(userId) && f.CatererId == c.Id)
+                    FavoriteId = string.IsNullOrEmpty(userId) ? 0 :
+            context.FavoriteList.Any(f => f.UserId == int.Parse(userId) && f.CatererId == c.Id)
+                ? context.FavoriteList.Where(f => f.UserId == int.Parse(userId) && f.CatererId == c.Id).Select(f => f.Id).FirstOrDefault()
+                : 0
                 })
                 .ToListAsync();
 
