@@ -1,5 +1,6 @@
-import { useGetCuisinesQuery } from '@/apis/cuisine-type.api'
 import { Image, Typography } from 'antd'
+
+import { useGetCuisinesQuery } from '@/apis/cuisine-type.api'
 
 const { Title, Paragraph } = Typography
 
