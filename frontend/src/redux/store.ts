@@ -11,7 +11,14 @@ import {
   REHYDRATE,
 } from 'redux-persist'
 
-import { authApi, cateringItemApi, cuisineApi, profileApi } from '../apis'
+import {
+  authApi,
+  catererApi,
+  cateringItemApi,
+  cuisineApi,
+  favoriteApi,
+  profileApi,
+} from '../apis'
 
 import { rootReducer } from './rootReducer'
 
@@ -27,9 +34,11 @@ export const store = configureStore({
       },
     }).concat(
       authApi.middleware,
-      profileApi.middleware,
-      cuisineApi.middleware,
+      catererApi.middleware,
       cateringItemApi.middleware,
+      cuisineApi.middleware,
+      favoriteApi.middleware,
+      profileApi.middleware,
     ),
 })
 

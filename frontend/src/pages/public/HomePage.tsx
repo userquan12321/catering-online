@@ -4,8 +4,6 @@ import Events from '@/components/Home/Events'
 import HeroIntro from '@/components/Home/HeroIntro'
 import RecentEvents from '@/components/Home/RecentEvents'
 
-import '../../styles/homepage.style.css'
-
 const HomePage = () => {
   return (
     <>

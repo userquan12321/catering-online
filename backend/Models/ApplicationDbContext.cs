@@ -12,7 +12,7 @@ namespace backend.Models
 
         public DbSet<Message> Messages { get; set; }
 
-        public DbSet<FavoriteList> FavoriteLists { get; set; }
+        public DbSet<Favorite> FavoriteList { get; set; }
 
         public DbSet<Item> Items { get; set; }
 

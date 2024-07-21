@@ -1,4 +1,5 @@
 @import url('global/common.css');
+@import url('global/lib.css');
 @import url('global/utils.css');
 
 * {
@@ -24,6 +25,12 @@ textarea {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.main {
+  > *:last-of-type {
+    margin-bottom: 0;
+  }
 }
 
 .margin-header {
