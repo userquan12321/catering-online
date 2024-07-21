@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom'
-import { Col, Pagination, Row } from 'antd'
+import { Col, Empty, Pagination, Row } from 'antd'
 
 import { useGetFavoriteListQuery } from '@/apis/favorite.api'
 import CatererCard from '@/components/Caterers/CatererCard'
@@ -13,8 +13,10 @@ const FavoriteListPage = () => {
     return page ? +page : 1
   }
 
-  const { data, isLoading, refetch } = useGetFavoriteListQuery(getCurrentPage())
-  console.log(data);
+  const { data, isLoading, refetch } = useGetFavoriteListQuery({
+    page: getCurrentPage(),
+  })
+  console.log(data)
 
   useRefetch(() => refetch(), false as any)
 
@@ -30,23 +32,29 @@ const FavoriteListPage = () => {
     return null
   }
 
+  if (data.caterers.length === 0) {
+    return <Empty style={{height:"calc(100vh - 64px)", alignContent:"center"}}/>
+  }
+
   return (
-    <div className="section-no-bg">
+    <div className="section-no-bg container">
       <Row gutter={16}>
-        {data.map((caterer) => (
-          <Col key={caterer.id} span={6} className="mb-4 flex">
-            <CatererCard data={caterer} currentPage={getCurrentPage()} />
+        {data.caterers.map((favcaterer) => (
+          <Col key={favcaterer.id} span={6} className="mb-4 flex">
+            <CatererCard data={favcaterer} currentPage={getCurrentPage()} />
           </Col>
         ))}
       </Row>
-      <Pagination
-        current={getCurrentPage()}
-        pageSize={PAGE_SIZE}
-        onChange={handleChange}
-        // total={data.total}
-        showSizeChanger={false}
-        className="pagination"
-      />
+      {data?.caterers.length > 0 && (
+        <Pagination
+          current={getCurrentPage()}
+          pageSize={PAGE_SIZE}
+          onChange={handleChange}
+          total={data.total}
+          showSizeChanger={false}
+          className="pagination"
+        />
+      )}
     </div>
   )
 }
