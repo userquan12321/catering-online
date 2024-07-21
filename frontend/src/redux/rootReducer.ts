@@ -7,6 +7,7 @@ import {
   catererApi,
   cateringItemApi,
   cuisineApi,
+  favoriteApi,
   profileApi,
 } from '../apis'
 
@@ -22,8 +23,9 @@ const persistedReducer = persistReducer(authPersistConfig, authReducer)
 export const rootReducer = combineReducers({
   auth: persistedReducer,
   [authApi.reducerPath]: authApi.reducer,
-  [profileApi.reducerPath]: profileApi.reducer,
-  [cuisineApi.reducerPath]: cuisineApi.reducer,
-  [cateringItemApi.reducerPath]: cateringItemApi.reducer,
   [catererApi.reducerPath]: catererApi.reducer,
+  [cateringItemApi.reducerPath]: cateringItemApi.reducer,
+  [cuisineApi.reducerPath]: cuisineApi.reducer,
+  [favoriteApi.reducerPath]: favoriteApi.reducer,
+  [profileApi.reducerPath]: profileApi.reducer,
 })

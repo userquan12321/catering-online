@@ -5,6 +5,7 @@ export type Caterer = {
   image: string
   address: string
   cuisineTypes: string[]
+  isFavorite: boolean
 }
 
 export type CatererRes = {

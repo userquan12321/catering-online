@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace backend.Models
 {
-    public class FavoriteList
+    public class Favorite
     {
         [Key]
         public int Id { get; set; }

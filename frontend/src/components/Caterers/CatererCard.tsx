@@ -8,9 +8,10 @@ import { Caterer } from '@/types/caterer.type'
 
 type Props = {
   data: Caterer
+  currentPage: number
 }
 
-const CatererCard = ({ data }: Props) => {
+const CatererCard = ({ data, currentPage }: Props) => {
   return (
     <div className="shadow relative flex-1">
       <Image
@@ -20,7 +21,11 @@ const CatererCard = ({ data }: Props) => {
         fallback={fallBackImg}
         className="w-full aspect-video shadow-sm"
       />
-      <FavoriteBtn catererId={data.id} />
+      <FavoriteBtn
+        catererId={data.id}
+        isFavorite={data.isFavorite}
+        currentPage={currentPage}
+      />
 
       <Link to={`/caterers/${data.id}`} className={classes.catererCardBody}>
         <Typography.Title level={5}>

@@ -1,4 +1,6 @@
-﻿using backend.Models;
+﻿using System.Security.Claims;
+using backend.Models;
+using backend.Models.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,24 +13,23 @@ namespace backend.Controllers
         [HttpGet]
         public async Task<ActionResult> SearchCaterers([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
         {
-            var caterers = await context.Caterers
-                    .Skip((page - 1) * pageSize)
-                    .Take(pageSize)
-                    .Include(c => c.Items)
-                    .ThenInclude(c => c.CuisineType)
-                    .Include(c => c.Profile)
-                    .Select(c => new
-                    {
-                        c.Id,
-                        c.Profile!.FirstName,
-                        c.Profile.LastName,
-                        c.Profile.Image,
-                        c.Profile.Address,
-                        CuisineTypes = c.Items.Select(i => i.CuisineType!.CuisineName).Distinct().ToList()
-                    })
-                    .ToListAsync();
+            string? userId = HttpContext.User.FindFirstValue("UserId");
+            var caterersQuery = context.Caterers.BuildCaterersQuery(page, pageSize);
 
             var total = await context.Caterers.CountAsync();
+
+            var caterers = await caterersQuery
+                .Select(c => new
+                {
+                    c.Id,
+                    c.Profile!.FirstName,
+                    c.Profile.LastName,
+                    c.Profile.Image,
+                    c.Profile.Address,
+                    CuisineTypes = c.Items.Select(i => i.CuisineType!.CuisineName).Distinct().ToList(),
+                    isFavorite = !string.IsNullOrEmpty(userId) && context.FavoriteList.Any(f => f.UserId == int.Parse(userId) && f.CatererId == c.Id)
+                })
+                .ToListAsync();
 
             if (caterers == null)
             {

@@ -30,9 +30,9 @@ namespace backend.Models
         public DateTime UpdatedAt { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<FavoriteList> FavoriteLists { get; set; } = new List<FavoriteList>();
+        public virtual ICollection<Favorite> FavoriteList { get; set; } = [];
 
         [JsonIgnore]
-        public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+        public virtual ICollection<Booking> Bookings { get; set; } = [];
     }
 }

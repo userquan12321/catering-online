@@ -13,7 +13,9 @@ const CatererList = () => {
     return page ? +page : 1
   }
 
-  const { data, isLoading } = useGetCaterersQuery({ page: getCurrentPage() })
+  const { data, isLoading } = useGetCaterersQuery({
+    page: getCurrentPage(),
+  })
 
   const handleChange = (page: number) => {
     setSearchParams({ page: page.toString() })
@@ -32,7 +34,7 @@ const CatererList = () => {
       <Row gutter={16}>
         {data.caterers.map((caterer) => (
           <Col key={caterer.id} span={6} className="mb-4 flex">
-            <CatererCard data={caterer} />
+            <CatererCard data={caterer} currentPage={getCurrentPage()} />
           </Col>
         ))}
       </Row>
