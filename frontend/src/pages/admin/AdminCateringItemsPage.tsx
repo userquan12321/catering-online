@@ -16,6 +16,7 @@ import {
 
 import {
   useAddCateringItemMutation,
+  useEditCateringItemMutation,
   useGetCateringItemsQuery,
   useEditCateringItemMutation,
   useDeleteCateringItemMutation,
@@ -25,6 +26,7 @@ import {
 } from '@/apis/cuisine-type.api'
 import CustomTable from '@/components/common/CustomTable'
 import UploadWidget from '@/components/common/UploadWidget'
+import { CATERING_TYPES } from '@/constants/catering.constant'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
 import { CateringItem, CateringItemInput } from '@/types/catering-item.type'
 import { cateringValidation } from '@/validations/catering.validation'
@@ -96,6 +98,13 @@ const AdminCateringItemsPage = () => {
       ),
     },
     {
+      title: 'Category',
+      dataIndex: 'itemType',
+      render: (_, record) => (
+        <Typography.Text>{CATERING_TYPES[record.itemType]}</Typography.Text>
+      ),
+    },
+    {
       title: 'Price',
       dataIndex: 'price',
       render: (_, record) => '$' + record.price.toFixed(2),
@@ -109,6 +118,7 @@ const AdminCateringItemsPage = () => {
   const handleClose = () => {
     setOpenDrawer(false)
     reset()
+    setCurrentItemId(null)
   }
 
   const handleAdd = () => {
@@ -165,27 +175,54 @@ const AdminCateringItemsPage = () => {
         />
       </Form.Item>
 
-      <Form.Item
-        label="Cuisine name"
-        required
-        help={errors.cuisineId?.message}
-        validateStatus={errors.cuisineId ? 'error' : ''}
-      >
-        <Controller
-          name="cuisineId"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              options={cuisines.map((cuisine) => ({
-                label: cuisine.cuisineName,
-                value: cuisine.id,
-              }))}
-              disabled={isLoadingCuisine}
+      <Row gutter={8}>
+        <Col span={12}>
+          <Form.Item
+            label="Cuisine name"
+            required
+            help={errors.cuisineId?.message}
+            validateStatus={errors.cuisineId ? 'error' : ''}
+          >
+            <Controller
+              name="cuisineId"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={cuisines.map((cuisine) => ({
+                    label: cuisine.cuisineName,
+                    value: cuisine.id,
+                  }))}
+                  disabled={isLoadingCuisine}
+                />
+              )}
             />
-          )}
-        />
-      </Form.Item>
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="Category"
+            required
+            help={errors?.itemType?.message}
+            validateStatus={errors.itemType ? 'error' : ''}
+          >
+            <Controller
+              name="itemType"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={CATERING_TYPES.map((type, index) => ({
+                    label: type,
+                    value: index,
+                  }))}
+                  disabled={isLoadingCuisine}
+                />
+              )}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
 
       <Row gutter={8}>
         <Col span={12}>
@@ -220,7 +257,6 @@ const AdminCateringItemsPage = () => {
 
       <Form.Item
         label="Description"
-        required
         help={errors.description?.message}
         validateStatus={errors.description ? 'error' : ''}
       >
@@ -234,7 +270,6 @@ const AdminCateringItemsPage = () => {
 
       <Form.Item
         label="Catering image"
-        required
         help={errors.image?.message}
         validateStatus={errors.image ? 'error' : ''}
       >

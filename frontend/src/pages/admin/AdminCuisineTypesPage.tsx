@@ -154,7 +154,7 @@ const AdminCuisineTypesPage = () => {
         />
       </Form.Item>
 
-      <Form.Item label="Cuisine image" required>
+      <Form.Item label="Cuisine image">
         <Controller
           name="cuisineImage"
           control={control}

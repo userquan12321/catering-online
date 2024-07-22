@@ -4,9 +4,10 @@ export type CateringItem = {
   cuisineName: string
   name: string
   price: number
+  itemType: number
+  description?: string
   servesCount: number
-  description: string
-  image: string
+  image?: string
 }
 
 export type CateringItemInput = Omit<CateringItem, 'id' | 'cuisineName'>

@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using backend.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
@@ -27,9 +28,14 @@ namespace backend.Models
     public string Name { get; set; } = string.Empty;
 
     [StringLength(2000)]
-    public string Image { get; set; } = string.Empty;
+    public string? Image { get; set; }
+
+    [StringLength(2000)]
+    public string? Description { get; set; }
 
     public int ServesCount { get; set; }
+
+    public ItemType ItemType { get; set; }
 
     [Precision(18, 2)]
     public decimal Price { get; set; }
@@ -39,6 +45,6 @@ namespace backend.Models
     public DateTime UpdatedAt { get; set; }
 
     [JsonIgnore]
-    public ICollection<BookingItem> BookingItems { get; set; } = new List<BookingItem>();
+    public ICollection<BookingItem> BookingItems { get; set; } = [];
   }
 }
