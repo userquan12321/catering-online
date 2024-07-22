@@ -16,15 +16,16 @@ import {
 
 import {
   useAddCateringItemMutation,
+  useEditCateringItemMutation,
   useGetCateringItemsQuery,
 } from '@/apis/catering-item.api'
 import {
   useDeleteCuisineMutation,
-  useEditCuisineMutation,
   useGetCuisinesQuery,
 } from '@/apis/cuisine-type.api'
 import CustomTable from '@/components/common/CustomTable'
 import UploadWidget from '@/components/common/UploadWidget'
+import { CATERING_TYPES } from '@/constants/catering.constant'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
 import { CateringItem, CateringItemInput } from '@/types/catering-item.type'
 import { cateringValidation } from '@/validations/catering.validation'
@@ -47,23 +48,24 @@ const AdminCateringItemsPage = () => {
     useGetCuisinesQuery({})
 
   const [addCatering, { isLoading: addLoading }] = useAddCateringItemMutation()
-  const [editCuisine, { isLoading: editLoading }] = useEditCuisineMutation()
+  const [editCatering, { isLoading: editLoading }] =
+    useEditCateringItemMutation()
   const [deleteCuisine] = useDeleteCuisineMutation()
 
   const [openDrawer, setOpenDrawer] = useState(false)
-  const [currentCuisineId, setCurrentCuisineId] = useState<number | null>(null)
+  const [currentItemId, setCurrentItemId] = useState<number | null>(null)
 
   const onSubmit = async (values: CateringItemInput) => {
     try {
-      // if (currentCuisineId) {
-      //   const res = await editCuisine({ id: currentCuisineId, ...values })
-      //   handleAlert(res, () => {
-      //     setOpenDrawer(false)
-      //     setCurrentCuisineId(null)
-      //     reset()
-      //   })
-      //   return
-      // }
+      if (currentItemId) {
+        const res = await editCatering({ id: currentItemId, ...values })
+        handleAlert(res, () => {
+          setOpenDrawer(false)
+          setCurrentItemId(null)
+          reset()
+        })
+        return
+      }
       const res = await addCatering(values)
       handleAlert(res, () => {
         setOpenDrawer(false)
@@ -96,6 +98,13 @@ const AdminCateringItemsPage = () => {
       ),
     },
     {
+      title: 'Category',
+      dataIndex: 'itemType',
+      render: (_, record) => (
+        <Typography.Text>{CATERING_TYPES[record.itemType]}</Typography.Text>
+      ),
+    },
+    {
       title: 'Price',
       dataIndex: 'price',
       render: (_, record) => '$' + record.price.toFixed(2),
@@ -108,7 +117,7 @@ const AdminCateringItemsPage = () => {
 
   const handleClose = () => {
     setOpenDrawer(false)
-    setCurrentCuisineId(null)
+    setCurrentItemId(null)
   }
 
   const handleAdd = () => {
@@ -117,14 +126,17 @@ const AdminCateringItemsPage = () => {
   }
 
   const handleEdit = (id: number) => {
-    // setOpenDrawer(true)
-    // setCurrentCuisineId(id)
-    // const cuisineToEdit = cuisines.find((cuisine) => cuisine.id === id)
-    // if (cuisineToEdit) {
-    //   setValue('cuisineName', cuisineToEdit.cuisineName)
-    //   setValue('description', cuisineToEdit.description)
-    //   setValue('cuisineImage', cuisineToEdit.cuisineImage)
-    // }
+    setOpenDrawer(true)
+    setCurrentItemId(id)
+    const itemToEdit = cateringItems.find((item) => item.id === id)
+    if (itemToEdit) {
+      setValue('name', itemToEdit.name)
+      setValue('description', itemToEdit.description)
+      setValue('cuisineId', itemToEdit.cuisineId)
+      setValue('price', itemToEdit.price)
+      setValue('servesCount', itemToEdit.servesCount)
+      setValue('image', itemToEdit.image)
+    }
   }
 
   const handleDelete = (id: number) => {
@@ -162,27 +174,54 @@ const AdminCateringItemsPage = () => {
         />
       </Form.Item>
 
-      <Form.Item
-        label="Cuisine name"
-        required
-        help={errors.cuisineId?.message}
-        validateStatus={errors.cuisineId ? 'error' : ''}
-      >
-        <Controller
-          name="cuisineId"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              options={cuisines.map((cuisine) => ({
-                label: cuisine.cuisineName,
-                value: cuisine.id,
-              }))}
-              disabled={isLoadingCuisine}
+      <Row gutter={8}>
+        <Col span={12}>
+          <Form.Item
+            label="Cuisine name"
+            required
+            help={errors.cuisineId?.message}
+            validateStatus={errors.cuisineId ? 'error' : ''}
+          >
+            <Controller
+              name="cuisineId"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={cuisines.map((cuisine) => ({
+                    label: cuisine.cuisineName,
+                    value: cuisine.id,
+                  }))}
+                  disabled={isLoadingCuisine}
+                />
+              )}
             />
-          )}
-        />
-      </Form.Item>
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="Category"
+            required
+            help={errors?.itemType?.message}
+            validateStatus={errors.itemType ? 'error' : ''}
+          >
+            <Controller
+              name="itemType"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={CATERING_TYPES.map((type, index) => ({
+                    label: type,
+                    value: index,
+                  }))}
+                  disabled={isLoadingCuisine}
+                />
+              )}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
 
       <Row gutter={8}>
         <Col span={12}>
@@ -264,7 +303,7 @@ const AdminCateringItemsPage = () => {
             htmlType="submit"
             disabled={addLoading || editLoading}
           >
-            {currentCuisineId ? 'Edit' : 'Add'}
+            {currentItemId ? 'Edit' : 'Add'}
           </Button>
         </Col>
       </Row>
@@ -287,7 +326,7 @@ const AdminCateringItemsPage = () => {
       customColumns={columns}
       onDelete={handleDelete}
       onEdit={handleEdit}
-      isEditing={!!currentCuisineId}
+      isEditing={!!currentItemId}
       dataSource={cateringItems}
       rowKey={(record) => record.id}
     />

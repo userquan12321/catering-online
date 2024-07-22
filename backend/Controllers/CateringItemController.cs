@@ -29,6 +29,7 @@ namespace backend.Controllers
 							i.Id,
 							i.CuisineId,
 							i.Name,
+							i.Description,
 							i.Price,
 							i.ServesCount,
 							i.Image,
@@ -52,6 +53,7 @@ namespace backend.Controllers
 						},
 						i.CuisineId,
 						i.Name,
+						i.Description,
 						i.Price,
 						i.ServesCount,
 						i.Image,
@@ -88,6 +90,7 @@ namespace backend.Controllers
 						CatererId = (int)tokenData.CatererId,
 						CuisineId = request.CuisineId,
 						Name = request.Name,
+						Description = request.Description,
 						Price = request.Price,
 						ServesCount = request.ServesCount,
 						Image = request.Image,
@@ -130,6 +133,7 @@ namespace backend.Controllers
 						return NotFound("Item not found.");
 					}
 					item.Name = request.Name;
+					item.Description = request.Description;
 					item.Image = request.Image;
 					item.CuisineId = request.CuisineId;
 					item.ServesCount = request.ServesCount;

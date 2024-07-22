@@ -9,9 +9,10 @@ namespace backend.Models.DTO
     [StringLength(255)]
     public string Name { get; set; } = string.Empty;
 
-    [Required]
     [StringLength(2000)]
-    public string Image { get; set; } = string.Empty;
+    public string? Image { get; set; }
+    [StringLength(2000)]
+    public string? Description { get; set; }
 
     [Required]
     public int ServesCount { get; set; }
