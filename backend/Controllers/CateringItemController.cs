@@ -32,13 +32,35 @@ namespace backend.Controllers
 							i.Price,
 							i.ServesCount,
 							i.Image,
+							i.ItemType,
 							i.CuisineType!.CuisineName
 						})
 						.ToListAsync();
 					return Ok(items);
 				}
 
-				return Unauthorized();
+				var itemsAdmin = await context.Items
+					.OrderByDescending(i => i.UpdatedAt)
+					.Select(i => new
+					{
+						i.Id,
+						Caterer = new
+						{
+							i.CatererId,
+							i.Caterer!.Profile!.FirstName,
+							i.Caterer.Profile.LastName,
+						},
+						i.CuisineId,
+						i.Name,
+						i.Price,
+						i.ServesCount,
+						i.Image,
+						i.ItemType,
+						i.CuisineType!.CuisineName
+					})
+					.ToListAsync();
+
+				return Ok(itemsAdmin);
 			}
 			catch (UnauthorizedAccessException ex)
 			{
@@ -51,6 +73,11 @@ namespace backend.Controllers
 		[HttpPost]
 		public async Task<ActionResult> AddItem(ItemDTO request)
 		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+
 			TokenData tokenData = UserHelper.GetRoleAndCatererId(HttpContext.User);
 			try
 			{
@@ -64,6 +91,7 @@ namespace backend.Controllers
 						Price = request.Price,
 						ServesCount = request.ServesCount,
 						Image = request.Image,
+						ItemType = request.ItemType,
 						CreatedAt = DateTime.UtcNow,
 						UpdatedAt = DateTime.UtcNow
 					};
@@ -84,6 +112,11 @@ namespace backend.Controllers
 		[HttpPut("{itemId}")]
 		public async Task<ActionResult> UpdateItem(int itemId, ItemDTO request)
 		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+
 			TokenData tokenData = UserHelper.GetRoleAndCatererId(HttpContext.User);
 			try
 			{
@@ -101,6 +134,7 @@ namespace backend.Controllers
 					item.CuisineId = request.CuisineId;
 					item.ServesCount = request.ServesCount;
 					item.Price = request.Price;
+					item.ItemType = request.ItemType;
 					item.UpdatedAt = DateTime.UtcNow;
 					await context.SaveChangesAsync();
 					return Ok("Item updated");

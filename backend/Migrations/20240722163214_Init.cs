@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace backend.Migrations
 {
   /// <inheritdoc />
-  public partial class init : Migration
+  public partial class Init : Migration
   {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,7 @@ namespace backend.Migrations
                   .Annotation("SqlServer:Identity", "1, 1"),
             CuisineName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
             Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
-            CuisineImage = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+            CuisineImage = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
             CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
             UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
           },
@@ -34,7 +34,7 @@ namespace backend.Migrations
           {
             Id = table.Column<int>(type: "int", nullable: false)
                   .Annotation("SqlServer:Identity", "1, 1"),
-            Type = table.Column<int>(type: "int", nullable: false),
+            Type = table.Column<int>(type: "tinyint", nullable: false),
             Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
             Password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
             CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -81,11 +81,11 @@ namespace backend.Migrations
             Id = table.Column<int>(type: "int", nullable: false)
                   .Annotation("SqlServer:Identity", "1, 1"),
             UserId = table.Column<int>(type: "int", nullable: false),
-            FirstName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+            FirstName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
             LastName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
             PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-            Address = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-            Image = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false)
+            Address = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+            Image = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true)
           },
           constraints: table =>
           {
@@ -188,8 +188,10 @@ namespace backend.Migrations
             CatererId = table.Column<int>(type: "int", nullable: false),
             CuisineId = table.Column<int>(type: "int", nullable: false),
             Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-            Image = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+            Image = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+            Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
             ServesCount = table.Column<int>(type: "int", nullable: false),
+            ItemType = table.Column<int>(type: "tinyint", nullable: false),
             Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
             CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
             UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -208,7 +210,7 @@ namespace backend.Migrations
                       column: x => x.CuisineId,
                       principalTable: "CuisineTypes",
                       principalColumn: "Id",
-                      onDelete: ReferentialAction.Cascade);
+                      onDelete: ReferentialAction.NoAction);
           });
 
       migrationBuilder.CreateTable(

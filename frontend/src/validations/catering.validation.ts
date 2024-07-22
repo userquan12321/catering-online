@@ -11,6 +11,6 @@ export const cateringValidation = yup.object().shape({
     .number()
     .min(1, 'Serves count cannot be smaller than 1')
     .required('Serves count is required'),
-  description: yup.string().required('Description is required'),
-  image: yup.string().required('Cuisine image is required'),
+  description: yup.string(),
+  image: yup.string(),
 })

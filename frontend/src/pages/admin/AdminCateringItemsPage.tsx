@@ -217,7 +217,6 @@ const AdminCateringItemsPage = () => {
 
       <Form.Item
         label="Description"
-        required
         help={errors.description?.message}
         validateStatus={errors.description ? 'error' : ''}
       >
@@ -231,7 +230,6 @@ const AdminCateringItemsPage = () => {
 
       <Form.Item
         label="Cuisine image"
-        required
         help={errors.image?.message}
         validateStatus={errors.image ? 'error' : ''}
       >

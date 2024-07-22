@@ -5,4 +5,5 @@ export type CuisineType = {
   cuisineImage: string
 }
 
-export type CuisineInput = Omit<CuisineType, 'id'>
+export type CuisineInput = Omit<CuisineType, 'id' | 'cuisineImage'> &
+  Partial<{ cuisineImage: string }>
