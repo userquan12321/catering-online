@@ -1,84 +1,140 @@
+using backend.Helpers;
 using backend.Models;
+using backend.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
-    //[Authorize(Roles = "Admin, Customer, Caterer")]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class MessageController(ApplicationDbContext context) : ControllerBase
-    {
-        // User view all messages
-        [HttpGet("{userId}")]
-        public async Task<ActionResult> GetMessages(int userId)
-        {
-            var messages = await context.Messages
-                .Where(m => m.SenderId == userId || m.ReceiverId == userId)
-                .ToListAsync();
-            return Ok(messages);
-        }
+	[Authorize(Roles = "Admin, Customer, Caterer")]
+	[ApiController]
+	[Route("api/[controller]")]
+	public class MessageController(ApplicationDbContext context) : ControllerBase
+	{
+		[HttpGet("contacts")]
+		public async Task<ActionResult> GetContacts()
+		{
+			try
+			{
+				int userId = UserHelper.GetValidUserId(HttpContext.User);
 
-        // User view message details
-        [HttpGet("{userId}/{messageId}")]
-        public async Task<ActionResult> GetMessage(int userId, int messageId)
-        {
-            var message = await context.Messages
-                .Where(m => m.Id == messageId && (m.SenderId == userId || m.ReceiverId == userId))
-                .FirstOrDefaultAsync();
-            if (message == null)
-            {
-                return NotFound("Message not found.");
-            }
-            return Ok(message);
-        }
+				var recipientIds = await context.Messages
+						.Where(m => m.SenderId == userId)
+						.Select(m => m.ReceiverId)
+						.Distinct()
+						.ToListAsync();
 
-        // User send message
-        [HttpPost("{userId}/send/{receiverId}")]
-        public async Task<ActionResult> SendMessage(int userId, int receiverId, Message sendMessage)
-        {
-            sendMessage.SenderId = userId;
-            sendMessage.ReceiverId = receiverId;
-            sendMessage.CreatedAt = DateTime.UtcNow;
-            sendMessage.UpdatedAt = DateTime.UtcNow;
-            context.Messages.Add(sendMessage);
-            await context.SaveChangesAsync();
-            return Ok("Message sent.");
-        }
+				var recipients = await context.Profiles
+						.Where(u => recipientIds.Contains(u.Id))
+						.ToListAsync();
 
-        // User reply message
-        [HttpPost("{userId}/reply")]
-        public async Task<ActionResult> ReplyMessage(int userId, int originalMessageId, Message replyMessage)
-        {
-            var originalMessage = await context.Messages.FindAsync(originalMessageId);
-            if (originalMessage == null || (originalMessage.SenderId != userId && originalMessage.ReceiverId != userId))
-            {
-                return NotFound("Message not found.");
-            }
-            replyMessage.SenderId = userId;
-            replyMessage.ReceiverId = originalMessage.SenderId == userId ? originalMessage.ReceiverId : originalMessage.SenderId;
-            replyMessage.Content = replyMessage.Content;
-            replyMessage.CreatedAt = DateTime.UtcNow;
-            replyMessage.UpdatedAt = DateTime.UtcNow;
-            context.Messages.Add(replyMessage);
-            await context.SaveChangesAsync();
-            return Ok("Message sent.");
-        }
+				return Ok(recipients.Select(u => new
+				{
+					u.UserId,
+					u.FirstName,
+					u.LastName,
+					u.Image,
+				}));
+			}
+			catch (UnauthorizedAccessException ex)
+			{
+				return Unauthorized(ex.Message);
+			}
+		}
 
-        // User delete message
-        [HttpDelete("{userId}/{messageId}")]
-        public async Task<IActionResult> DeleteMessage(int userId, int messageId)
-        {
-            var message = await context.Messages
-                .Where(m => m.Id == messageId && (m.SenderId == userId || m.ReceiverId == userId))
-                .FirstOrDefaultAsync();
-            if (message == null)
-            {
-                return NotFound("Message not found.");
-            }
-            context.Messages.Remove(message);
-            await context.SaveChangesAsync();
-            return Ok("Message deleted.");
-        }
-    }
+		[HttpGet("{receiverId}")]
+		public async Task<ActionResult<IEnumerable<Message>>> GetMessages(int receiverId)
+		{
+			int TAKE_LIMIT = 20;
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+
+			try
+			{
+				int userId = UserHelper.GetValidUserId(HttpContext.User);
+
+				var messages = await context.Messages
+					.Where(m => (m.SenderId == userId && m.ReceiverId == receiverId) ||
+								(m.SenderId == receiverId && m.ReceiverId == userId))
+					.Include(m => m.Sender)
+					.Include(m => m.Receiver)
+					.OrderByDescending(m => m.CreatedAt)
+					.Take(TAKE_LIMIT)
+					.ToListAsync();
+
+				if (messages == null)
+				{
+					return NotFound();
+				}
+
+				return Ok(messages);
+			}
+			catch (UnauthorizedAccessException ex)
+			{
+				return Unauthorized(ex.Message);
+			}
+		}
+
+		[HttpPost]
+		public async Task<ActionResult> SendMessage(MessageDTO request)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+
+			try
+			{
+				int userId = UserHelper.GetValidUserId(HttpContext.User);
+
+				var sendMessage = new Message
+				{
+					SenderId = userId,
+					ReceiverId = request.ReceiverId,
+					Content = request.Content,
+					CreatedAt = DateTime.UtcNow,
+					UpdatedAt = DateTime.UtcNow
+				};
+
+				context.Messages.Add(sendMessage);
+				await context.SaveChangesAsync();
+				return Ok("Message sent.");
+			}
+			catch (UnauthorizedAccessException ex)
+			{
+				return Unauthorized(ex.Message);
+			}
+		}
+
+		[HttpDelete("{messageId}")]
+		public async Task<IActionResult> DeleteMessage(int messageId)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+
+			try
+			{
+				int userId = UserHelper.GetValidUserId(HttpContext.User);
+				var message = await context.Messages
+					.Where(m => m.Id == messageId && (m.SenderId == userId))
+					.FirstOrDefaultAsync();
+				if (message == null)
+				{
+					return NotFound("Message not found.");
+				}
+				context.Messages.Remove(message);
+				await context.SaveChangesAsync();
+				return Ok("Message deleted.");
+			}
+			catch (UnauthorizedAccessException ex)
+			{
+				return Unauthorized(ex.Message);
+			}
+		}
+	}
 }
