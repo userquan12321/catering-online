@@ -18,9 +18,10 @@ import {
   useAddCateringItemMutation,
   useEditCateringItemMutation,
   useGetCateringItemsQuery,
+  useEditCateringItemMutation,
+  useDeleteCateringItemMutation,
 } from '@/apis/catering-item.api'
 import {
-  useDeleteCuisineMutation,
   useGetCuisinesQuery,
 } from '@/apis/cuisine-type.api'
 import CustomTable from '@/components/common/CustomTable'
@@ -48,20 +49,19 @@ const AdminCateringItemsPage = () => {
     useGetCuisinesQuery({})
 
   const [addCatering, { isLoading: addLoading }] = useAddCateringItemMutation()
-  const [editCatering, { isLoading: editLoading }] =
-    useEditCateringItemMutation()
-  const [deleteCuisine] = useDeleteCuisineMutation()
+  const [editCatering, { isLoading: editLoading }] = useEditCateringItemMutation()
+  const [deleteCatering] = useDeleteCateringItemMutation()
 
   const [openDrawer, setOpenDrawer] = useState(false)
-  const [currentItemId, setCurrentItemId] = useState<number | null>(null)
+  const [currentCateringId, setCurrentCateringId] = useState<number | null>(null)
 
   const onSubmit = async (values: CateringItemInput) => {
     try {
-      if (currentItemId) {
-        const res = await editCatering({ id: currentItemId, ...values })
+      if (currentCateringId) {
+        const res = await editCatering({ id: currentCateringId, ...values })
         handleAlert(res, () => {
           setOpenDrawer(false)
-          setCurrentItemId(null)
+          setCurrentCateringId(null)
           reset()
         })
         return
@@ -72,7 +72,7 @@ const AdminCateringItemsPage = () => {
         reset()
       })
     } catch (error) {
-      message.error('Failed to add cuisine')
+      message.error('Failed to add catering item')
     }
   }
 
@@ -117,6 +117,7 @@ const AdminCateringItemsPage = () => {
 
   const handleClose = () => {
     setOpenDrawer(false)
+    reset()
     setCurrentItemId(null)
   }
 
@@ -127,35 +128,35 @@ const AdminCateringItemsPage = () => {
 
   const handleEdit = (id: number) => {
     setOpenDrawer(true)
-    setCurrentItemId(id)
-    const itemToEdit = cateringItems.find((item) => item.id === id)
-    if (itemToEdit) {
-      setValue('name', itemToEdit.name)
-      setValue('description', itemToEdit.description)
-      setValue('cuisineId', itemToEdit.cuisineId)
-      setValue('price', itemToEdit.price)
-      setValue('servesCount', itemToEdit.servesCount)
-      setValue('image', itemToEdit.image)
+    setCurrentCateringId(id)
+    const cateringToEdit = cateringItems.find((catering) => catering.id === id)
+    if (cateringToEdit) {
+      setValue('name', cateringToEdit.name)
+      setValue('cuisineId', cateringToEdit.cuisineId)
+      setValue('servesCount', cateringToEdit.servesCount)
+      setValue('price', cateringToEdit.price)
+      setValue('description', cateringToEdit.description)
+      setValue('image', cateringToEdit.image)
     }
   }
 
   const handleDelete = (id: number) => {
-    // const cuisineToDelete = cuisines.find((cuisine) => cuisine.id === id)
-    // if (!cuisineToDelete) {
-    //   message.error('Cuisine not found!')
-    //   return
-    // }
-    // Modal.confirm({
-    //   title: `Are you sure you want to delete "${cuisineToDelete.cuisineName}"?`,
-    //   onOk: async () => {
-    //     try {
-    //       const res = await deleteCuisine(id)
-    //       handleAlert(res)
-    //     } catch (error) {
-    //       message.error('Failed to delete cuisine!')
-    //     }
-    //   },
-    // })
+    const cateringToDelete = cateringItems.find((catering) => catering.id === id)
+    if (!cateringToDelete) {
+      message.error('Catering item not found!')
+      return
+    }
+    Modal.confirm({
+      title: `Are you sure you want to delete "${cateringToDelete.name}"?`,
+      onOk: async () => {
+        try {
+          const res = await deleteCatering(id)
+          handleAlert(res)
+        } catch (error) {
+          message.error('Failed to delete catering item!')
+        }
+      },
+    })
   }
 
   const renderDrawerContent = () => (
@@ -268,7 +269,7 @@ const AdminCateringItemsPage = () => {
       </Form.Item>
 
       <Form.Item
-        label="Cuisine image"
+        label="Catering image"
         help={errors.image?.message}
         validateStatus={errors.image ? 'error' : ''}
       >
@@ -303,7 +304,7 @@ const AdminCateringItemsPage = () => {
             htmlType="submit"
             disabled={addLoading || editLoading}
           >
-            {currentItemId ? 'Edit' : 'Add'}
+            {currentCateringId ? 'Edit' : 'Add'}
           </Button>
         </Col>
       </Row>
@@ -326,7 +327,7 @@ const AdminCateringItemsPage = () => {
       customColumns={columns}
       onDelete={handleDelete}
       onEdit={handleEdit}
-      isEditing={!!currentItemId}
+      isEditing={!!currentCateringId}
       dataSource={cateringItems}
       rowKey={(record) => record.id}
     />
