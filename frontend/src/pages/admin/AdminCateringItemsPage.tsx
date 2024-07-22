@@ -16,14 +16,11 @@ import {
 
 import {
   useAddCateringItemMutation,
+  useDeleteCateringItemMutation,
   useEditCateringItemMutation,
   useGetCateringItemsQuery,
-  useEditCateringItemMutation,
-  useDeleteCateringItemMutation,
 } from '@/apis/catering-item.api'
-import {
-  useGetCuisinesQuery,
-} from '@/apis/cuisine-type.api'
+import { useGetCuisinesQuery } from '@/apis/cuisine-type.api'
 import CustomTable from '@/components/common/CustomTable'
 import UploadWidget from '@/components/common/UploadWidget'
 import { CATERING_TYPES } from '@/constants/catering.constant'
@@ -49,11 +46,14 @@ const AdminCateringItemsPage = () => {
     useGetCuisinesQuery({})
 
   const [addCatering, { isLoading: addLoading }] = useAddCateringItemMutation()
-  const [editCatering, { isLoading: editLoading }] = useEditCateringItemMutation()
+  const [editCatering, { isLoading: editLoading }] =
+    useEditCateringItemMutation()
   const [deleteCatering] = useDeleteCateringItemMutation()
 
   const [openDrawer, setOpenDrawer] = useState(false)
-  const [currentCateringId, setCurrentCateringId] = useState<number | null>(null)
+  const [currentCateringId, setCurrentCateringId] = useState<number | null>(
+    null,
+  )
 
   const onSubmit = async (values: CateringItemInput) => {
     try {
@@ -118,7 +118,7 @@ const AdminCateringItemsPage = () => {
   const handleClose = () => {
     setOpenDrawer(false)
     reset()
-    setCurrentItemId(null)
+    setCurrentCateringId(null)
   }
 
   const handleAdd = () => {
@@ -135,13 +135,15 @@ const AdminCateringItemsPage = () => {
       setValue('cuisineId', cateringToEdit.cuisineId)
       setValue('servesCount', cateringToEdit.servesCount)
       setValue('price', cateringToEdit.price)
-      setValue('description', cateringToEdit.description)
+      setValue('description', cateringToEdit.description as string)
       setValue('image', cateringToEdit.image)
     }
   }
 
   const handleDelete = (id: number) => {
-    const cateringToDelete = cateringItems.find((catering) => catering.id === id)
+    const cateringToDelete = cateringItems.find(
+      (catering) => catering.id === id,
+    )
     if (!cateringToDelete) {
       message.error('Catering item not found!')
       return
@@ -257,6 +259,7 @@ const AdminCateringItemsPage = () => {
 
       <Form.Item
         label="Description"
+        required
         help={errors.description?.message}
         validateStatus={errors.description ? 'error' : ''}
       >
