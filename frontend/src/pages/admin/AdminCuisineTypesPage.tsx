@@ -83,6 +83,7 @@ const AdminCuisineTypesPage = () => {
   const handleClose = () => {
     setOpenDrawer(false)
     setCurrentCuisineId(null)
+    reset()
   }
 
   const handleAdd = () => {

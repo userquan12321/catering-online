@@ -5,6 +5,7 @@ export type CateringItem = {
   name: string
   price: number
   servesCount: number
+  description: string
   image: string
 }
 
