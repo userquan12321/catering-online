@@ -2,11 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { API_BASE_URL } from '@/constants/api.constant'
 import { RootState } from '@/redux/store'
-import {
-  CateringItem,
-  CateringItemInput,
-  DeleteCateringItemInput,
-} from '@/types/catering-item.type'
+import { CateringItem, CateringItemInput } from '@/types/catering-item.type'
 
 export const cateringItemApi = createApi({
   reducerPath: 'cateringItemApi',
@@ -53,7 +49,7 @@ export const cateringItemApi = createApi({
       invalidatesTags: ['Item'],
     }),
 
-    deleteCateringItem: builder.mutation<string, DeleteCateringItemInput>({
+    deleteCateringItem: builder.mutation<string, number>({
       query: (id) => ({
         url: `cateringItem/${id}`,
         method: 'DELETE',
