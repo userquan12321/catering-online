@@ -34,12 +34,5 @@ namespace backend.Models
 
     [JsonIgnore]
     public virtual ICollection<Booking> Bookings { get; set; } = [];
-
-    [JsonIgnore]
-    public virtual ICollection<Message> SentMessages { get; set; } = [];
-
-    [JsonIgnore]
-    public virtual ICollection<Message> ReceivedMessages { get; set; } = [];
-
   }
 }

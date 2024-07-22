@@ -17,7 +17,7 @@ namespace backend.Models
     public string Description { get; set; } = string.Empty;
 
     [StringLength(2000)]
-    public string CuisineImage { get; set; } = string.Empty;
+    public string? CuisineImage { get; set; }
 
 
     public DateTime CreatedAt { get; set; }
