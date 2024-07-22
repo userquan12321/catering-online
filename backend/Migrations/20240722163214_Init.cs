@@ -34,7 +34,7 @@ namespace backend.Migrations
           {
             Id = table.Column<int>(type: "int", nullable: false)
                   .Annotation("SqlServer:Identity", "1, 1"),
-            Type = table.Column<int>(type: "tinyint", nullable: false),
+            Type = table.Column<int>(type: "int", nullable: false),
             Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
             Password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
             CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -191,7 +191,7 @@ namespace backend.Migrations
             Image = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
             Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
             ServesCount = table.Column<int>(type: "int", nullable: false),
-            ItemType = table.Column<int>(type: "tinyint", nullable: false),
+            ItemType = table.Column<int>(type: "int", nullable: false),
             Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
             CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
             UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)

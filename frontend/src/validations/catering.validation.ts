@@ -3,6 +3,7 @@ import * as yup from 'yup'
 export const cateringValidation = yup.object().shape({
   name: yup.string().required('Catering name is required'),
   cuisineId: yup.number().required('Please select a cuisine'),
+  itemType: yup.number().required('Please select a category'),
   price: yup
     .number()
     .min(0, 'Price cannot be smaller than 0')
