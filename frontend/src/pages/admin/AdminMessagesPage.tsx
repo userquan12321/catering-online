@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { UserOutlined } from '@ant-design/icons'
 import { Avatar, Layout, Menu, MenuProps, theme } from 'antd'
 
+import { useGetContactsQuery } from '@/apis/message.api'
 import MessageDetail from '@/components/Messages/MessageDetail'
 
 const { Content, Sider } = Layout
@@ -18,39 +19,6 @@ const items: MenuItem[] = [
     icon: <Avatar icon={<UserOutlined />} />,
     label: 'Navigation 2',
   },
-  {
-    key: '3',
-    icon: <Avatar icon={<UserOutlined />} />,
-    label: 'Navigation 3',
-  },
-  {
-    type: 'divider',
-  },
-  {
-    key: '4',
-    icon: <Avatar icon={<UserOutlined />} />,
-    label: 'Navigation 4',
-  },
-  {
-    key: '5',
-    icon: <Avatar icon={<UserOutlined />} />,
-    label: 'Navigation 5',
-  },
-  {
-    key: '6',
-    icon: <Avatar icon={<UserOutlined />} />,
-    label: 'Navigation 6',
-  },
-  {
-    key: '7',
-    icon: <Avatar icon={<UserOutlined />} />,
-    label: 'Navigation 7',
-  },
-  {
-    key: '8',
-    icon: <Avatar icon={<UserOutlined />} />,
-    label: 'Navigation 8',
-  },
 ]
 
 const AdminMessagesPage: React.FC = () => {
@@ -63,6 +31,15 @@ const AdminMessagesPage: React.FC = () => {
   const handleMenuSelect = (items: any) => {
     setSelectedMenuItem(items.key)
   }
+
+  const { data, isLoading} = useGetContactsQuery({})
+
+  if (isLoading) return <div>Loading...</div>
+
+  if (!data) {
+    return null
+  }
+  console.log(data);
 
   return (
     <Layout

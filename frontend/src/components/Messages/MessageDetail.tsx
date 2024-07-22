@@ -1,5 +1,6 @@
+import { SendOutlined,UserOutlined } from '@ant-design/icons'
 import { Avatar, Input } from 'antd'
-import { UserOutlined, SendOutlined } from '@ant-design/icons'
+
 import MessageContent from './MessageContent'
 
 interface MessageDetailProps {

@@ -1,5 +1,5 @@
-import { Avatar, Card } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
+import { Avatar, Card } from 'antd'
 
 const MessageContent = () => {
   return (
