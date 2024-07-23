@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { UserOutlined } from '@ant-design/icons'
 import { Avatar, Layout, Menu, theme } from 'antd'
 
 import { useGetContactsQuery } from '@/apis/message.api'
@@ -34,19 +33,6 @@ const AdminMessagesPage = () => {
       }}
     >
       <Sider style={{ background: colorBgContainer }} width={200}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-            padding: '10px',
-            borderRight: '1px solid rgba(5, 5, 5, 0.06)',
-            borderBottom: '1px solid rgba(5, 5, 5, 0.06)',
-          }}
-        >
-          <Avatar icon={<UserOutlined />} />
-          <p>Duy</p>
-        </div>
         <Menu
           mode="inline"
           // defaultSelectedKeys={['1']}
@@ -59,7 +45,7 @@ const AdminMessagesPage = () => {
         />
       </Sider>
       <Content style={{ background: colorBgContainer }}>
-        <MessageDetail selectedItem={selectedMenuItem} />
+        <MessageDetail receiverId={selectedMenuItem} />
       </Content>
     </Layout>
   )

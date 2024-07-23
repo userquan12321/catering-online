@@ -1,40 +1,38 @@
+import { useState } from 'react'
 import { SendOutlined } from '@ant-design/icons'
-import { Avatar, Card, Empty, Input } from 'antd'
+import { Avatar, Button, Empty, Input, Space } from 'antd'
 
-import { useGetContactsQuery, useGetMessagesQuery } from '@/apis/message.api'
-// import MessageContent from './MessageContent'
+import { useGetMessagesQuery, useSendMessageMutation } from '@/apis/message.api'
 
 interface MessageDetailProps {
-  selectedItem: any // replace 'any' with the actual type of the menu item
+  receiverId: any // replace 'any' with the actual type of the menu item
 }
-const MessageDetail = ({ selectedItem }: MessageDetailProps) => {
-  const { data: contacts, isLoading: contactLoading } = useGetContactsQuery({})
-  const { data: messages, isLoading: messageLoading } = useGetMessagesQuery(
-    +selectedItem,
-    { skip: !selectedItem },
-  )
+const MessageDetail = ({ receiverId }: MessageDetailProps) => {
+  const { data, isLoading } = useGetMessagesQuery(+receiverId, {
+    skip: !receiverId,
+  })
+  const [sendMessage, { isLoading: isSendLoading }] = useSendMessageMutation()
+  const [inputMessage, setInputMessage] = useState('')
 
-  if (contactLoading || messageLoading) return <div>Loading...</div>
+  if (isLoading || isSendLoading) return <div>Loading...</div>
+  // console.log('Message', data)
 
-  if (!contacts || !messages) {
-    return null
-  }
-
-  const getContact = contacts.find((item: any) => item.userId == selectedItem)
-
-  if (!getContact) {
+  if (!data) {
     return (
       <Empty
-        style={{ height: 'calc(100vh - 200px)', alignContent: 'center' }}
+        style={{ height: 'calc(100vh - 300px)', alignContent: 'center' }}
       />
     )
   }
 
-  // console.log('Message', messages)
+  const handleMessage = () => {
+    sendMessage({ receiverId: +receiverId, content: inputMessage })
+    setInputMessage('')
+  }
 
   return (
     <div>
-      {getContact !== null && (
+      {data !== null && (
         <div>
           <div
             style={{
@@ -44,36 +42,82 @@ const MessageDetail = ({ selectedItem }: MessageDetailProps) => {
               padding: '10px',
             }}
           >
-            <Avatar src={<img src={getContact.image} alt="avatar" />} />
-            <p>{getContact.firstName + ' ' + getContact.lastName}</p>
+            <Avatar src={<img src={data.receiver.image} alt="avatar" />} />
+            <p>{data.receiver.firstName + ' ' + data.receiver.lastName}</p>
           </div>
           <div
             style={{
               padding: '24px',
               borderTop: '1px solid rgba(5, 5, 5, 0.06)',
+              overflow: 'auto',
+              height: '300px',
+              maxHeight: '300px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-end',
             }}
           >
-            <div style={{ display: 'flex', gap: '5px' }}>
-              <Avatar src={<img src={getContact.image} alt="avatar" />} />
-              <Card>
-                {messages.map((message: any) => (
-                  <p>{message.content}</p>
-                ))}
-              </Card>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                gap: '5px',
-                flexDirection: 'row-reverse',
-              }}
-            >
-              <Card>
-                <p>Card content</p>
-              </Card>
-            </div>
+            {[...data.message].reverse().map((message: any) =>
+              message.isSender ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '5px',
+                    flexDirection: 'row-reverse',
+                  }}
+                  key={message.id}
+                >
+                  <p
+                    style={{
+                      padding: '8px',
+                      borderRadius: '8px 0 0 8px',
+                      border: '1px solid rgba(5, 5, 5, 0.06)',
+                    }}
+                  >
+                    {message.content}
+                  </p>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '5px',
+                  }}
+                  key={message.id}
+                >
+                  <Avatar
+                    src={<img src={data.receiver.image} alt="avatar" />}
+                  />
+                  <p
+                    style={{
+                      padding: '8px',
+                      borderRadius: '8px 0 0 8px',
+                      border: '1px solid rgba(5, 5, 5, 0.06)',
+                    }}
+                  >
+                    {message.content}
+                  </p>
+                </div>
+              ),
+            )}
           </div>
-          <Input addonAfter={<SendOutlined />} />
+          <Space.Compact style={{ width: '100%' }}>
+            <Input
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleMessage()
+                  e.preventDefault()
+                }
+              }}
+            />
+            <Button
+              type="primary"
+              onClick={handleMessage}
+              icon={<SendOutlined />}
+            ></Button>
+          </Space.Compact>
         </div>
       )}
     </div>
