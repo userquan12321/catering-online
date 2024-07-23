@@ -30,13 +30,8 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("BookingDate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("BookingStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<byte>("BookingStatus")
+                        .HasColumnType("tinyint");
 
                     b.Property<int>("CatererId")
                         .HasColumnType("int");
@@ -47,25 +42,27 @@ namespace backend.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("EventDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("EventDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("PaymentMethod")
+                    b.Property<int>("NumberOfPeople")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Occasion")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<decimal>("TotalAmount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<byte>("PaymentMethod")
+                        .HasColumnType("tinyint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Venue")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -88,6 +85,9 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -207,8 +207,8 @@ namespace backend.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<int>("ItemType")
-                        .HasColumnType("int");
+                    b.Property<byte>("ItemType")
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -331,8 +331,8 @@ namespace backend.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
+                    b.Property<byte>("Type")
+                        .HasColumnType("tinyint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -348,7 +348,7 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.Booking", b =>
                 {
                     b.HasOne("backend.Models.Caterer", "Caterer")
-                        .WithMany()
+                        .WithMany("Bookings")
                         .HasForeignKey("CatererId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -469,6 +469,8 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Caterer", b =>
                 {
+                    b.Navigation("Bookings");
+
                     b.Navigation("Items");
                 });
 

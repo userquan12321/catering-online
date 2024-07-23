@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using backend.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
@@ -9,11 +10,6 @@ namespace backend.Models
   {
     [Key]
     public int Id { get; set; }
-
-    public enum UserType
-    {
-      Customer = 0, Caterer = 1, Admin = 2
-    }
 
     [Range(0, 2)]
     public UserType Type { get; set; }
@@ -26,7 +22,6 @@ namespace backend.Models
     public string Password { get; set; } = string.Empty;
 
     public DateTime CreatedAt { get; set; }
-
     public DateTime UpdatedAt { get; set; }
 
     [JsonIgnore]

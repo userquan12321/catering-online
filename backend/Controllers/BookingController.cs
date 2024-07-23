@@ -1,3 +1,4 @@
+using backend.Enums;
 using backend.Models;
 using backend.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -19,10 +20,8 @@ namespace backend.Controllers
       {
         CustomerId = request.CustomerId,
         CatererId = request.CatererId,
-        BookingDate = request.BookingDate,
         EventDate = request.EventDate,
         Venue = request.Venue,
-        TotalAmount = request.TotalAmount,
         BookingStatus = request.BookingStatus,
         PaymentMethod = request.PaymentMethod,
         CreatedAt = DateTime.UtcNow,
@@ -79,7 +78,7 @@ namespace backend.Controllers
       {
         return NotFound("Booking not found.");
       }
-      booking.BookingStatus = "Canceled";
+      booking.BookingStatus = BookingStatus.Cancelled;
       await context.SaveChangesAsync();
       return Ok("Booking canceled");
     }
@@ -110,7 +109,7 @@ namespace backend.Controllers
 
     // Caterer update booking status
     [HttpPut("{catererId}/caterer-bookings/{bookingId}/{bookingStatus}")]
-    public async Task<ActionResult> UpdateBookingStatus(int catererId, int bookingId, string bookingStatus)
+    public async Task<ActionResult> UpdateBookingStatus(int catererId, int bookingId, BookingStatus bookingStatus)
     {
       var booking = await context.Bookings
           .Where(b => b.CatererId == catererId && b.Id == bookingId)

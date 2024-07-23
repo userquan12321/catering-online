@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore;
+using backend.Enums;
 
 namespace backend.Models
 {
@@ -9,40 +9,34 @@ namespace backend.Models
   {
     [Key]
     public int Id { get; set; }
-
     public int CustomerId { get; set; }
 
     [JsonIgnore]
     [ForeignKey(nameof(CustomerId))]
     public User? Customer { get; set; }
-
     public int CatererId { get; set; }
 
     [JsonIgnore]
     [ForeignKey(nameof(CatererId))]
     public Caterer? Caterer { get; set; }
 
-    public DateOnly BookingDate { get; set; }
+    public DateTime EventDate { get; set; }
 
-    public DateOnly EventDate { get; set; }
-
-    [StringLength(255)]
+    [StringLength(50)]
     public string Venue { get; set; } = string.Empty;
 
-    [Precision(18, 2)]
-    public decimal TotalAmount { get; set; }
+    public PaymentMethod PaymentMethod { get; set; }
 
-    [StringLength(20)]
-    public string BookingStatus { get; set; } = string.Empty;
+    [StringLength(50)]
+    public string Occasion { get; set; } = string.Empty;
 
-    [StringLength(20)]
-    public string PaymentMethod { get; set; } = string.Empty;
-
+    [Range(50, int.MaxValue, ErrorMessage = "The number of people must be at least 50.")]
+    public int NumberOfPeople { get; set; }
+    public BookingStatus BookingStatus { get; set; }
     public DateTime CreatedAt { get; set; }
-
     public DateTime UpdatedAt { get; set; }
 
     [JsonIgnore]
-    public virtual ICollection<BookingItem> BookingItems { get; set; } = new List<BookingItem>();
+    public virtual ICollection<BookingItem> BookingItems { get; set; } = [];
   }
 }

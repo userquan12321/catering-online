@@ -20,5 +20,7 @@ namespace backend.Models
     [JsonIgnore]
     [ForeignKey(nameof(ItemId))]
     public Item? Item { get; set; }
+
+    public int Quantity { get; set; }
   }
 }

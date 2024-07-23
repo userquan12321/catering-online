@@ -19,7 +19,6 @@ namespace backend.Models
     [StringLength(2000)]
     public string? CuisineImage { get; set; }
 
-
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }

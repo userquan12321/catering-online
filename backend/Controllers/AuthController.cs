@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using backend.Enums;
 using backend.Models;
 using backend.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -54,7 +55,7 @@ namespace backend.Controllers
       };
       _context.Profiles.Add(profile);
       await _context.SaveChangesAsync();
-      if (request.Type == Models.User.UserType.Caterer)
+      if (request.Type == UserType.Caterer)
       {
         Caterer caterer = new()
         {
