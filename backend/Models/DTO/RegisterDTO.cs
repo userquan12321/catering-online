@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static backend.Models.User;
+using backend.Enums;
 
 namespace backend.Models.DTO
 {

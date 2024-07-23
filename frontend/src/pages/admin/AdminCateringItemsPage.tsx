@@ -118,7 +118,6 @@ const AdminCateringItemsPage = () => {
   const handleClose = () => {
     setOpenDrawer(false)
     reset()
-    setCurrentCateringId(null)
   }
 
   const handleAdd = () => {
@@ -137,6 +136,7 @@ const AdminCateringItemsPage = () => {
       setValue('price', cateringToEdit.price)
       setValue('description', cateringToEdit.description as string)
       setValue('image', cateringToEdit.image)
+      setValue('itemType', cateringToEdit.itemType)
     }
   }
 
