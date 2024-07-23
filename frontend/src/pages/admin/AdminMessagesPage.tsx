@@ -15,9 +15,9 @@ const AdminMessagesPage = () => {
   const [selectedMenuItem, setSelectedMenuItem] = useState(null)
 
   const { data, isLoading } = useGetContactsQuery({})
-  
-  const handleMenuSelect = (items: any) => {
-    setSelectedMenuItem(items.key)
+
+  const handleMenuSelect = ({ key }: { key: any }) => {
+    setSelectedMenuItem(key)
   }
 
   if (isLoading) return <div>Loading...</div>
