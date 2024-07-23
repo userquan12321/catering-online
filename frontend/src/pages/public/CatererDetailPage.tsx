@@ -1,10 +1,11 @@
-import HeroBanner from '@/components/Caterer/HeroBanner'
+import CatererInfo from '@/components/Caterer/CatererInfo'
 
 const CatererDetailPage = () => {
   return (
-    <div>
-      <HeroBanner />
-    </div>
+    <>
+      <CatererInfo />
+      {/* <HeroBanner /> */}
+    </>
   )
 }
 
