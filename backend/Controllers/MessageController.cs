@@ -63,6 +63,13 @@ namespace backend.Controllers
 					.Include(m => m.Receiver)
 					.OrderByDescending(m => m.CreatedAt)
 					.Take(TAKE_LIMIT)
+					.Select(m => new
+					{
+						m.Id,
+						IsSender = m.SenderId == userId,
+						m.Content,
+						m.CreatedAt,
+					})
 					.ToListAsync();
 
 				if (messages == null)
@@ -70,7 +77,12 @@ namespace backend.Controllers
 					return NotFound();
 				}
 
-				return Ok(messages);
+				return Ok(new
+				{
+					Sender = context.Profiles.Where(p => p.UserId == userId).Select(p => new { p.FirstName, p.LastName, p.Image }).FirstOrDefault(),
+					Receiver = context.Profiles.Where(p => p.UserId == receiverId).Select(p => new { p.FirstName, p.LastName, p.Image }).FirstOrDefault(),
+					Message = messages
+				});
 			}
 			catch (UnauthorizedAccessException ex)
 			{
