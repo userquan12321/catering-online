@@ -16,6 +16,13 @@ namespace backend.Controllers
       string? userId = HttpContext.User.FindFirstValue("UserId");
       var caterersQuery = context.Caterers.BuildCaterersQuery(page, pageSize);
 
+      string? catererId = HttpContext.User.FindFirstValue("CatererId");
+
+      if (!string.IsNullOrEmpty(catererId) && catererId != "0")
+      {
+        caterersQuery = caterersQuery.Where(c => c.Id != int.Parse(catererId));
+      }
+
       var total = await context.Caterers.CountAsync();
 
       var caterers = await caterersQuery

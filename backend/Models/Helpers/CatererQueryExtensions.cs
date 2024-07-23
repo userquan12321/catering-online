@@ -11,7 +11,8 @@ namespace backend.Models.Helpers
           .Take(pageSize)
           .Include(c => c.Items)
           .ThenInclude(i => i.CuisineType)
-          .Include(c => c.Profile);
+          .Include(c => c.Profile)
+          .OrderBy(c => c.Profile!.User!.UpdatedAt);
     }
   }
 }
