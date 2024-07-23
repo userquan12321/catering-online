@@ -19,7 +19,7 @@ namespace backend.Controllers
 			try
 			{
 				int userId = UserHelper.GetValidUserId(HttpContext.User);
-				var caterersQuery = context.Caterers.BuildCaterersQuery(page, pageSize);
+				var caterersQuery = context.Caterers.BuildCaterersQuery();
 				var caterers = await caterersQuery
 					 .Join(context.FavoriteList, c => c.Id, f => f.CatererId, (caterer, favorite) => new
 					 {
@@ -31,6 +31,8 @@ namespace backend.Controllers
 						 CuisineTypes = caterer.Items.Select(i => i.CuisineType!.CuisineName).Distinct().ToList(),
 						 FavoriteId = context.FavoriteList.Where(f => f.UserId == userId && f.CatererId == caterer.Id).Select(f => f.Id).FirstOrDefault()
 					 })
+					.Skip((page - 1) * pageSize)
+					.Take(pageSize)
 					.Select(result => result)
 					.ToListAsync();
 

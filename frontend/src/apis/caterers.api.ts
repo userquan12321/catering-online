@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { API_BASE_URL } from '@/constants/api.constant'
 import { PAGE_SIZE } from '@/constants/global.constant'
 import { RootState } from '@/redux/store'
-import { CatererRes, QueryArgs } from '@/types/caterer.type'
+import { CatererDetail, CaterersRes, QueryArgs } from '@/types/caterer.type'
 
 export const catererApi = createApi({
   reducerPath: 'catererApi',
@@ -19,13 +19,15 @@ export const catererApi = createApi({
       return headers
     },
   }),
-  tagTypes: ['Caterer'],
   endpoints: (builder) => ({
-    getCaterers: builder.query<CatererRes, QueryArgs>({
+    getCaterers: builder.query<CaterersRes, QueryArgs>({
       query: ({ page = 1, pageSize = PAGE_SIZE }) =>
         'caterers?page=' + page + '&pageSize=' + pageSize,
+    }),
+    getCatererDetail: builder.query<CatererDetail, number>({
+      query: (id) => `caterers/${id}`,
     }),
   }),
 })
 
-export const { useGetCaterersQuery } = catererApi
+export const { useGetCaterersQuery, useGetCatererDetailQuery } = catererApi

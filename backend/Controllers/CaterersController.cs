@@ -14,11 +14,20 @@ namespace backend.Controllers
     public async Task<ActionResult> SearchCaterers([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
       string? userId = HttpContext.User.FindFirstValue("UserId");
-      var caterersQuery = context.Caterers.BuildCaterersQuery(page, pageSize);
+      var caterersQuery = context.Caterers.BuildCaterersQuery();
+
+      string? catererId = HttpContext.User.FindFirstValue("CatererId");
+
+      if (!string.IsNullOrEmpty(catererId) && catererId != "0")
+      {
+        caterersQuery = caterersQuery.Where(c => c.Id != int.Parse(catererId));
+      }
 
       var total = await context.Caterers.CountAsync();
 
       var caterers = await caterersQuery
+          .Skip((page - 1) * pageSize)
+          .Take(pageSize)
           .Select(c => new
           {
             c.Id,
@@ -46,37 +55,55 @@ namespace backend.Controllers
       });
     }
 
-    // Get caterer items
     [HttpGet("{id}")]
-    public async Task<ActionResult> GetCatererItems(int id)
+    public async Task<ActionResult> GetCatererDetail(int id)
     {
-      if (context.Caterers.Any(x => x.Id == id) == false)
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
+      }
+
+      if (!context.Caterers.Any(c => c.Id == id))
       {
         return NotFound("Caterer not found");
       }
-      var query = from c in context.Caterers
-                  where c.Id == id
-                  join p in context.Profiles on c.ProfileId equals p.Id
-                  join i in context.Items on c.Id equals i.CatererId into itemGroup
-                  select (new
+
+      var query = context.Caterers
+        .Where(c => c.Id == id)
+        .Join(
+          context.Profiles,
+          c => c.ProfileId,
+          p => p.Id,
+          (c, p) => new
+          {
+            Caterer = new
+            {
+              UserId = c.ProfileId,
+              p.FirstName,
+              p.LastName,
+              p.Image,
+              p.Address,
+              p.PhoneNumber,
+              p.User!.Email,
+              CuisineTypes = c.Items.Select(i => i.CuisineType!.CuisineName).Distinct().ToList(),
+            },
+            Caterings = c.Items.GroupBy(i => i.ItemType)
+                  .Select(group => new
                   {
-                    c.Id,
-                    p.FirstName,
-                    p.LastName,
-                    p.Image,
-                    itemList = itemGroup.Select(i => new
+                    ItemType = group.Key,
+                    Items = group.Select(item => new
                     {
-                      i.Id,
-                      i.Name,
-                      i.Image,
-                      i.CatererId,
-                      i.CuisineId,
-                      i.ServesCount,
-                      i.Price
+                      item.Id,
+                      item.Name,
+                      item.Image,
+                      item.Description,
+                      item.ServesCount,
+                      item.Price,
                     })
-                  });
-      query = query.OrderBy(a => a.Id);
-      var result = await query.ToListAsync();
+                  })
+          }
+        );
+      var result = await query.FirstOrDefaultAsync();
       return Ok(result);
     }
   }

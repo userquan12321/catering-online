@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom'
-import { Image, Tag, Typography } from 'antd'
+import { Card, Image, Tag } from 'antd'
 
 import fallBackImg from '@/assets/images/fallback-image.png'
 import FavoriteBtn from '@/components/common/FavoriteBtn'
-import classes from '@/styles/components/caterers/card.module.css'
 import { Caterer } from '@/types/caterer.type'
 
 type Props = {
@@ -13,32 +12,35 @@ type Props = {
 
 const CatererCard = ({ data, currentPage }: Props) => {
   return (
-    <div className="shadow relative flex-1">
-      <Image
-        src={data.image}
-        alt={data.firstName}
-        preview={false}
-        fallback={fallBackImg}
-        className="w-full aspect-video shadow-sm"
-      />
+    <Link to={`/caterers/${data.id}`} className="flex relative">
+      <Card
+        hoverable
+        cover={
+          <Image
+            src={data.image}
+            alt={data.firstName}
+            preview={false}
+            fallback={fallBackImg}
+          />
+        }
+      >
+        <Card.Meta
+          title={`${data.firstName} ${data.lastName}`}
+          description={data.address}
+        />
+        {data.cuisineTypes.map((cuisine) => (
+          <Tag key={cuisine} color="green" className="mt-4">
+            {cuisine}
+          </Tag>
+        ))}
+      </Card>
+
       <FavoriteBtn
         catererId={data.id}
         favoriteId={data.favoriteId}
         currentPage={currentPage}
       />
-
-      <Link to={`/caterers/${data.id}`} className={classes.catererCardBody}>
-        <Typography.Title level={5}>
-          {`${data.firstName} ${data.lastName}`}
-        </Typography.Title>
-        <Typography.Paragraph>{data.address}</Typography.Paragraph>
-        {data.cuisineTypes.map((cuisine) => (
-          <Tag key={cuisine} color="green" className="mb-2">
-            {cuisine}
-          </Tag>
-        ))}
-      </Link>
-    </div>
+    </Link>
   )
 }
 

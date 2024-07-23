@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, MouseEvent } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { HeartFilled, HeartOutlined } from '@ant-design/icons'
@@ -30,7 +30,8 @@ const FavoriteBtn = memo(({ catererId, favoriteId, currentPage }: Props) => {
 
   const { contextHolder, handleAlert } = useAlert()
 
-  const handleFavorite = async () => {
+  const handleFavorite = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
     if (userType === null) {
       Modal.confirm({
         title: 'Login Required',
