@@ -49,7 +49,7 @@ const MessageDetail = ({ receiverId }: MessageDetailProps) => {
             style={{
               padding: '24px',
               borderTop: '1px solid rgba(5, 5, 5, 0.06)',
-              overflow: 'auto',
+              overflow: 'y-scroll',
               height: '300px',
               maxHeight: '300px',
               display: 'flex',
