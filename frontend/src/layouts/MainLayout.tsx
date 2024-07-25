@@ -6,7 +6,7 @@ const MainLayout = () => {
   return (
     <>
       <Header />
-      <main className="margin-header main">
+      <main className="margin-header main bg-primary">
         <Outlet />
       </main>
     </>
