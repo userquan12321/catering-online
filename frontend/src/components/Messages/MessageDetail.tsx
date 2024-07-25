@@ -67,6 +67,9 @@ const MessageDetail = ({ receiverId }: MessageDetailProps) => {
                   padding: '8px',
                   borderRadius: '8px 0 0 8px',
                   border: '1px solid rgba(5, 5, 5, 0.06)',
+                  backgroundColor: '#1677ff',
+                  color: 'white',
+                  marginBottom: '2px',
                 }}
               >
                 {message.content}
@@ -84,8 +87,8 @@ const MessageDetail = ({ receiverId }: MessageDetailProps) => {
               <p
                 style={{
                   padding: '8px',
-                  borderRadius: '8px 0 0 8px',
-                  border: '1px solid rgba(5, 5, 5, 0.06)',
+                  borderRadius: '0 8px 8px 0',
+                  border: '1px solid rgba(5, 5, 5, 0.06)'
                 }}
               >
                 {message.content}

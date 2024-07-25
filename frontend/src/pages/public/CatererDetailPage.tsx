@@ -1,19 +1,51 @@
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 import { CloseOutlined, WechatOutlined } from '@ant-design/icons'
-import { Badge, Button, FloatButton } from 'antd'
+import { Button, Empty, FloatButton, Modal } from 'antd'
 
+import { useGetCatererDetailQuery } from '@/apis/caterers.api'
 import CatererDetailBody from '@/components/CatererDetail/CatererDetailBody'
 import CatererInfo from '@/components/CatererDetail/CatererInfo'
 import MessageDetail from '@/components/Messages/MessageDetail'
+import { RootState } from '@/redux/store'
+import { parseToNumber } from '@/utils/parseToNumber'
 
 const CatererDetailPage = () => {
+  const { id } = useParams()
+
+  const { data, isLoading } = useGetCatererDetailQuery(parseToNumber(id), {
+    skip: !id,
+  })
   const [isCardVisible, setIsCardVisible] = useState(false)
   const [selectedMenuItem, setSelectedMenuItem] = useState<number>(0)
-  const handleToggle = () => {
-    setIsCardVisible((openChat) => !openChat)
-    setSelectedMenuItem(3)
+  const userType = useSelector((state: RootState) => state.auth.userType)
+  const navigate = useNavigate()
+
+  if (isLoading) return <div>Loading...</div>
+
+  if (!data) {
+    return (
+      <Empty
+        style={{ height: 'calc(100vh - 300px)', alignContent: 'center' }}
+      />
+    )
   }
-  console.log('selectedMenuItem', selectedMenuItem)
+
+  const handleToggle = () => {
+    if (userType === null) {
+      Modal.confirm({
+        title: 'Login Required',
+        content: 'You need to login to add this caterer to your favorite list.',
+        onOk: () => navigate('/login'),
+        okText: 'Login',
+      })
+      return
+    } else {
+      setIsCardVisible((openChat) => !openChat)
+      setSelectedMenuItem(data.caterer.userId)
+    }
+  }
 
   return (
     <>
@@ -28,33 +60,32 @@ const CatererDetailPage = () => {
         <div
           style={{
             position: 'fixed',
-            bottom: 0,
-            right: 0,
-            width: 300,
+            bottom: 50,
+            right: 100,
+            width: 350,
             height: 400,
           }}
         >
-          <Badge
-            size="default"
-            count={
-              <Button
-                onClick={handleToggle}
-                shape="circle"
-                icon={<CloseOutlined />}
-              ></Button>
-            }
-          >
+            <Button
+              onClick={handleToggle}
+              icon={<CloseOutlined />}
+              style={{
+                border: 'none',
+                position: 'absolute',
+                right: 3,
+                top: 10,
+              }}
+            ></Button>
             <div
               style={{
-                padding: '8px',
-                borderRadius: '8px 0 0 8px',
+                padding: '0 8px 8px 8px',
+                borderRadius: '8px',
                 border: '1px solid lightgrey',
                 background: 'white',
               }}
             >
               <MessageDetail receiverId={selectedMenuItem} />
             </div>
-          </Badge>
         </div>
       )}
     </>
