@@ -25,3 +25,12 @@
   justify-content: flex-end;
   margin-top: 0.5rem;
 }
+
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+
+.empty-full {
+  height: calc(100vh - 64px);
+  align-content: center;
+}

@@ -16,9 +16,8 @@ const FavoriteListPage = () => {
   const { data, isLoading, refetch } = useGetFavoriteListQuery({
     page: getCurrentPage(),
   })
-  console.log(data)
 
-  useRefetch(() => refetch(), false as any)
+  useRefetch(() => refetch(), false)
 
   const handleChange = (page: number) => {
     setSearchParams({ page: page.toString() })
@@ -33,15 +32,15 @@ const FavoriteListPage = () => {
   }
 
   if (data.caterers.length === 0) {
-    return <Empty style={{height:"calc(100vh - 64px)", alignContent:"center"}}/>
+    return <Empty className="empty-full" />
   }
 
   return (
-    <div className="section-no-bg container">
+    <div className="section container">
       <Row gutter={16}>
-        {data.caterers.map((favcaterer) => (
-          <Col key={favcaterer.id} span={6} className="mb-4 flex">
-            <CatererCard data={favcaterer} currentPage={getCurrentPage()} />
+        {data.caterers.map((caterer) => (
+          <Col key={caterer.id} span={6} className="mb-4 flex">
+            <CatererCard data={caterer} currentPage={getCurrentPage()} />
           </Col>
         ))}
       </Row>

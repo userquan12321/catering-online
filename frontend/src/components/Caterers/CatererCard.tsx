@@ -12,11 +12,13 @@ type Props = {
 
 const CatererCard = ({ data, currentPage }: Props) => {
   return (
-    <Link to={`/caterers/${data.id}`} className="flex relative">
+    <Link to={`/caterers/${data.id}`} className="flex relative w-full">
       <Card
+        className="flex-1"
         hoverable
         cover={
           <Image
+            className="aspect-hd"
             src={data.image}
             alt={data.firstName}
             preview={false}

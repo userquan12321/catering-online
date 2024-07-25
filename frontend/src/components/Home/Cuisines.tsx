@@ -15,7 +15,7 @@ const Cuisines = () => {
 
   return (
     <div id="cuisines" className="container">
-      <div className="grid-3 section-no-bg">
+      <div className="grid-3 section">
         {data.map((item) => (
           <div key={item.id}>
             <Image

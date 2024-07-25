@@ -22,7 +22,7 @@ namespace backend.Controllers
         CatererId = request.CatererId,
         EventDate = request.EventDate,
         Venue = request.Venue,
-        BookingStatus = request.BookingStatus,
+        BookingStatus = BookingStatus.Pending,
         PaymentMethod = request.PaymentMethod,
         CreatedAt = DateTime.UtcNow,
         UpdatedAt = DateTime.UtcNow

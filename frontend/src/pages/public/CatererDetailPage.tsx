@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { CloseOutlined, WechatOutlined } from '@ant-design/icons'
 import { Badge, Button, FloatButton } from 'antd'
 
-import CatererInfo from '@/components/Caterer/CatererInfo'
+import CatererDetailBody from '@/components/CatererDetail/CatererDetailBody'
+import CatererInfo from '@/components/CatererDetail/CatererInfo'
 import MessageDetail from '@/components/Messages/MessageDetail'
 
 const CatererDetailPage = () => {
@@ -17,6 +18,7 @@ const CatererDetailPage = () => {
   return (
     <>
       <CatererInfo />
+      <CatererDetailBody />
       <FloatButton
         icon={<WechatOutlined />}
         type="default"

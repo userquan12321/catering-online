@@ -33,7 +33,7 @@ const CatererList = () => {
   }
 
   return (
-    <div className="section-no-bg">
+    <div className="section">
       <Row gutter={16}>
         {data.caterers.map((caterer) => (
           <Col key={caterer.id} span={6} className="mb-4 flex">
