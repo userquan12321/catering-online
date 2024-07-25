@@ -66,7 +66,7 @@ namespace backend.Controllers
 								(m.SenderId == receiverId && m.ReceiverId == userId))
 					.Include(m => m.Sender)
 					.Include(m => m.Receiver)
-					.OrderByDescending(m => m.CreatedAt)
+					.OrderBy(m => m.CreatedAt)
 					.Take(TAKE_LIMIT)
 					.Select(m => new
 					{
@@ -86,7 +86,7 @@ namespace backend.Controllers
 				{
 					Sender = context.Profiles.Where(p => p.UserId == userId).Select(p => new { p.FirstName, p.LastName, p.Image }).FirstOrDefault(),
 					Receiver = context.Profiles.Where(p => p.UserId == receiverId).Select(p => new { p.FirstName, p.LastName, p.Image }).FirstOrDefault(),
-					Message = messages
+					Messages = messages
 				});
 			}
 			catch (UnauthorizedAccessException ex)

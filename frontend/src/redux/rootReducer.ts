@@ -8,6 +8,7 @@ import {
   cateringItemApi,
   cuisineApi,
   favoriteApi,
+  messageApi,
   profileApi,
 } from '../apis'
 
@@ -28,4 +29,5 @@ export const rootReducer = combineReducers({
   [cuisineApi.reducerPath]: cuisineApi.reducer,
   [favoriteApi.reducerPath]: favoriteApi.reducer,
   [profileApi.reducerPath]: profileApi.reducer,
+  [messageApi.reducerPath]: messageApi.reducer,
 })

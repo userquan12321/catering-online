@@ -17,6 +17,7 @@ import {
   cateringItemApi,
   cuisineApi,
   favoriteApi,
+  messageApi,
   profileApi,
 } from '../apis'
 
@@ -39,6 +40,7 @@ export const store = configureStore({
       cuisineApi.middleware,
       favoriteApi.middleware,
       profileApi.middleware,
+      messageApi.middleware,
     ),
 })
 
