@@ -1,40 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 using backend.Enums;
-using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models.DTO
 {
 	public class BookingDTO
 	{
-		public int CustomerId { get; set; }
-
-		[JsonIgnore]
-		[ForeignKey(nameof(CustomerId))]
-		public User? Customer { get; set; }
-
 		public int CatererId { get; set; }
 
-		[JsonIgnore]
-		[ForeignKey(nameof(CatererId))]
-		public Caterer? Caterer { get; set; }
-
+		[Required]
 		public DateTime EventDate { get; set; }
 
-		[StringLength(255)]
+		[Required]
 		public string Venue { get; set; } = string.Empty;
+		[Required]
+		public string Occasion { get; set; } = string.Empty;
 
-		public BookingStatus BookingStatus { get; set; }
+		[Range(50, int.MaxValue, ErrorMessage = "The number of people must be at least 50.")]
+		public int NumberOfPeople { get; set; }
 
 		public PaymentMethod PaymentMethod { get; set; }
 
-		public List<int> MenuItemIds { get; set; } = [];
-
-		public BookingDTO()
-		{
-			BookingStatus = BookingStatus.Pending;
-		}
+		public List<MenuItemDTO> MenuItems { get; set; } = [];
 	}
 }
 

@@ -68,8 +68,6 @@ namespace backend.Controllers
 			{
 				return Unauthorized(ex.Message);
 			}
-
-
 		}
 
 		[HttpPost]

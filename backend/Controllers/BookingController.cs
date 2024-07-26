@@ -1,127 +1,270 @@
 using backend.Enums;
+using backend.Helpers;
 using backend.Models;
 using backend.Models.DTO;
+using backend.Models.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
-  //[Authorize(Roles = "Admin, Customer, Caterer")]
+  [Authorize(Roles = "Admin, Customer, Caterer")]
   [ApiController]
   [Route("api/[controller]")]
   public class BookingController(ApplicationDbContext context) : ControllerBase
   {
-    // Customer add booking
-    [HttpPost("{customerId}/customer-bookings")]
-    public async Task<ActionResult> AddBooking(int customerId, BookingDTO request)
-    {
-      request.CustomerId = customerId;
-      Booking booking = new()
-      {
-        CustomerId = request.CustomerId,
-        CatererId = request.CatererId,
-        EventDate = request.EventDate,
-        Venue = request.Venue,
-        BookingStatus = BookingStatus.Pending,
-        PaymentMethod = request.PaymentMethod,
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow
-      };
-      context.Bookings.Add(booking);
-      await context.SaveChangesAsync();
-      foreach (var itemId in request.MenuItemIds)
-      {
-        var bookingItem = new BookingItem
-        {
-          BookingId = booking.Id,
-          ItemId = itemId
-        };
 
-        context.BookingItems.Add(bookingItem);
+    [HttpPost]
+    public async Task<ActionResult> AddBooking(BookingDTO request)
+    {
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
       }
-      await context.SaveChangesAsync();
-      return Ok("Booking successfully.");
+
+      var caterer = await context.Caterers.FindAsync(request.CatererId);
+
+      if (caterer == null)
+      {
+        return NotFound("Caterer not found.");
+      }
+
+      try
+      {
+        int userId = UserHelper.GetValidUserId(HttpContext.User);
+
+        Booking booking = new()
+        {
+          CustomerId = userId,
+          CatererId = request.CatererId,
+          EventDate = request.EventDate,
+          Venue = request.Venue,
+          Occasion = request.Occasion,
+          NumberOfPeople = request.NumberOfPeople,
+          BookingStatus = BookingStatus.Pending,
+          PaymentMethod = request.PaymentMethod,
+          CreatedAt = DateTime.UtcNow,
+          UpdatedAt = DateTime.UtcNow
+        };
+        context.Bookings.Add(booking);
+        await context.SaveChangesAsync();
+
+        foreach (var item in request.MenuItems)
+        {
+          var bookingItem = new BookingItem
+          {
+            Quantity = item.Quantity,
+            ItemId = item.ItemId,
+            BookingId = booking.Id,
+          };
+
+          context.BookingItems.Add(bookingItem);
+        }
+        await context.SaveChangesAsync();
+        return Ok("Booking successfully.");
+
+      }
+      catch (UnauthorizedAccessException ex)
+      {
+        return Unauthorized(ex.Message);
+      }
     }
 
     // Customer view all bookings
-    [HttpGet("{customerId}/customer-bookings")]
-    public async Task<ActionResult> GetCustomerBookings(int customerId)
+    [HttpGet("customer-bookings")]
+    public async Task<ActionResult> GetCustomerBookings()
     {
-      var booking = await context.Bookings
-          .Where(b => b.CustomerId == customerId)
-          .ToListAsync();
-      return Ok(booking);
+      try
+      {
+        int customerId = UserHelper.GetValidUserId(HttpContext.User);
+        var booking = await context.Bookings
+            .Where(b => b.CustomerId == customerId)
+            .Select(b => new
+            {
+              b.Id,
+              Caterer = new
+              {
+                b.CatererId,
+                b.Caterer!.Profile!.FirstName,
+                b.Caterer.Profile.LastName,
+              },
+              b.EventDate,
+              b.Venue,
+              b.Occasion,
+              b.NumberOfPeople,
+              b.PaymentMethod,
+              b.BookingStatus,
+              b.CreatedAt,
+              b.UpdatedAt,
+              MenuItems = b.BookingItems
+              .Where(bi => bi.BookingId == b.Id)
+              .Select(bi => new
+              {
+                bi.Quantity,
+                Item = new
+                {
+                  bi.ItemId,
+                  bi.Item!.Name,
+                  bi.Item.Price,
+                }
+              }),
+              TotalPrice = b.BookingItems
+                .Where(bi => bi.BookingId == b.Id)
+                .Sum(bi => bi.Quantity * bi.Item!.Price)
+            })
+            .ToListAsync();
+        return Ok(booking);
+      }
+      catch (UnauthorizedAccessException ex)
+      {
+        return Unauthorized(ex.Message);
+      }
+
     }
 
-    // Customer view booking details
-    [HttpGet("{customerId}/customer-bookings/{bookingId}")]
-    public async Task<ActionResult> GetCustomerBooking(int customerId, int bookingId)
+    [HttpPut("cancel-booking/{bookingId}")]
+    public async Task<ActionResult> CancelBooking(int bookingId)
     {
-      var booking = await context.Bookings
-          .Where(x => x.Id == bookingId && x.CustomerId == customerId)
-          .FirstOrDefaultAsync();
-      if (booking == null)
+      if (!ModelState.IsValid)
       {
-        return NotFound("Booking not found.");
+        return BadRequest(ModelState);
       }
-      return Ok(booking);
+
+      try
+      {
+        int userId = UserHelper.GetValidUserId(HttpContext.User);
+        var booking = await context.Bookings
+          .Where(b => b.CustomerId == userId && b.Id == bookingId)
+          .FirstOrDefaultAsync();
+
+        if (booking == null)
+        {
+          return NotFound("Booking not found.");
+        }
+
+        booking.BookingStatus = BookingStatus.Cancelling;
+
+        await context.SaveChangesAsync();
+        return Ok("Booking canceled");
+      }
+      catch (UnauthorizedAccessException ex)
+      {
+        return Unauthorized(ex.Message);
+      }
     }
 
-    // Customer cancel booking
-    [HttpPut("{customerId}/customer-bookings/{bookingId}")]
-    public async Task<ActionResult> CancelBooking(int customerId, int bookingId)
+    [Authorize(Roles = "Admin, Caterer")]
+    [HttpPut("change-booking-status/{bookingId}")]
+    public async Task<ActionResult> ChangeBookingStatus(int bookingId, UpdateBookingStatusDTO request)
     {
-      var booking = await context.Bookings
-          .Where(b => b.CustomerId == customerId && b.Id == bookingId)
-          .FirstOrDefaultAsync();
-      if (booking == null)
+      if (!ModelState.IsValid)
       {
-        return NotFound("Booking not found.");
+        return BadRequest(ModelState);
       }
-      booking.BookingStatus = BookingStatus.Cancelled;
-      await context.SaveChangesAsync();
-      return Ok("Booking canceled");
+
+      try
+      {
+        var booking = await context.Bookings
+          .Where(b => b.Id == bookingId)
+          .FirstOrDefaultAsync();
+
+        if (booking == null)
+        {
+          return NotFound("Booking not found.");
+        }
+
+        booking.BookingStatus = request.BookingStatus;
+
+        await context.SaveChangesAsync();
+        return Ok("Booking status updated");
+      }
+      catch (UnauthorizedAccessException ex)
+      {
+        return Unauthorized(ex.Message);
+      }
     }
 
     // Caterer view all bookings
-    [HttpGet("{catererId}/caterer-bookings")]
-    public async Task<ActionResult> GetCatererBookings(int catererId)
+    [Authorize(Roles = "Admin, Caterer")]
+    [HttpGet("bookings-management")]
+    public async Task<ActionResult> GetBookingsManagement()
     {
-      var booking = await context.Bookings
-          .Where(b => b.CatererId == catererId)
-          .ToListAsync();
-      return Ok(booking);
-    }
+      TokenData tokenData = UserHelper.GetRoleAndCatererId(HttpContext.User);
 
-    // Caterer view booking details
-    [HttpGet("{catererId}/caterer-bookings/{bookingId}")]
-    public async Task<ActionResult> GetCatererBooking(int catererId, int bookingId)
-    {
-      var booking = await context.Bookings
-          .Where(b => b.Id == bookingId && b.CatererId == catererId)
-          .FirstOrDefaultAsync();
-      if (booking == null)
+      try
       {
-        return NotFound("Booking not found.");
-      }
-      return Ok(booking);
-    }
+        if (tokenData.UserType == "Caterer" && tokenData.CatererId != 0 && tokenData.CatererId != null)
+        {
+          var bookings = await context.Bookings
+          .Where(b => b.CatererId == tokenData.CatererId)
+          .Select(b => new
+          {
+            b.Id,
+            Customer = new
+            {
+              b.CustomerId,
+              b.Customer!.FirstName,
+              b.Customer.LastName,
+            },
+            b.EventDate,
+            b.Venue,
+            b.Occasion,
+            b.NumberOfPeople,
+            b.PaymentMethod,
+            b.BookingStatus,
+            b.CreatedAt,
+            b.UpdatedAt,
+            MenuItems = b.BookingItems
+              .Where(bi => bi.BookingId == b.Id)
+              .Select(bi => new
+              {
+                bi.Quantity,
+                Item = new
+                {
+                  bi.ItemId,
+                  bi.Item!.Name,
+                  bi.Item.Price,
+                }
+              }),
+            TotalPrice = b.BookingItems
+              .Where(bi => bi.BookingId == b.Id)
+              .Sum(bi => bi.Quantity * bi.Item!.Price)
+          })
+            .ToListAsync();
+          return Ok(bookings);
+        }
 
-    // Caterer update booking status
-    [HttpPut("{catererId}/caterer-bookings/{bookingId}/{bookingStatus}")]
-    public async Task<ActionResult> UpdateBookingStatus(int catererId, int bookingId, BookingStatus bookingStatus)
-    {
-      var booking = await context.Bookings
-          .Where(b => b.CatererId == catererId && b.Id == bookingId)
-          .FirstOrDefaultAsync();
-      if (booking == null)
-      {
-        return NotFound("Booking not found.");
+        return Unauthorized();
+
+        // var itemsAdmin = await context.Items
+        //   .OrderByDescending(i => i.UpdatedAt)
+        //   .Select(i => new
+        //   {
+        //     i.Id,
+        //     Caterer = new
+        //     {
+        //       i.CatererId,
+        //       i.Caterer!.Profile!.FirstName,
+        //       i.Caterer.Profile.LastName,
+        //     },
+        //     i.CuisineId,
+        //     i.Name,
+        //     i.Description,
+        //     i.Price,
+        //     i.ServesCount,
+        //     i.Image,
+        //     i.ItemType,
+        //     i.CuisineType!.CuisineName
+        //   })
+        //   .ToListAsync();
+
+        // return Ok(itemsAdmin);
       }
-      booking.BookingStatus = bookingStatus;
-      booking.UpdatedAt = DateTime.UtcNow;
-      await context.SaveChangesAsync();
-      return Ok("Booking updated.");
+      catch (UnauthorizedAccessException ex)
+      {
+        return Unauthorized(ex.Message);
+      }
     }
   }
 }
