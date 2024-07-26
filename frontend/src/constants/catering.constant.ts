@@ -1,1 +1,6 @@
-export const CATERING_TYPES = ['Starter', 'Main Course', 'Dessert', 'Beverage']
+export const CATERING_TYPES = [
+  'Starters',
+  'Main Courses',
+  'Desserts',
+  'Beverages',
+]

@@ -1,4 +1,3 @@
-import { useParams } from 'react-router-dom'
 import {
   HomeOutlined,
   MailOutlined,
@@ -7,17 +6,12 @@ import {
 } from '@ant-design/icons'
 import { Avatar, Empty, Image, Typography } from 'antd'
 
-import { useGetCatererDetailQuery } from '@/apis/caterers.api'
 import fallBackImg from '@/assets/images/fallback-image.png'
+import { useCaterer } from '@/hooks/caterer/useCaterer.hook'
 import classes from '@/styles/components/caterer/banner.module.css'
-import { parseToNumber } from '@/utils/parseToNumber'
 
 const CatererInfo = () => {
-  const { id } = useParams()
-
-  const { data, isLoading } = useGetCatererDetailQuery(parseToNumber(id), {
-    skip: !id,
-  })
+  const { data, isLoading } = useCaterer()
 
   if (isLoading) {
     return <div>Loading...</div>

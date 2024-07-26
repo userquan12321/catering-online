@@ -35,8 +35,12 @@ yarn dev
 
 ```
 cd backend
+dotnet restore
+dotnet ef database update
 dotnet run watch
 ```
+
+- Import data vào SSMS
 
 **Lưu ý**
 
@@ -44,7 +48,5 @@ dotnet run watch
 - Trước khi làm task mới luôn cập nhật nhánh main và merge vào nhánh của mình
 
 ```
-git fetch origin main
-git merge origin/main
-
+git fetch origin main --rebase
 ```
