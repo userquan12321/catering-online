@@ -7,7 +7,7 @@ import { Content } from 'antd/es/layout/layout'
 import Sider from 'antd/es/layout/Sider'
 
 import Header from '@/components/Header/Header'
-import { useAuthorized } from '@/hooks/globals/useAuthorized.hook'
+import { useAuthorized } from '@/hooks/auth/useAuthorized.hook'
 import classes from '@/styles/layouts/admin-layout.module.css'
 
 type MenuItem = GetProp<MenuProps, 'items'>[number] & { title: string }

@@ -1,0 +1,39 @@
+.cateringList {
+  display: grid;
+  gap: 1rem;
+}
+
+.cateringCard {
+  display: flex;
+  & > div:first-child {
+    flex-shrink: 0;
+    width: 200px;
+  }
+
+  & img {
+    border-radius: 8px 0px 0 8px;
+  }
+}
+
+.cateringCardFooter {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+
+  & > p:first-child {
+    font-weight: 500;
+    color: green;
+  }
+}
+
+.quantitySelector {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  border-radius: 0.25rem;
+  user-select: none;
+}

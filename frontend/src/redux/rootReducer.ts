@@ -13,6 +13,7 @@ import {
 } from '../apis'
 
 import { authReducer } from './slices/auth.slice'
+import { bookingReducer } from './slices/booking.slice'
 
 const authPersistConfig = {
   key: 'auth',
@@ -23,6 +24,7 @@ const persistedReducer = persistReducer(authPersistConfig, authReducer)
 
 export const rootReducer = combineReducers({
   auth: persistedReducer,
+  booking: bookingReducer,
   [authApi.reducerPath]: authApi.reducer,
   [catererApi.reducerPath]: catererApi.reducer,
   [cateringItemApi.reducerPath]: cateringItemApi.reducer,

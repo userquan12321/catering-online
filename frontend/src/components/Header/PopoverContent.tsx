@@ -7,7 +7,7 @@ import {
 } from '@ant-design/icons'
 import { Menu, MenuProps } from 'antd'
 
-import { useAuthorized } from '@/hooks/globals/useAuthorized.hook'
+import { useAuthorized } from '@/hooks/auth/useAuthorized.hook'
 import { logout } from '@/redux/slices/auth.slice'
 import { useAppDispatch } from '@/redux/store'
 import { MenuItem } from '@/types/menu.type'
