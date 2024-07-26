@@ -2,6 +2,6 @@ namespace backend.Enums
 {
   public enum BookingStatus : byte
   {
-    Pending, Approved, Rejected, Cancelled
+    Pending, Approved, Rejected, Cancelling, Cancelled
   }
 }

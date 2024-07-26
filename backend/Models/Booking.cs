@@ -13,7 +13,7 @@ namespace backend.Models
 
     [JsonIgnore]
     [ForeignKey(nameof(CustomerId))]
-    public User? Customer { get; set; }
+    public Profile? Customer { get; set; }
     public int CatererId { get; set; }
 
     [JsonIgnore]
@@ -30,7 +30,6 @@ namespace backend.Models
     [StringLength(50)]
     public string Occasion { get; set; } = string.Empty;
 
-    [Range(50, int.MaxValue, ErrorMessage = "The number of people must be at least 50.")]
     public int NumberOfPeople { get; set; }
     public BookingStatus BookingStatus { get; set; }
     public DateTime CreatedAt { get; set; }
