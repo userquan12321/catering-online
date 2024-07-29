@@ -2,6 +2,7 @@ import { useSearchParams } from 'react-router-dom'
 import { Col, Empty, Pagination, Row } from 'antd'
 
 import { useGetCaterersQuery } from '@/apis/caterers.api'
+import Loading from '@/components/common/Loading'
 import { PAGE_SIZE } from '@/constants/global.constant'
 import { useRefetch } from '@/hooks/globals/useRefetch.hook'
 
@@ -25,7 +26,7 @@ const CatererList = () => {
   }
 
   if (isLoading) {
-    return <p>Loading...</p>
+    return <Loading />
   }
 
   if (!data) {

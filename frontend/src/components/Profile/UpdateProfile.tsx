@@ -5,6 +5,8 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Col, Form, Input, Row, Typography } from 'antd'
 
 import { useEditProfileMutation, useGetProfileQuery } from '@/apis/profile.api'
+import Loading from '@/components/common/Loading'
+import UploadWidget from '@/components/common/UploadWidget'
 import { USER_TYPE_ARRAY } from '@/constants/global.constant'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
 import { useRefetch } from '@/hooks/globals/useRefetch.hook'
@@ -13,8 +15,6 @@ import { useAppDispatch } from '@/redux/store'
 import classes from '@/styles/pages/profile.module.css'
 import { TProfileInput } from '@/types/profile.type'
 import { profileValidation } from '@/validations/profile.validation'
-
-import UploadWidget from '../common/UploadWidget'
 
 const { Text } = Typography
 
@@ -65,8 +65,8 @@ const UpdateProfile = () => {
     }
   }
 
-  if (isLoading || isEditLoading) {
-    return <p>Loading...</p>
+  if (isLoading) {
+    return <Loading />
   }
 
   if (error) {

@@ -3,6 +3,7 @@ import { Col, Empty, Pagination, Row } from 'antd'
 
 import { useGetFavoriteListQuery } from '@/apis/favorite.api'
 import CatererCard from '@/components/Caterers/CatererCard'
+import Loading from '@/components/common/Loading'
 import { PAGE_SIZE } from '@/constants/global.constant'
 import { useRefetch } from '@/hooks/globals/useRefetch.hook'
 
@@ -24,7 +25,7 @@ const FavoriteListPage = () => {
   }
 
   if (isLoading) {
-    return <p>Loading...</p>
+    return <Loading />
   }
 
   if (!data) {

@@ -7,9 +7,6 @@ import { useCaterer } from '@/hooks/caterer/useCaterer.hook'
 
 const CateringTab = () => {
   const { data, isLoading } = useCaterer()
-  const onChange = (key: string) => {
-    console.log(key)
-  }
 
   if (!data) return null
 
@@ -23,11 +20,7 @@ const CateringTab = () => {
     ),
   }))
 
-  return (
-    <div className="flex-1">
-      <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
-    </div>
-  )
+  return <Tabs defaultActiveKey="1" items={items} className="flex-1" />
 }
 
 export default CateringTab

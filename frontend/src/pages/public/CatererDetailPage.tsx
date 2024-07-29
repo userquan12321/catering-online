@@ -5,6 +5,7 @@ import { Button, Empty, FloatButton } from 'antd'
 
 import CatererDetailBody from '@/components/CatererDetail/CatererDetailBody'
 import CatererInfo from '@/components/CatererDetail/CatererInfo'
+import Loading from '@/components/common/Loading'
 import MessageDetail from '@/components/Messages/MessageDetail'
 import { useLoginModal } from '@/hooks/auth/useLoginModal.hook'
 import { useCaterer } from '@/hooks/caterer/useCaterer.hook'
@@ -17,7 +18,7 @@ const CatererDetailPage = () => {
   const userType = useSelector((state: RootState) => state.auth.userType)
   const showLoginModal = useLoginModal()
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <Loading />
 
   if (!data) {
     return <Empty className="empty-full" />

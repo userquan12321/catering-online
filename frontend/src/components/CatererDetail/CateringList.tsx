@@ -24,7 +24,7 @@ const CateringList = ({ data }: Props) => {
   }
 
   return (
-    <div className={classes.cateringList}>
+    <div id="catering-list" className={classes.cateringList}>
       {data.items.map((item) => (
         <Card
           key={item.id}
