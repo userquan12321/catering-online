@@ -1,11 +1,13 @@
 import { ReactNode, Suspense } from 'react'
 
+import Loading from '@/components/common/Loading'
+
 type Props = {
   children: ReactNode
 }
 
 const LoadingFallback = ({ children }: Props) => (
-  <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+  <Suspense fallback={<Loading />}>{children}</Suspense>
 )
 
 export default LoadingFallback

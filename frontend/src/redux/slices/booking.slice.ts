@@ -1,32 +1,58 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+import { Catering } from '@/types/caterer.type'
+
+type CateringPayload = Omit<Catering, 'description' | 'servesCount' | 'image'>
+
 interface BookingState {
-  bookingItemList: { [key: number]: number }
+  bookingItemList: (CateringPayload & {
+    quantity: number
+  })[]
 }
 
 const initialState: BookingState = {
-  bookingItemList: {},
+  bookingItemList: [],
 }
 
 const bookingSlice = createSlice({
   name: 'booking',
   initialState,
   reducers: {
-    addCount: (state, action: PayloadAction<number>) => {
-      const itemId = action.payload
-      state.bookingItemList[itemId] = (state.bookingItemList[itemId] || 0) + 1
-    },
-    minusCount: (state, action) => {
-      const itemId = action.payload
-      if (!state.bookingItemList[itemId]) return
-      if (state.bookingItemList[itemId] === 1) {
-        delete state.bookingItemList[itemId]
-      } else {
-        state.bookingItemList[itemId] -= 1
+    addItem: (state, action: PayloadAction<CateringPayload>) => {
+      const itemIndex = state.bookingItemList.findIndex(
+        (item) => item.id === action.payload.id,
+      )
+      if (itemIndex !== -1) {
+        state.bookingItemList[itemIndex].quantity += 1
+        return
       }
+      state.bookingItemList.push({ ...action.payload, quantity: 1 })
+    },
+    removeItem: (state, action: PayloadAction<CateringPayload>) => {
+      const itemIndex = state.bookingItemList.findIndex(
+        (item) => item.id === action.payload.id,
+      )
+      if (itemIndex !== -1) {
+        state.bookingItemList[itemIndex].quantity -= 1
+        if (state.bookingItemList[itemIndex].quantity === 0) {
+          state.bookingItemList.splice(itemIndex, 1)
+        }
+      }
+    },
+    deleteBookingItem: (state, action: PayloadAction<number>) => {
+      const itemIndex = state.bookingItemList.findIndex(
+        (item) => item.id === action.payload,
+      )
+      if (itemIndex !== -1) {
+        state.bookingItemList.splice(itemIndex, 1)
+      }
+    },
+    resetBooking: (state) => {
+      state.bookingItemList = []
     },
   },
 })
 
-export const { addCount, minusCount } = bookingSlice.actions
+export const { addItem, removeItem, deleteBookingItem, resetBooking } =
+  bookingSlice.actions
 export const { reducer: bookingReducer } = bookingSlice

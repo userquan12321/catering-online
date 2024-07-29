@@ -19,7 +19,7 @@ const AdminMessagesPage = () => {
     setSelectedMenuItem(key)
   }
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <p>Loading...</p>
 
   if (!data) {
     return null

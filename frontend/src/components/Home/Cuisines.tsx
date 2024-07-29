@@ -7,7 +7,7 @@ const { Title, Paragraph } = Typography
 const Cuisines = () => {
   const { data, isLoading } = useGetCuisinesQuery({ num: 3 })
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <p>Loading...</p>
 
   if (!data) {
     return null

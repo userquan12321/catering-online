@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage'
 
 import {
   authApi,
+  bookingApi,
   catererApi,
   cateringItemApi,
   cuisineApi,
@@ -26,6 +27,7 @@ export const rootReducer = combineReducers({
   auth: persistedReducer,
   booking: bookingReducer,
   [authApi.reducerPath]: authApi.reducer,
+  [bookingApi.reducerPath]: bookingApi.reducer,
   [catererApi.reducerPath]: catererApi.reducer,
   [cateringItemApi.reducerPath]: cateringItemApi.reducer,
   [cuisineApi.reducerPath]: cuisineApi.reducer,

@@ -1,25 +1,25 @@
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
 import { UserOutlined } from '@ant-design/icons'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Col, Form, Input, Row, Typography } from 'antd'
 
 import { useEditProfileMutation, useGetProfileQuery } from '@/apis/profile.api'
+import Loading from '@/components/common/Loading'
+import UploadWidget from '@/components/common/UploadWidget'
 import { USER_TYPE_ARRAY } from '@/constants/global.constant'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
 import { useRefetch } from '@/hooks/globals/useRefetch.hook'
 import { setAvatar } from '@/redux/slices/auth.slice'
+import { useAppDispatch } from '@/redux/store'
 import classes from '@/styles/pages/profile.module.css'
 import { TProfileInput } from '@/types/profile.type'
 import { profileValidation } from '@/validations/profile.validation'
 
-import UploadWidget from '../common/UploadWidget'
-
 const { Text } = Typography
 
 const UpdateProfile = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { data: profile, isLoading, error, refetch } = useGetProfileQuery()
   const [imageUrl, setImageUrl] = useState('')
   const { handleAlert, contextHolder } = useAlert()
@@ -65,8 +65,8 @@ const UpdateProfile = () => {
     }
   }
 
-  if (isLoading || isEditLoading) {
-    return <p>Loading...</p>
+  if (isLoading) {
+    return <Loading />
   }
 
   if (error) {

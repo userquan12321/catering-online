@@ -14,7 +14,7 @@ const CatererInfo = () => {
   const { data, isLoading } = useCaterer()
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <p>Loading...</p>
   }
 
   if (!data) {

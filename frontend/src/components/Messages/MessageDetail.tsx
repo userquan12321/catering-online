@@ -5,7 +5,7 @@ import { Avatar, Button, Empty, Input, InputRef, Space } from 'antd'
 import { useGetMessagesQuery, useSendMessageMutation } from '@/apis/message.api'
 
 interface MessageDetailProps {
-  receiverId: any // replace 'any' with the actual type of the menu item
+  receiverId: any
 }
 const MessageDetail = ({ receiverId }: MessageDetailProps) => {
   const inputRef = useRef<InputRef>(null)
@@ -15,7 +15,7 @@ const MessageDetail = ({ receiverId }: MessageDetailProps) => {
   const [sendMessage, { isLoading: isSendLoading }] = useSendMessageMutation()
   const [inputMessage, setInputMessage] = useState('')
 
-  if (isLoading || isSendLoading) return <div>Loading...</div>
+  if (isLoading || isSendLoading) return <p>Loading...</p>
 
   if (!data) {
     return (
@@ -88,7 +88,7 @@ const MessageDetail = ({ receiverId }: MessageDetailProps) => {
                 style={{
                   padding: '8px',
                   borderRadius: '0 8px 8px 0',
-                  border: '1px solid rgba(5, 5, 5, 0.06)'
+                  border: '1px solid rgba(5, 5, 5, 0.06)',
                 }}
               >
                 {message.content}

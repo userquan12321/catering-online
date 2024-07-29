@@ -132,7 +132,8 @@ namespace backend.Migrations
             NumberOfPeople = table.Column<int>(type: "int", nullable: false),
             BookingStatus = table.Column<byte>(type: "tinyint", nullable: false),
             CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-            UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+            UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+            UserId = table.Column<int>(type: "int", nullable: true)
           },
           constraints: table =>
           {
@@ -144,11 +145,16 @@ namespace backend.Migrations
                       principalColumn: "Id",
                       onDelete: ReferentialAction.Cascade);
             table.ForeignKey(
-                      name: "FK_Bookings_Users_CustomerId",
+                      name: "FK_Bookings_Profiles_CustomerId",
                       column: x => x.CustomerId,
-                      principalTable: "Users",
+                      principalTable: "Profiles",
                       principalColumn: "Id",
                       onDelete: ReferentialAction.NoAction);
+            table.ForeignKey(
+                      name: "FK_Bookings_Users_UserId",
+                      column: x => x.UserId,
+                      principalTable: "Users",
+                      principalColumn: "Id");
           });
 
       migrationBuilder.CreateTable(
@@ -259,6 +265,11 @@ namespace backend.Migrations
           name: "IX_Bookings_CustomerId",
           table: "Bookings",
           column: "CustomerId");
+
+      migrationBuilder.CreateIndex(
+          name: "IX_Bookings_UserId",
+          table: "Bookings",
+          column: "UserId");
 
       migrationBuilder.CreateIndex(
           name: "IX_Caterers_ProfileId",
