@@ -123,8 +123,8 @@ namespace backend.Controllers
       {
         AccessToken = accessTokenValue,
         UserType = getUser.Type,
-        FirstName = getProfile.FirstName,
-        Avatar = getProfile.Image
+        getProfile.FirstName,
+        Avatar = getProfile.Image,
       });
     }
   }

@@ -12,7 +12,7 @@ using backend.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240723140248_Init")]
+    [Migration("20240729143627_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -62,6 +62,9 @@ namespace backend.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Venue")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -72,6 +75,8 @@ namespace backend.Migrations
                     b.HasIndex("CatererId");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
                 });
@@ -356,11 +361,15 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("backend.Models.User", "Customer")
-                        .WithMany("Bookings")
+                    b.HasOne("backend.Models.Profile", "Customer")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("backend.Models.User", null)
+                        .WithMany("Bookings")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Caterer");
 

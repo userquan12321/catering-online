@@ -3,7 +3,7 @@ import { MinusOutlined, PlusOutlined } from '@ant-design/icons'
 import { Card, Empty, Image } from 'antd'
 
 import fallBackImg from '@/assets/images/fallback-image.png'
-import { addCount, minusCount } from '@/redux/slices/booking.slice'
+import { addItem, removeItem } from '@/redux/slices/booking.slice'
 import { RootState, useAppDispatch } from '@/redux/store'
 import classes from '@/styles/components/caterer/catering-card.module.css'
 import { CateringGroup } from '@/types/caterer.type'
@@ -44,12 +44,29 @@ const CateringList = ({ data }: Props) => {
             <p>{`Price: ${item.price.toFixed(2)}$ (${item.servesCount} pax)`}</p>
             <div className={classes.quantitySelector}>
               <MinusOutlined
-                onClick={() => dispatch(minusCount(item.id))}
+                onClick={() =>
+                  dispatch(
+                    removeItem({
+                      id: item.id,
+                      name: item.name,
+                      price: item.price,
+                    }),
+                  )
+                }
                 className="p-2"
               />
-              {bookingItemList[item.id] || 0}
+              {bookingItemList.find((bookingItem) => bookingItem.id === item.id)
+                ?.quantity ?? 0}
               <PlusOutlined
-                onClick={() => dispatch(addCount(item.id))}
+                onClick={() =>
+                  dispatch(
+                    addItem({
+                      id: item.id,
+                      name: item.name,
+                      price: item.price,
+                    }),
+                  )
+                }
                 className="p-2"
               />
             </div>

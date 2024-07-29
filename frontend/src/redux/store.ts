@@ -13,6 +13,7 @@ import {
 
 import {
   authApi,
+  bookingApi,
   catererApi,
   cateringItemApi,
   cuisineApi,
@@ -35,6 +36,7 @@ export const store = configureStore({
       },
     }).concat(
       authApi.middleware,
+      bookingApi.middleware,
       catererApi.middleware,
       cateringItemApi.middleware,
       cuisineApi.middleware,

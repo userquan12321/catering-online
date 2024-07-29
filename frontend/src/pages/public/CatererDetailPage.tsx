@@ -1,23 +1,17 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
 import { CloseOutlined, WechatOutlined } from '@ant-design/icons'
 import { Button, Empty, FloatButton } from 'antd'
 
-import { useGetCatererDetailQuery } from '@/apis/caterers.api'
 import CatererDetailBody from '@/components/CatererDetail/CatererDetailBody'
 import CatererInfo from '@/components/CatererDetail/CatererInfo'
 import MessageDetail from '@/components/Messages/MessageDetail'
 import { useLoginModal } from '@/hooks/auth/useLoginModal.hook'
+import { useCaterer } from '@/hooks/caterer/useCaterer.hook'
 import { RootState } from '@/redux/store'
-import { parseToNumber } from '@/utils/parseToNumber'
 
 const CatererDetailPage = () => {
-  const { id } = useParams()
-
-  const { data, isLoading } = useGetCatererDetailQuery(parseToNumber(id), {
-    skip: !id,
-  })
+  const { data, isLoading } = useCaterer()
   const [isCardVisible, setIsCardVisible] = useState(false)
   const [selectedMenuItem, setSelectedMenuItem] = useState(0)
   const userType = useSelector((state: RootState) => state.auth.userType)
