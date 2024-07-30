@@ -1,0 +1,68 @@
+.popupMessage {
+  position: fixed;
+  bottom: 0;
+  right: 100px;
+  width: 350px;
+  background: white;
+  border-radius: 0.25rem;
+}
+
+.popupMessageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+}
+
+.popupMessageBody {
+  position: relative;
+  height: 300px;
+  overflow-y: scroll;
+  padding: 1rem;
+
+  &.messageLoading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.catererInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  & .skeletonName {
+    width: 10rem !important;
+  }
+}
+
+.closeButton {
+  border: none;
+}
+
+.inputMessage {
+  display: flex;
+  padding: 0.5rem 1rem;
+
+  & input {
+    border-radius: 6px 0 0 6px;
+  }
+
+  & button {
+    border-radius: 0 6px 6px 0;
+  }
+}
+
+.messageItem {
+  padding: 4px 8px;
+  border-radius: 0 8px 8px 0;
+  border: 1px solid rgba(5, 5, 5, 0.06);
+  margin-bottom: 2px;
+
+  &.isSender {
+    border-radius: 8px 0 0 8px;
+    background-color: #1677ff;
+    color: white;
+  }
+}

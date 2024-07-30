@@ -2,6 +2,7 @@
 @import url('global/lib.css');
 @import url('global/utils.css');
 @import url('global/variables.css');
+@import url('global/flexbox.css');
 
 * {
   margin: 0;

@@ -6,7 +6,7 @@ import fallBackImg from '@/assets/images/fallback-image.png'
 import { addItem, removeItem } from '@/redux/slices/booking.slice'
 import { RootState, useAppDispatch } from '@/redux/store'
 import classes from '@/styles/components/caterer/catering-card.module.css'
-import { CateringGroup } from '@/types/caterer.type'
+import { Catering, CateringGroup } from '@/types/caterer.type'
 
 type Props = {
   data: CateringGroup | undefined
@@ -19,9 +19,15 @@ const CateringList = ({ data }: Props) => {
     (state: RootState) => state.booking.bookingItemList,
   )
 
-  if (!data) {
-    return <Empty style={{ padding: '2rem 0', background: 'white' }} />
+  const handleAddItem = ({ id, name, price }: Catering) => {
+    dispatch(addItem({ id, name, price }))
   }
+
+  const handleRemoveItem = ({ id, name, price }: Catering) => {
+    dispatch(removeItem({ id, name, price }))
+  }
+
+  if (!data) return <Empty className={classes.empty} />
 
   return (
     <div id="catering-list" className={classes.cateringList}>
@@ -44,29 +50,13 @@ const CateringList = ({ data }: Props) => {
             <p>{`Price: ${item.price.toFixed(2)}$ (${item.servesCount} pax)`}</p>
             <div className={classes.quantitySelector}>
               <MinusOutlined
-                onClick={() =>
-                  dispatch(
-                    removeItem({
-                      id: item.id,
-                      name: item.name,
-                      price: item.price,
-                    }),
-                  )
-                }
+                onClick={() => handleRemoveItem(item)}
                 className="p-2"
               />
               {bookingItemList.find((bookingItem) => bookingItem.id === item.id)
                 ?.quantity ?? 0}
               <PlusOutlined
-                onClick={() =>
-                  dispatch(
-                    addItem({
-                      id: item.id,
-                      name: item.name,
-                      price: item.price,
-                    }),
-                  )
-                }
+                onClick={() => handleAddItem(item)}
                 className="p-2"
               />
             </div>

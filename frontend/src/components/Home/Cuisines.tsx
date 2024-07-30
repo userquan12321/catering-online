@@ -1,8 +1,6 @@
-import { Image, Typography } from 'antd'
+import { Card, Image } from 'antd'
 
 import { useGetCuisinesQuery } from '@/apis/cuisine-type.api'
-
-const { Title, Paragraph } = Typography
 
 const Cuisines = () => {
   const { data, isLoading } = useGetCuisinesQuery({ num: 3 })
@@ -14,23 +12,22 @@ const Cuisines = () => {
   }
 
   return (
-    <div id="cuisines" className="container">
-      <div className="grid-3 section">
-        {data.map((item) => (
-          <div key={item.id}>
+    <div id="cuisines" className="container grid-3 section">
+      {data.map((item) => (
+        <Card
+          key={item.id}
+          cover={
             <Image
               className="aspect-video"
               src={item.cuisineImage}
               alt="Banner"
               preview={false}
             />
-            <Title style={{ marginTop: '0.5em' }} level={5}>
-              {item.cuisineName}
-            </Title>
-            <Paragraph>{item.description}</Paragraph>
-          </div>
-        ))}
-      </div>
+          }
+        >
+          <Card.Meta title={item.cuisineName} description={item.description} />
+        </Card>
+      ))}
     </div>
   )
 }

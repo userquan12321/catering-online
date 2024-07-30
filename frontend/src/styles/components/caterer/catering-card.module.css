@@ -37,3 +37,8 @@
   border-radius: 0.25rem;
   user-select: none;
 }
+
+.empty {
+  padding: 2rem 0;
+  background: white;
+}

@@ -34,3 +34,7 @@
   height: calc(100vh - 64px);
   align-content: center;
 }
+
+.loading-icon {
+  font-size: 3rem;
+}
