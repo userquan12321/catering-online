@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { API_BASE_URL } from '@/constants/api.constant'
 import { RootState } from '@/redux/store'
-import { BookingPayload } from '@/types/booking.type'
+import { BookingPayload, BookingsManagementRes } from '@/types/booking.type'
 
 export const bookingApi = createApi({
   reducerPath: 'bookingApi',
@@ -18,7 +18,12 @@ export const bookingApi = createApi({
       return headers
     },
   }),
+  tagTypes: ['Booking'],
   endpoints: (builder) => ({
+    getBookingsManagement: builder.query<BookingsManagementRes[], void>({
+      query: () => 'booking/bookings-management',
+      providesTags: ['Booking'],
+    }),
     bookCatering: builder.mutation<string, BookingPayload>({
       query: (payload) => ({
         url: 'booking',
@@ -26,8 +31,10 @@ export const bookingApi = createApi({
         body: payload,
         responseHandler: (response) => response.text(),
       }),
+      invalidatesTags: ['Booking'],
     }),
   }),
 })
 
-export const { useBookCateringMutation } = bookingApi
+export const { useBookCateringMutation, useGetBookingsManagementQuery } =
+  bookingApi

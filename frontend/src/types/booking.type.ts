@@ -8,5 +8,37 @@ export type BookingInput = {
 
 export type BookingPayload = BookingInput & {
   catererId: number
-  menuItems: { itemId: number; quantity: number }[]
+  menuItems: Omit<MenuItem, 'name' | 'price'>[]
+}
+
+type MenuItem = {
+  itemId: number
+  name: string
+  price: number
+  quantity: number
+}
+
+export type BookingsManagementRes = BookingInput & {
+  id: number
+  customer: Customer
+  bookingStatus: number
+  createdAt: string
+  updatedAt: string
+  menuItems: MenuItem[]
+  totalPrice: number
+}
+
+type Customer = {
+  customerId: number
+  firstName: string
+  lastName: string
+}
+
+export type BookingColumn = {
+  id: number
+  eventDate: string
+  numberOfPeople: number
+  bookingStatus: number
+  customer: Customer
+  totalPrice: number
 }

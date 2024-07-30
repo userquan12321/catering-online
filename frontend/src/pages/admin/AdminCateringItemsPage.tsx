@@ -22,9 +22,11 @@ import {
 } from '@/apis/catering-item.api'
 import { useGetCuisinesQuery } from '@/apis/cuisine-type.api'
 import CustomTable from '@/components/common/CustomTable'
+import Loading from '@/components/common/Loading'
 import UploadWidget from '@/components/common/UploadWidget'
 import { CATERING_TYPES } from '@/constants/catering.constant'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
+import { useRefetch } from '@/hooks/globals/useRefetch.hook'
 import { CateringItem, CateringItemInput } from '@/types/catering-item.type'
 import { cateringValidation } from '@/validations/catering.validation'
 
@@ -40,8 +42,11 @@ const AdminCateringItemsPage = () => {
   })
 
   const { handleAlert, contextHolder } = useAlert()
-  const { data: cateringItems = [], isLoading: isLoadingData } =
-    useGetCateringItemsQuery()
+  const {
+    data: cateringItems = [],
+    isLoading: isLoadingData,
+    refetch,
+  } = useGetCateringItemsQuery()
   const { data: cuisines = [], isLoading: isLoadingCuisine } =
     useGetCuisinesQuery({})
 
@@ -54,6 +59,8 @@ const AdminCateringItemsPage = () => {
   const [currentCateringId, setCurrentCateringId] = useState<number | null>(
     null,
   )
+
+  useRefetch(refetch, false)
 
   const onSubmit = async (values: CateringItemInput) => {
     try {
@@ -316,9 +323,7 @@ const AdminCateringItemsPage = () => {
     </Form>
   )
 
-  if (isLoadingData) {
-    return <p>Loading...</p>
-  }
+  if (isLoadingData) return <Loading />
 
   return (
     <CustomTable
