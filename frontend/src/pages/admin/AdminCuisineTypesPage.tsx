@@ -11,6 +11,7 @@ import {
   useGetCuisinesQuery,
 } from '@/apis/cuisine-type.api'
 import CustomTable from '@/components/common/CustomTable'
+import Loading from '@/components/common/Loading'
 import UploadWidget from '@/components/common/UploadWidget'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
 import { CuisineInput, CuisineType } from '@/types/cuisine.type'
@@ -191,9 +192,7 @@ const AdminCuisineTypesPage = () => {
     </Form>
   )
 
-  if (isLoadingData) {
-    return <p>Loading...</p>
-  }
+  if (isLoadingData) return <Loading />
 
   return (
     <CustomTable

@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { API_BASE_URL } from '@/constants/api.constant'
 import { RootState } from '@/redux/store'
+import { MessagesData } from '@/types/message.type'
 
 export const messageApi = createApi({
   reducerPath: 'messageApi',
@@ -23,7 +24,7 @@ export const messageApi = createApi({
       query: () => 'message/contacts',
       providesTags: ['Message'],
     }),
-    getMessages: builder.query<any, any>({
+    getMessages: builder.query<MessagesData, number>({
       query: (id) => `message/${id}`,
       providesTags: ['Message'],
     }),

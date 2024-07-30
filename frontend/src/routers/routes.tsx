@@ -3,14 +3,15 @@ import { createBrowserRouter } from 'react-router-dom'
 import AdminLayout from '@/layouts/AdminLayout'
 import AuthLayout from '@/layouts/AuthLayout'
 import MainLayout from '@/layouts/MainLayout'
-import AdminBookings from '@/pages/admin/AdminBookingsPage'
-import AdminCateringItems from '@/pages/admin/AdminCateringItemsPage'
-import AdminCuisineTypes from '@/pages/admin/AdminCuisineTypesPage'
-import AdminDashBoard from '@/pages/admin/AdminDashBoardPage'
-import AdminMessages from '@/pages/admin/AdminMessagesPage'
-import AdminUsers from '@/pages/admin/AdminUsersPage'
 
 import {
+  AdminBookings,
+  AdminCateringItems,
+  AdminCuisineTypes,
+  AdminDashBoard,
+  AdminMessages,
+  AdminUsers,
+  BookingHistoryPage,
   CatererDetailPage,
   CaterersPage,
   FavoriteListPage,
@@ -71,6 +72,20 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <FavoriteListPage />,
+      },
+    ],
+  },
+  {
+    path: '/booking-history',
+    element: (
+      <ProtectedRoute>
+        <MainLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: '',
+        element: <BookingHistoryPage />,
       },
     ],
   },

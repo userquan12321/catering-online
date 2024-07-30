@@ -220,12 +220,9 @@ namespace backend.Controllers
               .Select(bi => new
               {
                 bi.Quantity,
-                Item = new
-                {
-                  bi.ItemId,
-                  bi.Item!.Name,
-                  bi.Item.Price,
-                }
+                bi.ItemId,
+                bi.Item!.Name,
+                bi.Item.Price,
               }),
             TotalPrice = b.BookingItems
               .Where(bi => bi.BookingId == b.Id)

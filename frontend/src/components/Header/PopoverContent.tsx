@@ -3,6 +3,7 @@ import {
   AppstoreOutlined,
   HeartOutlined,
   LogoutOutlined,
+  SolutionOutlined,
   UserOutlined,
 } from '@ant-design/icons'
 import { Menu, MenuProps } from 'antd'
@@ -26,6 +27,11 @@ const items: MenuItem[] = [
     label: 'Favorite List',
     key: '/favorite-list',
     icon: <HeartOutlined />,
+  },
+  {
+    label: 'Booking History',
+    key: '/booking-history',
+    icon: <SolutionOutlined />,
   },
   {
     label: 'Logout',

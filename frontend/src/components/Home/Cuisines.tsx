@@ -1,36 +1,45 @@
-import { Image, Typography } from 'antd'
+import { Card, Image, Skeleton } from 'antd'
 
 import { useGetCuisinesQuery } from '@/apis/cuisine-type.api'
-
-const { Title, Paragraph } = Typography
+import classes from '@/styles/components/home/cuisine.module.css'
 
 const Cuisines = () => {
   const { data, isLoading } = useGetCuisinesQuery({ num: 3 })
 
-  if (isLoading) return <p>Loading...</p>
+  if (isLoading)
+    return (
+      <div className="container grid-3 section">
+        {[...Array(3)].map((_, index) => (
+          <Skeleton.Input
+            key={index}
+            active
+            className={classes.skeletonCuisine}
+          />
+        ))}
+      </div>
+    )
 
   if (!data) {
     return null
   }
 
   return (
-    <div id="cuisines" className="container">
-      <div className="grid-3 section">
-        {data.map((item) => (
-          <div key={item.id}>
+    <div id="cuisines" className="container grid-3 section">
+      {data.map((item) => (
+        <Card
+          key={item.id}
+          cover={
             <Image
               className="aspect-video"
               src={item.cuisineImage}
               alt="Banner"
               preview={false}
             />
-            <Title style={{ marginTop: '0.5em' }} level={5}>
-              {item.cuisineName}
-            </Title>
-            <Paragraph>{item.description}</Paragraph>
-          </div>
-        ))}
-      </div>
+          }
+        >
+          <Card.Meta title={item.cuisineName} description={item.description} />
+        </Card>
+      ))}
     </div>
   )
 }
