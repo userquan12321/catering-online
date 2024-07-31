@@ -11,7 +11,7 @@ namespace backend.Controllers
   public class CaterersController(ApplicationDbContext context) : ControllerBase
   {
     [HttpGet]
-    public async Task<ActionResult> SearchCaterers([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    public async Task<ActionResult> SearchCaterers([FromQuery] string cuisineName = "", [FromQuery] string catererName = "", [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
       string? userId = HttpContext.User.FindFirstValue("UserId");
       var caterersQuery = context.Caterers.BuildCaterersQuery();
@@ -23,7 +23,17 @@ namespace backend.Controllers
         caterersQuery = caterersQuery.Where(c => c.Id != int.Parse(catererId));
       }
 
-      var total = await context.Caterers.CountAsync();
+      if (!string.IsNullOrEmpty(cuisineName))
+      {
+        caterersQuery = caterersQuery.Where(c => c.Items.Any(i => i.CuisineType!.CuisineName.Contains(cuisineName)));
+      }
+
+      if (!string.IsNullOrEmpty(catererName))
+      {
+        caterersQuery = caterersQuery.Where(c => c.Profile!.FirstName!.Contains(catererName) || c.Profile.LastName.Contains(catererName));
+      }
+
+      var total = await caterersQuery.CountAsync();
 
       var caterers = await caterersQuery
           .Skip((page - 1) * pageSize)

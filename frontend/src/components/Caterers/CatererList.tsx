@@ -16,13 +16,19 @@ const CatererList = () => {
   }
 
   const { data, isLoading, refetch } = useGetCaterersQuery({
+    cuisineName: searchParams.get('cuisineName') ?? '',
+    catererName: searchParams.get('catererName') ?? '',
     page: getCurrentPage(),
   })
 
   useRefetch(refetch, false)
 
   const handleChange = (page: number) => {
-    setSearchParams({ page: page.toString() })
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev)
+      newParams.set('page', page.toString())
+      return newParams
+    })
   }
 
   if (isLoading) {
@@ -42,14 +48,16 @@ const CatererList = () => {
           </Col>
         ))}
       </Row>
-      <Pagination
-        current={getCurrentPage()}
-        pageSize={PAGE_SIZE}
-        onChange={handleChange}
-        total={data.total}
-        showSizeChanger={false}
-        className="pagination"
-      />
+      {data.total / PAGE_SIZE > 1 && (
+        <Pagination
+          current={getCurrentPage()}
+          pageSize={PAGE_SIZE}
+          onChange={handleChange}
+          total={data.total}
+          showSizeChanger={false}
+          className="pagination"
+        />
+      )}
     </div>
   )
 }

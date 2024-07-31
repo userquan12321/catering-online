@@ -21,8 +21,20 @@ export const catererApi = createApi({
   }),
   endpoints: (builder) => ({
     getCaterers: builder.query<CaterersRes, QueryArgs>({
-      query: ({ page = 1, pageSize = PAGE_SIZE }) =>
-        'caterers?page=' + page + '&pageSize=' + pageSize,
+      query: ({
+        cuisineName = '',
+        catererName = '',
+        page = 1,
+        pageSize = PAGE_SIZE,
+      }) =>
+        'caterers?cuisineName=' +
+        cuisineName +
+        '&catererName=' +
+        catererName +
+        '&page=' +
+        page +
+        '&pageSize=' +
+        pageSize,
     }),
     getCatererDetail: builder.query<CatererDetail, number>({
       query: (id) => `caterers/${id}`,
