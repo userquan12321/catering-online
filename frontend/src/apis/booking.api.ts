@@ -2,7 +2,11 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { API_BASE_URL } from '@/constants/api.constant'
 import { RootState } from '@/redux/store'
-import { BookingPayload, BookingsManagementRes } from '@/types/booking.type'
+import {
+  BookingPayload,
+  BookingsManagementRes,
+  ChangeStatusPayload,
+} from '@/types/booking.type'
 
 export const bookingApi = createApi({
   reducerPath: 'bookingApi',
@@ -20,7 +24,7 @@ export const bookingApi = createApi({
   }),
   tagTypes: ['Booking'],
   endpoints: (builder) => ({
-    getBookingsManagement: builder.query<BookingsManagementRes[], void>({
+    getBookingsManagement: builder.query<BookingsManagementRes, void>({
       query: () => 'booking/bookings-management',
       providesTags: ['Booking'],
     }),
@@ -33,8 +37,20 @@ export const bookingApi = createApi({
       }),
       invalidatesTags: ['Booking'],
     }),
+    changeStatus: builder.mutation<string, ChangeStatusPayload>({
+      query: ({ bookingId, bookingStatus }) => ({
+        url: `booking/change-booking-status/${bookingId}`,
+        method: 'PUT',
+        body: { bookingStatus },
+        responseHandler: (response) => response.text(),
+      }),
+      invalidatesTags: ['Booking'],
+    }),
   }),
 })
 
-export const { useBookCateringMutation, useGetBookingsManagementQuery } =
-  bookingApi
+export const {
+  useBookCateringMutation,
+  useGetBookingsManagementQuery,
+  useChangeStatusMutation,
+} = bookingApi

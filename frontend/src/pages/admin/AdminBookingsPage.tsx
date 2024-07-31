@@ -1,77 +1,44 @@
 import { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import type { TableColumnsType } from 'antd'
-import {
-  Button,
-  Col,
-  Form,
-  Input,
-  message,
-  Modal,
-  Row,
-  Tag,
-  Typography,
-} from 'antd'
+import { Badge, Button, Card, Empty, message, Tag, Typography } from 'antd'
 
-import { useGetBookingsManagementQuery } from '@/apis/booking.api'
 import {
-  useAddCuisineMutation,
-  useDeleteCuisineMutation,
-  useEditCuisineMutation,
-} from '@/apis/cuisine-type.api'
-import CustomTable from '@/components/common/CustomTable'
+  useChangeStatusMutation,
+  useGetBookingsManagementQuery,
+} from '@/apis/booking.api'
+import BookingTable from '@/components/Admin/BookingTable'
 import Loading from '@/components/common/Loading'
-import UploadWidget from '@/components/common/UploadWidget'
-import { BOOKING_STATUSES, STATUS_COLOR } from '@/constants/booking.constant'
+import { BOOKING_STATUSES } from '@/constants/booking.constant'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
 import { BookingColumn } from '@/types/booking.type'
-import { CuisineInput, CuisineType } from '@/types/cuisine.type'
 import { formatDate } from '@/utils/formatDateTime'
-import { cuisineTypeValidation } from '@/validations/cuisine-type.validation'
+import { needActionBookings } from '@/utils/needActionBookings.util'
 
 const AdminBookingsPage = () => {
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-    reset,
-    setValue,
-  } = useForm({
-    resolver: yupResolver(cuisineTypeValidation),
-  })
-
   const { handleAlert, contextHolder } = useAlert()
-  const { data: bookings, isLoading: isLoadingData } =
-    useGetBookingsManagementQuery()
-
-  const [addCuisine, { isLoading: addLoading }] = useAddCuisineMutation()
-  const [editCuisine, { isLoading: editLoading }] = useEditCuisineMutation()
-  const [deleteCuisine] = useDeleteCuisineMutation()
-
-  console.table(bookings)
+  const { data, isLoading: isLoadingData } = useGetBookingsManagementQuery()
+  const [changeStatus] = useChangeStatusMutation()
 
   const [openDrawer, setOpenDrawer] = useState(false)
-  const [currentCuisineId, setCurrentCuisineId] = useState<number | null>(null)
 
-  const onSubmit = async (values: CuisineInput) => {
+  const handleChangeStatus = async (
+    bookingId: number,
+    type: 'reject' | 'approve',
+  ) => {
     try {
-      if (currentCuisineId) {
-        const res = await editCuisine({ id: currentCuisineId, ...values })
-        handleAlert(res, () => {
-          setOpenDrawer(false)
-          setCurrentCuisineId(null)
-          reset()
-        })
+      const bookingStatus = BOOKING_STATUSES.findIndex(
+        (status) => status.slug === type,
+      )
+
+      if (bookingStatus === -1) {
+        message.error('Invalid booking status')
         return
       }
-      const res = await addCuisine(values)
-      handleAlert(res, () => {
-        setOpenDrawer(false)
-        reset()
-      })
+
+      const res = await changeStatus({ bookingId, bookingStatus })
+      handleAlert(res)
     } catch (error) {
-      message.error('Failed to add cuisine')
+      message.error('Failed to change status')
     }
   }
 
@@ -99,6 +66,10 @@ const AdminBookingsPage = () => {
       ),
     },
     {
+      title: 'Occasion',
+      dataIndex: 'occasion',
+    },
+    {
       title: 'Total Price',
       dataIndex: 'totalPrice',
       render: (_, record) => (
@@ -111,105 +82,73 @@ const AdminBookingsPage = () => {
       title: 'Booking Status',
       dataIndex: 'bookingStatus',
       render: (_, record) => (
-        <Tag color={STATUS_COLOR[record.bookingStatus]}>
-          {BOOKING_STATUSES[record.bookingStatus]}
+        <Tag color={BOOKING_STATUSES[record.bookingStatus].color}>
+          {BOOKING_STATUSES[record.bookingStatus].label}
         </Tag>
       ),
     },
   ]
 
-  const handleClose = () => {
-    setOpenDrawer(false)
-    setCurrentCuisineId(null)
-    reset()
-  }
-
-  const handleAdd = () => {
+  const handleView = () => {
     setOpenDrawer(true)
-    reset()
   }
 
-  const renderDrawerContent = () => (
-    <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-      <Form.Item
-        label="Cuisine name"
-        required
-        help={errors.cuisineName?.message}
-        validateStatus={errors.cuisineName ? 'error' : ''}
-      >
-        <Controller
-          name="cuisineName"
-          control={control}
-          defaultValue=""
-          render={({ field }) => <Input {...field} />}
-        />
-      </Form.Item>
+  const handleCheckStatus = () => {
+    setOpenDrawer(true)
+  }
 
-      <Form.Item
-        label="Description"
-        required
-        help={errors.description?.message}
-        validateStatus={errors.description ? 'error' : ''}
-      >
-        <Controller
-          name="description"
-          control={control}
-          defaultValue=""
-          render={({ field }) => <Input.TextArea rows={3} {...field} />}
-        />
-      </Form.Item>
+  const renderDrawerContent = () => {
+    if (!data) return null
 
-      <Form.Item label="Cuisine image">
-        <Controller
-          name="cuisineImage"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <div className="upload-image">
-              {field.value ? (
-                <img className="w-full" src={field.value} alt="Cuisine Image" />
-              ) : null}
-              <UploadWidget onChange={field.onChange} />
-            </div>
-          )}
-        />
-      </Form.Item>
-
-      <Row justify="end" gutter={8}>
-        <Col>
-          <Button type="default" htmlType="reset" onClick={() => reset()}>
-            Reset
-          </Button>
-        </Col>
-        <Col>
-          <Button
-            type="primary"
-            htmlType="submit"
-            disabled={addLoading || editLoading}
+    return (
+      <>
+        {needActionBookings(data.bookings).map((booking) => (
+          <Card
+            key={booking.id}
+            title={`Booking #${booking.id}`}
+            actions={[
+              <Button
+                danger
+                onClick={() => handleChangeStatus(booking.id, 'reject')}
+              >
+                Reject
+              </Button>,
+              <Button onClick={() => handleChangeStatus(booking.id, 'approve')}>
+                Approve
+              </Button>,
+            ]}
           >
-            {currentCuisineId ? 'Edit' : 'Add'}
-          </Button>
-        </Col>
-      </Row>
-
-      <>{contextHolder}</>
-    </Form>
-  )
+            {booking.id}
+          </Card>
+        ))}
+      </>
+    )
+  }
 
   if (isLoadingData) return <Loading />
 
+  if (!data) return <Empty description="No bookings found" />
+
   return (
-    <CustomTable
-      openDrawer={openDrawer}
-      onAdd={handleAdd}
-      onClose={handleClose}
-      name="Check Status"
-      hasEdit={false}
-      renderDrawerContent={renderDrawerContent}
-      customColumns={columns}
-      dataSource={bookings}
-      rowKey={(record) => record.id}
-    />
+    <>
+      {contextHolder}
+      <Badge count={data.needActionCount}>
+        <Button type="primary" onClick={handleCheckStatus}>
+          Check Status
+        </Button>
+      </Badge>
+
+      <BookingTable
+        openDrawer={openDrawer}
+        onClose={() => setOpenDrawer(false)}
+        drawerTitle="Bookings"
+        onView={handleView}
+        renderDrawerContent={renderDrawerContent}
+        customColumns={columns}
+        dataSource={data.bookings}
+        rowKey={(record) => record.id}
+      />
+    </>
   )
 }
 
