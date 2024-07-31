@@ -1,3 +1,5 @@
+import { BOOKING_STATUSES } from '@/constants/booking.constant'
+
 export type BookingInput = {
   paymentMethod: number
   eventDate: string
@@ -43,3 +45,5 @@ export type ChangeStatusPayload = {
   bookingId: number
   bookingStatus: number
 }
+
+export type BookingStatusType = (typeof BOOKING_STATUSES)[number]['slug']

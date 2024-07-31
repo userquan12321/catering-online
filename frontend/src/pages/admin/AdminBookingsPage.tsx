@@ -1,16 +1,18 @@
 import { useState } from 'react'
 import type { TableColumnsType } from 'antd'
-import { Badge, Button, Card, Empty, message, Tag, Typography } from 'antd'
+import { Badge, Button, Empty, message, Tag, Typography } from 'antd'
 
 import {
   useChangeStatusMutation,
   useGetBookingsManagementQuery,
 } from '@/apis/booking.api'
+import BookingActionDrawer from '@/components/Admin/BookingActionDrawer'
+import BookingDetailDrawer from '@/components/Admin/BookingDetailDrawer'
 import BookingTable from '@/components/Admin/BookingTable'
 import Loading from '@/components/common/Loading'
 import { BOOKING_STATUSES } from '@/constants/booking.constant'
 import { useAlert } from '@/hooks/globals/useAlert.hook'
-import { BookingColumn } from '@/types/booking.type'
+import { BookingColumn, BookingStatusType } from '@/types/booking.type'
 import { formatDate } from '@/utils/formatDateTime'
 import { needActionBookings } from '@/utils/needActionBookings.util'
 
@@ -19,11 +21,22 @@ const AdminBookingsPage = () => {
   const { data, isLoading: isLoadingData } = useGetBookingsManagementQuery()
   const [changeStatus] = useChangeStatusMutation()
 
-  const [openDrawer, setOpenDrawer] = useState(false)
+  const [openDrawer, setOpenDrawer] = useState<'' | 'action' | 'detail'>('')
+  const [detailId, setDetailId] = useState<number | null>(null)
+
+  const handleView = (id: number) => {
+    setDetailId(id)
+    setOpenDrawer('detail')
+  }
+
+  const handleClose = () => {
+    setOpenDrawer('')
+    setDetailId(null)
+  }
 
   const handleChangeStatus = async (
     bookingId: number,
-    type: 'reject' | 'approve',
+    type: BookingStatusType,
   ) => {
     try {
       const bookingStatus = BOOKING_STATUSES.findIndex(
@@ -89,39 +102,23 @@ const AdminBookingsPage = () => {
     },
   ]
 
-  const handleView = () => {
-    setOpenDrawer(true)
-  }
-
-  const handleCheckStatus = () => {
-    setOpenDrawer(true)
-  }
-
   const renderDrawerContent = () => {
     if (!data) return null
 
+    if (openDrawer === 'action')
+      return (
+        <BookingActionDrawer
+          data={needActionBookings(data.bookings)}
+          onChangeStatus={handleChangeStatus}
+        />
+      )
+
     return (
-      <>
-        {needActionBookings(data.bookings).map((booking) => (
-          <Card
-            key={booking.id}
-            title={`Booking #${booking.id}`}
-            actions={[
-              <Button
-                danger
-                onClick={() => handleChangeStatus(booking.id, 'reject')}
-              >
-                Reject
-              </Button>,
-              <Button onClick={() => handleChangeStatus(booking.id, 'approve')}>
-                Approve
-              </Button>,
-            ]}
-          >
-            {booking.id}
-          </Card>
-        ))}
-      </>
+      <BookingDetailDrawer
+        data={data.bookings.find((booking) => booking.id === detailId)}
+        isClosed={openDrawer === ''}
+        onChangeStatus={handleChangeStatus}
+      />
     )
   }
 
@@ -133,15 +130,15 @@ const AdminBookingsPage = () => {
     <>
       {contextHolder}
       <Badge count={data.needActionCount}>
-        <Button type="primary" onClick={handleCheckStatus}>
+        <Button type="primary" onClick={() => setOpenDrawer('action')}>
           Check Status
         </Button>
       </Badge>
 
       <BookingTable
-        openDrawer={openDrawer}
-        onClose={() => setOpenDrawer(false)}
-        drawerTitle="Bookings"
+        openDrawer={!!openDrawer}
+        onClose={handleClose}
+        drawerTitle={detailId ? `Booking #${detailId}` : 'Bookings'}
         onView={handleView}
         renderDrawerContent={renderDrawerContent}
         customColumns={columns}

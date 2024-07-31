@@ -6,4 +6,4 @@ export const BOOKING_STATUSES = [
   { label: 'Cancelling', color: 'yellow', slug: 'cancelling' },
   { label: 'Cancelled', color: 'black', slug: 'cancel' },
   { label: 'Completed', color: 'green', slug: 'complete' },
-]
+] as const
