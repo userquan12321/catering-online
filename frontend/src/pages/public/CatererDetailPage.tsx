@@ -6,10 +6,14 @@ import { FloatButton } from 'antd'
 import CatererDetailBody from '@/components/CatererDetail/CatererDetailBody'
 import CatererInfo from '@/components/CatererDetail/CatererInfo'
 import PopupMessage from '@/components/CatererDetail/PopupMessage'
+import Loading from '@/components/common/Loading'
 import { useLoginModal } from '@/hooks/auth/useLoginModal.hook'
+import { useCaterer } from '@/hooks/caterer/useCaterer.hook'
 import { RootState } from '@/redux/store'
 
 const CatererDetailPage = () => {
+  const { isLoading } = useCaterer()
+
   const [isCardVisible, setIsCardVisible] = useState(false)
   const userType = useSelector((state: RootState) => state.auth.userType)
   const showLoginModal = useLoginModal()
@@ -21,6 +25,8 @@ const CatererDetailPage = () => {
     }
     setIsCardVisible((openChat) => !openChat)
   }
+
+  if (isLoading) return <Loading />
 
   return (
     <>

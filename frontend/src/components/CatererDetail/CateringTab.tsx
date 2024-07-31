@@ -6,7 +6,7 @@ import { CATERING_TYPES } from '@/constants/catering.constant'
 import { useCaterer } from '@/hooks/caterer/useCaterer.hook'
 
 const CateringTab = () => {
-  const { data, isLoading } = useCaterer()
+  const { data } = useCaterer()
 
   if (!data) return null
 

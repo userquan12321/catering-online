@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Avatar, Layout, Menu, theme } from 'antd'
 
 import { useGetContactsQuery } from '@/apis/message.api'
+import Loading from '@/components/common/Loading'
 import MessageDetail from '@/components/Messages/MessageDetail'
 
 const { Content, Sider } = Layout
@@ -19,7 +20,7 @@ const AdminMessagesPage = () => {
     setSelectedMenuItem(key)
   }
 
-  if (isLoading) return <p>Loading...</p>
+  if (isLoading) return <Loading />
 
   if (!data) {
     return null
