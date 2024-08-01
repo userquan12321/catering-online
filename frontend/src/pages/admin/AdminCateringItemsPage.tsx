@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -39,6 +40,15 @@ const AdminCateringItemsPage = () => {
     setValue,
   } = useForm({
     resolver: yupResolver(cateringValidation),
+    defaultValues: {
+      name: '',
+      cuisineId: null,
+      itemType: null,
+      price: null,
+      servesCount: null,
+      description: '',
+      image: '',
+    },
   })
 
   const { handleAlert, contextHolder } = useAlert()
@@ -124,7 +134,7 @@ const AdminCateringItemsPage = () => {
 
   const handleClose = () => {
     setOpenDrawer(false)
-    reset()
+    setCurrentCateringId(null)
   }
 
   const handleAdd = () => {

@@ -24,6 +24,7 @@ namespace backend.Controllers
 				{
 					var items = await context.Items
 						.Where(i => i.CatererId == tokenData.CatererId)
+						.OrderByDescending(i => i.UpdatedAt)
 						.Select(i => new
 						{
 							i.Id,

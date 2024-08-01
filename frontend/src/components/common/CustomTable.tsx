@@ -72,7 +72,7 @@ const CustomTable = <T extends { id: number }>({
   }
 
   return (
-    <>
+    <div>
       {name && (
         <Button type="primary" onClick={onAdd} icon={<PlusOutlined />}>
           {`Add ${name}`}
@@ -92,7 +92,7 @@ const CustomTable = <T extends { id: number }>({
       >
         {renderDrawerContent()}
       </Drawer>
-    </>
+    </div>
   )
 }
 

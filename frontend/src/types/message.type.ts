@@ -16,3 +16,10 @@ type Message = {
   content: string
   createdAt: string
 }
+
+export type Contact = {
+  userId: number
+  firstName: string
+  lastName: string
+  image: string
+}
