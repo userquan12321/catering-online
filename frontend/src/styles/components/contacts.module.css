@@ -1,0 +1,28 @@
+.sider {
+  padding: 1rem 0;
+}
+
+.messageBody {
+  height: 300px;
+  overflow-y: scroll;
+  padding: 1rem;
+
+  &.messageLoading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.inputMessage {
+  display: flex;
+  padding: 0.5rem 1rem;
+
+  & input {
+    border-radius: 6px 0 0 6px;
+  }
+
+  & button {
+    border-radius: 0 6px 6px 0;
+  }
+}

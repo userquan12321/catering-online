@@ -74,7 +74,7 @@ const AdminLayout = () => {
             items={menuItems}
           />
         </Sider>
-        <Content className={`${classes.content} margin-header`}>
+        <Content className={`${classes.content} margin-header flex flex-col`}>
           <Typography.Title level={4}>{title}</Typography.Title>
           <Outlet />
         </Content>

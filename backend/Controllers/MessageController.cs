@@ -20,13 +20,13 @@ namespace backend.Controllers
 				int userId = UserHelper.GetValidUserId(HttpContext.User);
 
 				var recipientIds = await context.Messages
-						.Where(m => m.SenderId == userId)
-						.Select(m => m.ReceiverId)
+						.Where(m => m.SenderId == userId || m.ReceiverId == userId)
+						.Select(m => m.SenderId == userId ? m.ReceiverId : m.SenderId)
 						.Distinct()
 						.ToListAsync();
 
 				var recipients = await context.Profiles
-						.Where(u => recipientIds.Contains(u.Id))
+						.Where(p => recipientIds.Contains(p.Id))
 						.ToListAsync();
 
 				return Ok(recipients.Select(u => new

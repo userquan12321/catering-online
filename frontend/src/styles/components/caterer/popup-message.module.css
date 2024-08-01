@@ -15,7 +15,6 @@
 }
 
 .popupMessageBody {
-  position: relative;
   height: 300px;
   overflow-y: scroll;
   padding: 1rem;
