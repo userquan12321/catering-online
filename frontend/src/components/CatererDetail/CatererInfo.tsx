@@ -11,11 +11,7 @@ import { useCaterer } from '@/hooks/caterer/useCaterer.hook'
 import classes from '@/styles/components/caterer/banner.module.css'
 
 const CatererInfo = () => {
-  const { data, isLoading } = useCaterer()
-
-  if (isLoading) {
-    return <p>Loading...</p>
-  }
+  const { data } = useCaterer()
 
   if (!data) {
     return <Empty />

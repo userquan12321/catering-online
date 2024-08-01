@@ -16,6 +16,8 @@ export type CaterersRes = {
 export type QueryArgs = {
   page: number
   pageSize?: number
+  cuisineName?: string
+  catererName?: string
 }
 
 export type Catering = {

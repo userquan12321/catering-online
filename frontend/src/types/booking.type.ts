@@ -1,3 +1,5 @@
+import { BOOKING_STATUSES } from '@/constants/booking.constant'
+
 export type BookingInput = {
   paymentMethod: number
   eventDate: string
@@ -18,7 +20,7 @@ type MenuItem = {
   quantity: number
 }
 
-export type BookingsManagementRes = BookingInput & {
+export type BookingColumn = BookingInput & {
   id: number
   customer: Customer
   bookingStatus: number
@@ -34,11 +36,14 @@ type Customer = {
   lastName: string
 }
 
-export type BookingColumn = {
-  id: number
-  eventDate: string
-  numberOfPeople: number
-  bookingStatus: number
-  customer: Customer
-  totalPrice: number
+export type BookingsManagementRes = {
+  bookings: BookingColumn[]
+  needActionCount: number
 }
+
+export type ChangeStatusPayload = {
+  bookingId: number
+  bookingStatus: number
+}
+
+export type BookingStatusType = (typeof BOOKING_STATUSES)[number]['slug']

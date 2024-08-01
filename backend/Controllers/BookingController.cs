@@ -229,7 +229,16 @@ namespace backend.Controllers
               .Sum(bi => bi.Quantity * bi.Item!.Price)
           })
             .ToListAsync();
-          return Ok(bookings);
+          return Ok(new
+          {
+            Bookings = bookings,
+            NeedActionCount = bookings
+                          .Where(
+                            b => b.BookingStatus == BookingStatus.Pending ||
+                            b.BookingStatus == BookingStatus.Cancelling
+                          )
+                          .Count()
+          });
         }
 
         return Unauthorized();

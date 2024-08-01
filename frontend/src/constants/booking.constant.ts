@@ -1,10 +1,9 @@
 export const PAYMENT_METHODS = ['Cash', 'Credit Card', 'Debit Card']
 export const BOOKING_STATUSES = [
-  'Pending',
-  'Approved',
-  'Rejected',
-  'Cancelling',
-  'Cancelled',
-  'Completed',
-]
-export const STATUS_COLOR = ['yellow', 'green', 'red', 'yellow', 'red', 'green']
+  { label: 'Pending', color: 'yellow', slug: 'pending' },
+  { label: 'Approved', color: 'green', slug: 'approve' },
+  { label: 'Rejected', color: 'red', slug: 'reject' },
+  { label: 'Cancelling', color: 'yellow', slug: 'cancelling' },
+  { label: 'Cancelled', color: 'black', slug: 'cancel' },
+  { label: 'Completed', color: 'green', slug: 'complete' },
+] as const

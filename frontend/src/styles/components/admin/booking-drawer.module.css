@@ -1,0 +1,18 @@
+.cardLabel {
+  min-width: 75px;
+}
+
+.bookingListItem {
+  display: flex;
+  gap: 1rem;
+
+  & p:last-child {
+    min-width: 1.5rem;
+    text-align: end;
+  }
+}
+
+.statusSelect {
+  width: 110px;
+  margin-right: 0.5rem;
+}

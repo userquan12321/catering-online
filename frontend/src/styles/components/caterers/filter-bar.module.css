@@ -1,0 +1,12 @@
+.filterBar {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  border-radius: 0.25rem;
+  background: white;
+  padding: 1rem;
+}
+
+.selectCuisine {
+  width: 10rem;
+}
