@@ -37,11 +37,14 @@ yarn dev
 cd backend
 dotnet restore
 dotnet ef database update
-dotnet run watch
 ```
 
 - Import data vào SSMS
 - Tạo file appsettings.json
+
+```
+dotnet run watch
+```
 
 3. Đăng nhập
 
