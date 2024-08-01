@@ -52,6 +52,12 @@ dotnet run watch
 - Tk caterer: tất cả các caterers đều có password là "caterers"
 - Tk customer: tự đăng ký và đăng nhập
 
+4. Test API trên swagger: Đối với những api có ổ khóa
+
+- Cần chạy api login trước để lấy token
+- Bấm vào ổ khóa và nhập "Bearer + <token>"
+- Bấm "Authorize"
+
 **Lưu ý**
 
 - Không code trên nhánh main. Cần checkout sang nhánh của mình (Ví dụ: feature/thanh)
