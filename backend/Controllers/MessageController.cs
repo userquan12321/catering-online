@@ -131,32 +131,32 @@ namespace backend.Controllers
 			}
 		}
 
-		// [HttpDelete("{messageId}")]
-		// public async Task<IActionResult> DeleteMessage(int messageId)
-		// {
-		// 	if (!ModelState.IsValid)
-		// 	{
-		// 		return BadRequest(ModelState);
-		// 	}
+		[HttpDelete("{messageId}")]
+		public async Task<IActionResult> DeleteMessage(int messageId)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 
-		// 	try
-		// 	{
-		// 		int userId = UserHelper.GetValidUserId(HttpContext.User);
-		// 		var message = await context.Messages
-		// 			.Where(m => m.Id == messageId && (m.SenderId == userId))
-		// 			.FirstOrDefaultAsync();
-		// 		if (message == null)
-		// 		{
-		// 			return NotFound("Message not found.");
-		// 		}
-		// 		context.Messages.Remove(message);
-		// 		await context.SaveChangesAsync();
-		// 		return Ok("Message deleted.");
-		// 	}
-		// 	catch (UnauthorizedAccessException ex)
-		// 	{
-		// 		return Unauthorized(ex.Message);
-		// 	}
-		// }
+			try
+			{
+				int userId = UserHelper.GetValidUserId(HttpContext.User);
+				var message = await context.Messages
+					.Where(m => m.Id == messageId && (m.SenderId == userId))
+					.FirstOrDefaultAsync();
+				if (message == null)
+				{
+					return NotFound("Message not found.");
+				}
+				context.Messages.Remove(message);
+				await context.SaveChangesAsync();
+				return Ok("Message deleted.");
+			}
+			catch (UnauthorizedAccessException ex)
+			{
+				return Unauthorized(ex.Message);
+			}
+		}
 	}
 }

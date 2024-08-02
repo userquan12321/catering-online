@@ -53,6 +53,22 @@
   }
 }
 
+.messageContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &:hover .deleteIcon {
+    display: block;
+  }
+
+  & .deleteIcon {
+    cursor: pointer;
+    color: red;
+    display: none;
+  }
+}
+
 .messageItem {
   padding: 4px 8px;
   border-radius: 0 8px 8px 0;

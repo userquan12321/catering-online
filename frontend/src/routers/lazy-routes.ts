@@ -7,7 +7,6 @@ const AdminCateringItems = lazy(
 const AdminCuisineTypes = lazy(
   () => import('../pages/admin/AdminCuisineTypesPage'),
 )
-const AdminDashBoard = lazy(() => import('../pages/admin/AdminDashBoardPage'))
 const AdminMessages = lazy(() => import('../pages/admin/AdminMessagesPage'))
 const AdminUsers = lazy(() => import('../pages/admin/AdminUsersPage'))
 const BookingHistoryPage = lazy(
@@ -27,7 +26,6 @@ export {
   AdminBookings,
   AdminCateringItems,
   AdminCuisineTypes,
-  AdminDashBoard,
   AdminMessages,
   AdminUsers,
   BookingHistoryPage,
