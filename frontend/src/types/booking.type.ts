@@ -38,12 +38,14 @@ type Customer = {
   customerId: number
   firstName: string
   lastName: string
+  phoneNumber: string
 }
 
 type Caterer = {
   catererId: number
   firstName: string
   lastName: string
+  phoneNumber: string
 }
 
 export type BookingsManagementRes = {

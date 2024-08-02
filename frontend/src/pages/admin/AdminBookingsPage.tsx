@@ -16,6 +16,62 @@ import { BookingColumn, BookingStatusType } from '@/types/booking.type'
 import { formatDate } from '@/utils/formatDateTime'
 import { needActionBookings } from '@/utils/needActionBookings.util'
 
+const columns: TableColumnsType<BookingColumn> = [
+  {
+    title: 'Booking Id',
+    dataIndex: 'id',
+  },
+  {
+    title: 'Customer',
+    dataIndex: 'customer',
+    render: (_, record) => (
+      <Typography.Text className="text-nowrap">
+        {record.customer.firstName} {record.customer.lastName}
+      </Typography.Text>
+    ),
+  },
+  {
+    title: 'Phone Number',
+    dataIndex: 'customer',
+    render: (_, record) => (
+      <Typography.Text className="text-nowrap">
+        {record.customer.phoneNumber}
+      </Typography.Text>
+    ),
+  },
+  {
+    title: 'Event Date',
+    dataIndex: 'eventDate',
+    render: (_, record) => (
+      <Typography.Text className="text-nowrap">
+        {formatDate(record.eventDate)}
+      </Typography.Text>
+    ),
+  },
+  {
+    title: 'Occasion',
+    dataIndex: 'occasion',
+  },
+  {
+    title: 'Total Price',
+    dataIndex: 'totalPrice',
+    render: (_, record) => (
+      <Typography.Text className="text-nowrap">
+        ${record.totalPrice.toFixed(2)}
+      </Typography.Text>
+    ),
+  },
+  {
+    title: 'Booking Status',
+    dataIndex: 'bookingStatus',
+    render: (_, record) => (
+      <Tag color={BOOKING_STATUSES[record.bookingStatus].color}>
+        {BOOKING_STATUSES[record.bookingStatus].label}
+      </Tag>
+    ),
+  },
+]
+
 const AdminBookingsPage = () => {
   const { handleAlert, contextHolder } = useAlert()
   const { data, isLoading: isLoadingData } = useGetBookingsManagementQuery()
@@ -54,53 +110,6 @@ const AdminBookingsPage = () => {
       message.error('Failed to change status')
     }
   }
-
-  const columns: TableColumnsType<BookingColumn> = [
-    {
-      title: 'Booking Id',
-      dataIndex: 'id',
-    },
-    {
-      title: 'Customer',
-      dataIndex: 'customer',
-      render: (_, record) => (
-        <Typography.Text className="text-nowrap">
-          {record.customer.firstName} {record.customer.lastName}
-        </Typography.Text>
-      ),
-    },
-    {
-      title: 'Event Date',
-      dataIndex: 'eventDate',
-      render: (_, record) => (
-        <Typography.Text className="text-nowrap">
-          {formatDate(record.eventDate)}
-        </Typography.Text>
-      ),
-    },
-    {
-      title: 'Occasion',
-      dataIndex: 'occasion',
-    },
-    {
-      title: 'Total Price',
-      dataIndex: 'totalPrice',
-      render: (_, record) => (
-        <Typography.Text className="text-nowrap">
-          ${record.totalPrice.toFixed(2)}
-        </Typography.Text>
-      ),
-    },
-    {
-      title: 'Booking Status',
-      dataIndex: 'bookingStatus',
-      render: (_, record) => (
-        <Tag color={BOOKING_STATUSES[record.bookingStatus].color}>
-          {BOOKING_STATUSES[record.bookingStatus].label}
-        </Tag>
-      ),
-    },
-  ]
 
   const renderDrawerContent = () => {
     if (!data) return null

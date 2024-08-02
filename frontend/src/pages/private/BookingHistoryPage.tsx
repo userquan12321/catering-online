@@ -28,6 +28,15 @@ const columns: TableColumnsType<BookingCustomer> = [
     ),
   },
   {
+    title: 'Phone Number',
+    dataIndex: 'caterer',
+    render: (_, record) => (
+      <Typography.Text className="text-nowrap">
+        {record.caterer.phoneNumber}
+      </Typography.Text>
+    ),
+  },
+  {
     title: 'Event Date',
     dataIndex: 'eventDate',
     render: (_, record) => (

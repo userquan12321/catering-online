@@ -74,6 +74,16 @@ const BookingDetailDrawer = ({ data, isClosed, mode, ...props }: Props) => {
       </Flex>
       <Flex align="center" className="mb-4">
         <Typography.Text strong className={classes.cardLabel}>
+          Phone
+        </Typography.Text>
+        <p>
+          {'customer' in data
+            ? `${data.customer.phoneNumber}`
+            : `${data.caterer.phoneNumber}`}
+        </p>
+      </Flex>
+      <Flex align="center" className="mb-4">
+        <Typography.Text strong className={classes.cardLabel}>
           Event date
         </Typography.Text>
         <p>{formatDate(data.eventDate)}</p>
