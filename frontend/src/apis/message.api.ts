@@ -37,6 +37,14 @@ export const messageApi = createApi({
       }),
       invalidatesTags: ['Message'],
     }),
+    deleteMessage: builder.mutation<string, number>({
+      query: (id) => ({
+        url: `message/${id}`,
+        method: 'DELETE',
+        responseHandler: (response) => response.text(),
+      }),
+      invalidatesTags: ['Message'],
+    }),
   }),
 })
 
@@ -44,4 +52,5 @@ export const {
   useGetContactsQuery,
   useGetMessagesQuery,
   useSendMessageMutation,
+  useDeleteMessageMutation,
 } = messageApi

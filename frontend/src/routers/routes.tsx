@@ -8,7 +8,6 @@ import {
   AdminBookings,
   AdminCateringItems,
   AdminCuisineTypes,
-  AdminDashBoard,
   AdminMessages,
   AdminUsers,
   BookingHistoryPage,
@@ -113,11 +112,6 @@ const router = createBrowserRouter([
     path: '/admin',
     element: <AdminLayout />,
     children: [
-      {
-        path: '',
-        element: <AdminDashBoard />,
-        index: true,
-      },
       {
         path: 'users',
         element: <AdminUsers />,

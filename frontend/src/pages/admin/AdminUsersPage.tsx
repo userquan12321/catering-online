@@ -1,5 +1,5 @@
 const AdminUsersPage = () => {
-  return <div>AdminUsersPage</div>
+  return <div>This page is under construction.</div>
 }
 
 export default AdminUsersPage
