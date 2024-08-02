@@ -20,9 +20,8 @@ type MenuItem = {
   quantity: number
 }
 
-export type BookingColumn = BookingInput & {
+type BookingCommon = {
   id: number
-  customer: Customer
   bookingStatus: number
   createdAt: string
   updatedAt: string
@@ -30,8 +29,19 @@ export type BookingColumn = BookingInput & {
   totalPrice: number
 }
 
+export type BookingColumn = BookingInput &
+  BookingCommon & {
+    customer: Customer
+  }
+
 type Customer = {
   customerId: number
+  firstName: string
+  lastName: string
+}
+
+type Caterer = {
+  catererId: number
   firstName: string
   lastName: string
 }
@@ -40,6 +50,11 @@ export type BookingsManagementRes = {
   bookings: BookingColumn[]
   needActionCount: number
 }
+
+export type BookingCustomer = BookingInput &
+  BookingCommon & {
+    caterer: Caterer
+  }
 
 export type ChangeStatusPayload = {
   bookingId: number

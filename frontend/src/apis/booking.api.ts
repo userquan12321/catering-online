@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { API_BASE_URL } from '@/constants/api.constant'
 import { RootState } from '@/redux/store'
 import {
+  BookingCustomer,
   BookingPayload,
   BookingsManagementRes,
   ChangeStatusPayload,
@@ -22,11 +23,15 @@ export const bookingApi = createApi({
       return headers
     },
   }),
-  tagTypes: ['Booking'],
+  tagTypes: ['Booking', 'CustomerBooking'],
   endpoints: (builder) => ({
     getBookingsManagement: builder.query<BookingsManagementRes, void>({
       query: () => 'booking/bookings-management',
       providesTags: ['Booking'],
+    }),
+    getCustomerBooking: builder.query<BookingCustomer[], void>({
+      query: () => 'booking/customer-bookings',
+      providesTags: ['CustomerBooking'],
     }),
     bookCatering: builder.mutation<string, BookingPayload>({
       query: (payload) => ({
@@ -46,6 +51,14 @@ export const bookingApi = createApi({
       }),
       invalidatesTags: ['Booking'],
     }),
+    cancelBooking: builder.mutation<string, number>({
+      query: (id) => ({
+        url: `booking/cancel-booking/${id}`,
+        method: 'PUT',
+        responseHandler: (response) => response.text(),
+      }),
+      invalidatesTags: ['CustomerBooking'],
+    }),
   }),
 })
 
@@ -53,4 +66,6 @@ export const {
   useBookCateringMutation,
   useGetBookingsManagementQuery,
   useChangeStatusMutation,
+  useGetCustomerBookingQuery,
+  useCancelBookingMutation,
 } = bookingApi

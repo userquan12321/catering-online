@@ -1,18 +1,34 @@
 import { useEffect, useState } from 'react'
 import { EditOutlined, SaveOutlined } from '@ant-design/icons'
-import { Button, Flex, Select, Tag, Typography } from 'antd'
+import { Button, Flex, Modal, Select, Tag, Typography } from 'antd'
 
 import { BOOKING_STATUSES, PAYMENT_METHODS } from '@/constants/booking.constant'
 import classes from '@/styles/components/admin/booking-drawer.module.css'
-import { BookingColumn, BookingStatusType } from '@/types/booking.type'
+import {
+  BookingColumn,
+  BookingCustomer,
+  BookingStatusType,
+} from '@/types/booking.type'
 import { formatDate } from '@/utils/formatDateTime'
 
-type Props = {
-  data: BookingColumn | undefined
+type BaseProps = {
   isClosed: boolean
+}
+
+type CatererProps = {
+  mode: 'caterer'
+  data: BookingColumn | undefined
   onChangeStatus: (bookingId: number, type: BookingStatusType) => void
 }
-const BookingDetailDrawer = ({ data, isClosed, onChangeStatus }: Props) => {
+
+type CustomerProps = {
+  mode: 'customer'
+  data: BookingCustomer | undefined
+  onCancel: (bookingId: number) => void
+}
+
+type Props = BaseProps & (CatererProps | CustomerProps)
+const BookingDetailDrawer = ({ data, isClosed, mode, ...props }: Props) => {
   const [edit, setEdit] = useState(false)
   const [status, setStatus] = useState<BookingStatusType>(() => {
     if (!data) return 'pending'
@@ -27,8 +43,19 @@ const BookingDetailDrawer = ({ data, isClosed, onChangeStatus }: Props) => {
 
   const handleSave = () => {
     if (!data) return
-    onChangeStatus(data.id, status)
-    setEdit(false)
+    if (mode === 'caterer') {
+      const { onChangeStatus } = props as CatererProps
+      onChangeStatus(data.id, status)
+      setEdit(false)
+    }
+  }
+
+  const handleCancel = () => {
+    if (!data) return
+    Modal.confirm({
+      title: 'Are you sure to cancel this booking?',
+      onOk: () => (props as CustomerProps).onCancel(data.id),
+    })
   }
 
   if (!data) return null
@@ -37,9 +64,13 @@ const BookingDetailDrawer = ({ data, isClosed, onChangeStatus }: Props) => {
     <>
       <Flex align="center" className="mb-4">
         <Typography.Text strong className={classes.cardLabel}>
-          Customer
+          {'customer' in data ? 'Customer' : 'Caterer'}
         </Typography.Text>
-        <p>{`${data.customer.firstName} ${data.customer.lastName}`}</p>
+        <p>
+          {'customer' in data
+            ? `${data.customer.firstName} ${data.customer.lastName}`
+            : `${data.caterer.firstName} ${data.caterer.lastName}`}
+        </p>
       </Flex>
       <Flex align="center" className="mb-4">
         <Typography.Text strong className={classes.cardLabel}>
@@ -102,9 +133,16 @@ const BookingDetailDrawer = ({ data, isClosed, onChangeStatus }: Props) => {
             <Tag color={BOOKING_STATUSES[data.bookingStatus].color}>
               {BOOKING_STATUSES[data.bookingStatus].label}
             </Tag>
-            <Button size="small" onClick={() => setEdit(true)}>
-              <EditOutlined />
-            </Button>
+            {'customer' in data ? (
+              <Button size="small" onClick={() => setEdit(true)}>
+                <EditOutlined />
+              </Button>
+            ) : BOOKING_STATUSES.findIndex((bs) => bs.slug === 'pending') ===
+              data.bookingStatus ? (
+              <Button size="small" type="primary" danger onClick={handleCancel}>
+                Cancel
+              </Button>
+            ) : null}
           </>
         )}
       </Flex>

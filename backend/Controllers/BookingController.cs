@@ -71,7 +71,6 @@ namespace backend.Controllers
       }
     }
 
-    // Customer view all bookings
     [HttpGet("customer-bookings")]
     public async Task<ActionResult> GetCustomerBookings()
     {
@@ -80,6 +79,7 @@ namespace backend.Controllers
         int customerId = UserHelper.GetValidUserId(HttpContext.User);
         var booking = await context.Bookings
             .Where(b => b.CustomerId == customerId)
+            .OrderByDescending(b => b.EventDate)
             .Select(b => new
             {
               b.Id,
@@ -101,13 +101,10 @@ namespace backend.Controllers
               .Where(bi => bi.BookingId == b.Id)
               .Select(bi => new
               {
+                bi.ItemId,
                 bi.Quantity,
-                Item = new
-                {
-                  bi.ItemId,
-                  bi.Item!.Name,
-                  bi.Item.Price,
-                }
+                bi.Item!.Name,
+                bi.Item.Price,
               }),
               TotalPrice = b.BookingItems
                 .Where(bi => bi.BookingId == b.Id)
