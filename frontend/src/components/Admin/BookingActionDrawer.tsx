@@ -3,7 +3,6 @@ import { Button, Card, Flex, Typography } from 'antd'
 import classes from '@/styles/components/admin/booking-drawer.module.css'
 import { BookingColumn, BookingStatusType } from '@/types/booking.type'
 import { formatDate } from '@/utils/formatDateTime'
-import { needActionBookings } from '@/utils/needActionBookings.util'
 
 type Props = {
   data: BookingColumn[]
@@ -13,7 +12,7 @@ type Props = {
 const BookingActionDrawer = ({ data, onChangeStatus }: Props) => {
   return (
     <>
-      {needActionBookings(data).map((booking) => (
+      {data.map((booking) => (
         <Card
           key={booking.id}
           title={`Booking #${booking.id}`}

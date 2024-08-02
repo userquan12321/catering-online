@@ -115,6 +115,7 @@ const AdminBookingsPage = () => {
 
     return (
       <BookingDetailDrawer
+        mode="caterer"
         data={data.bookings.find((booking) => booking.id === detailId)}
         isClosed={openDrawer === ''}
         onChangeStatus={handleChangeStatus}
